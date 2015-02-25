@@ -11,6 +11,8 @@ namespace CollisionTest
         public static Texture2D Pixel; // This is for the collision box boundaries
         private readonly SpriteFactory _spriteFactory; // This is responsible for creating sprites
         private List<Entity> entityList = new List<Entity>(); // This is the list of all entities in the game
+        private MapRoom defaultRoom;
+        private PlayerEntity player;
 
         public Game1()
         {
@@ -25,17 +27,15 @@ namespace CollisionTest
             entityList.Add(entity);
         }
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
+
+            defaultRoom = new MapRoom
+            {
+                Height = _graphics.GraphicsDevice.Viewport.Height,
+                Width = _graphics.GraphicsDevice.Viewport.Width
+            };
         }
 
         protected override void LoadContent()
@@ -55,8 +55,9 @@ namespace CollisionTest
             AddEntity(enemy3);
 
             // Creates the player
-            PlayerEntity player = _spriteFactory.CreatePlayer(new Vector2(100, 100), new Vector2(0, 0), @"Boo");
-            AddEntity(player);
+            PlayerEntity playerEntity = _spriteFactory.CreatePlayer(new Vector2(100, 100), new Vector2(0, 0), @"Boo");
+            player = playerEntity;
+            AddEntity(playerEntity);
         }
 
         protected override void UnloadContent()
@@ -93,13 +94,22 @@ namespace CollisionTest
             base.Draw(gameTime);
             GraphicsDevice.Clear(Color.CornflowerBlue); // Draw the fugly background
 
-            _spriteBatch.Begin();
+            int roomOffsetX = ((int) player.Center.X/defaultRoom.Width) * defaultRoom.Width;
+            int roomOffsetY = ((int)player.Center.Y / defaultRoom.Height) * defaultRoom.Height;
+            Matrix translateMatrix = Matrix.CreateTranslation(-roomOffsetX, -roomOffsetY, 0);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, translateMatrix);
 
             // Draw each entity by calling its override
             foreach (var t in entityList)
                 t.Draw(_spriteBatch, gameTime);
 
             _spriteBatch.End();
+        }
+
+        private class MapRoom
+        {
+            public int Height { get; set; }
+            public int Width { get; set; }
         }
     }
 }
