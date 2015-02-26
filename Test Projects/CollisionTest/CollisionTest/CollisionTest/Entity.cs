@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CollisionTest
 {
+    /// <summary>
+    /// Represents an object that can interact with the game world
+    /// </summary>
     public abstract class Entity
     {
         protected bool ShowBounds = true; // true if the bounding boxes should be drawn

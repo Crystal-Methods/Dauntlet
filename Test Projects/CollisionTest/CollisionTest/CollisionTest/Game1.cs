@@ -7,7 +7,7 @@ namespace CollisionTest
 {
     public class Game1 : Game
     {
-        GraphicsDeviceManager _graphics;
+        readonly GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
         public static Texture2D Pixel; // This is for the collision box boundaries
         private readonly SpriteFactory _spriteFactory; // This is responsible for creating sprites
@@ -98,9 +98,12 @@ namespace CollisionTest
             base.Draw(gameTime);
             GraphicsDevice.Clear(Color.CornflowerBlue); // Draw the fugly background
 
+            // Handle room scrolling
             int roomOffsetX = ((int) _player.Center.X/_defaultRoom.Width) * _defaultRoom.Width;
             int roomOffsetY = ((int)_player.Center.Y / _defaultRoom.Height) * _defaultRoom.Height;
             Matrix translateMatrix = Matrix.CreateTranslation(-roomOffsetX, -roomOffsetY, 0);
+
+
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, translateMatrix);
 
             // Draw each entity by calling its override
@@ -110,6 +113,7 @@ namespace CollisionTest
             _spriteBatch.End();
         }
 
+        // Small tuple class to handle screen scrolling, might replace
         private class MapRoom
         {
             public int Height { get; set; }
