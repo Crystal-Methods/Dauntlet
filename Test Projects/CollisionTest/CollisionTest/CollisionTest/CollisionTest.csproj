@@ -72,6 +72,8 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnimatedEntity.cs" />
+    <Compile Include="AnimatedTexture2D.cs" />
     <Compile Include="CollisionManager.cs" />
     <Compile Include="EnemyEntity.cs" />
     <Compile Include="Entity.cs" />
@@ -80,6 +82,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="SpriteFactory.cs" />
+    <Compile Include="StaticEntity.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

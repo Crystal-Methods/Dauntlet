@@ -34,7 +34,7 @@ namespace CollisionTest
             {
                 Projection p1 = Project(axes1[i], vertices1);
                 Projection p2 = Project(axes1[i], vertices2);
-                if (!p1.doesOverlap(p2)) // if any projection does not overlap, no intersect
+                if (!p1.DoesOverlap(p2)) // if any projection does not overlap, no intersect
                     return false;
             }
 
@@ -43,7 +43,7 @@ namespace CollisionTest
             {
                 Projection p1 = Project(axes2[i], vertices1);
                 Projection p2 = Project(axes2[i], vertices2);
-                if (!p1.doesOverlap(p2)) // if any projection does not overlap, no intersect
+                if (!p1.DoesOverlap(p2)) // if any projection does not overlap, no intersect
                     return false;
             }
 
@@ -56,10 +56,10 @@ namespace CollisionTest
 
         private class Projection
         {
-            public float Min { get; set; }
-            public float Max { get; set; }
+            public float Min { private get; set; }
+            public float Max { private get; set; }
 
-            public bool doesOverlap(Projection other)
+            public bool DoesOverlap(Projection other)
             {
                 if (Max > other.Min)
                     return true;

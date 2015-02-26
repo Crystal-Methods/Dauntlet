@@ -7,3 +7,4 @@ C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\Collisio
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\obj\x86\Debug\CollisionTest.exe
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\obj\x86\Debug\CollisionTest.pdb
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Textures\MarioWalk.xnb

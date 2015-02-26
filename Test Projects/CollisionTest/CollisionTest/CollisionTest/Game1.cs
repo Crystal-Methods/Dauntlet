@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,28 +11,31 @@ namespace CollisionTest
         SpriteBatch _spriteBatch;
         public static Texture2D Pixel; // This is for the collision box boundaries
         private readonly SpriteFactory _spriteFactory; // This is responsible for creating sprites
-        private List<Entity> entityList = new List<Entity>(); // This is the list of all entities in the game
-        private MapRoom defaultRoom;
-        private PlayerEntity player;
+        private readonly List<Entity> _entityList = new List<Entity>(); // This is the list of all entities in the game
+        private MapRoom _defaultRoom;
+        private PlayerEntity _player;
+        
+
 
         public Game1()
         {
             _spriteFactory = new SpriteFactory(this);
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            TargetElapsedTime = TimeSpan.FromSeconds(1/24.0);
         }
 
         // Adds an entity to the list
         public void AddEntity(Entity entity)
         {
-            entityList.Add(entity);
+            _entityList.Add(entity);
         }
 
         protected override void Initialize()
         {
             base.Initialize();
 
-            defaultRoom = new MapRoom
+            _defaultRoom = new MapRoom
             {
                 Height = _graphics.GraphicsDevice.Viewport.Height,
                 Width = _graphics.GraphicsDevice.Viewport.Width
@@ -55,8 +59,8 @@ namespace CollisionTest
             AddEntity(enemy3);
 
             // Creates the player
-            PlayerEntity playerEntity = _spriteFactory.CreatePlayer(new Vector2(100, 100), new Vector2(0, 0), @"Boo");
-            player = playerEntity;
+            PlayerEntity playerEntity = _spriteFactory.CreatePlayer(new Vector2(100, 100), new Vector2(0, 0), @"MarioWalk");
+            _player = playerEntity;
             AddEntity(playerEntity);
         }
 
@@ -70,16 +74,16 @@ namespace CollisionTest
             base.Update(gameTime);
 
             // Call each entity's override Update
-            foreach (var t in entityList)
+            foreach (var t in _entityList)
                 t.Update(gameTime);
 
             // Perform collision detection on all pairs of entities
             // The double for-loop eliminates duplicate checks
-            for (var i = 0; i < entityList.Count; i++)
-                for (var j = entityList.Count - 1; j > i; j--)
+            for (var i = 0; i < _entityList.Count; i++)
+                for (var j = _entityList.Count - 1; j > i; j--)
                 {
-                    Entity a = entityList[i];
-                    Entity b = entityList[j];
+                    Entity a = _entityList[i];
+                    Entity b = _entityList[j];
                     if (CollisionManager.DetectCollision(a, b))
                     {
                         // If a collision is found, call each entity's handler
@@ -94,13 +98,13 @@ namespace CollisionTest
             base.Draw(gameTime);
             GraphicsDevice.Clear(Color.CornflowerBlue); // Draw the fugly background
 
-            int roomOffsetX = ((int) player.Center.X/defaultRoom.Width) * defaultRoom.Width;
-            int roomOffsetY = ((int)player.Center.Y / defaultRoom.Height) * defaultRoom.Height;
+            int roomOffsetX = ((int) _player.Center.X/_defaultRoom.Width) * _defaultRoom.Width;
+            int roomOffsetY = ((int)_player.Center.Y / _defaultRoom.Height) * _defaultRoom.Height;
             Matrix translateMatrix = Matrix.CreateTranslation(-roomOffsetX, -roomOffsetY, 0);
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, translateMatrix);
 
             // Draw each entity by calling its override
-            foreach (var t in entityList)
+            foreach (var t in _entityList)
                 t.Draw(_spriteBatch, gameTime);
 
             _spriteBatch.End();

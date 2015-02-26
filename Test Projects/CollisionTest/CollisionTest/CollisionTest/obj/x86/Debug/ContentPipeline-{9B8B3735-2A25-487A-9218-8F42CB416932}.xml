@@ -8,7 +8,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Textures\pixel.xnb</Output>
-      <Time>2015-02-24T23:58:53.8086438-06:00</Time>
+      <Time>2015-02-25T11:54:17.4773562-06:00</Time>
     </Item>
     <Item>
       <Source>Textures\Boo.png</Source>
@@ -17,7 +17,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Textures\Boo.xnb</Output>
-      <Time>2015-02-25T00:42:50.7448383-06:00</Time>
+      <Time>2015-02-25T11:54:17.4753552-06:00</Time>
     </Item>
     <Item>
       <Source>Textures\DryBones.png</Source>
@@ -26,7 +26,16 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Textures\DryBones.xnb</Output>
-      <Time>2015-02-25T00:43:00.0435008-06:00</Time>
+      <Time>2015-02-25T11:54:17.4763559-06:00</Time>
+    </Item>
+    <Item>
+      <Source>Textures\MarioWalk.png</Source>
+      <Name>Textures\MarioWalk</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Textures\MarioWalk.xnb</Output>
+      <Time>2015-02-25T18:49:13.984497-06:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>

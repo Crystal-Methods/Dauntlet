@@ -3,13 +3,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CollisionTest
 {
-    public class EnemyEntity : Entity
+    public class EnemyEntity : StaticEntity
     {
         private bool _intersected; // Whether or not this sprite is intersecting the player
 
-        public EnemyEntity(Game game, Vector2 position, Vector2 velocity, Texture2D texture, string textureName, int boundWidth,
+        public EnemyEntity(Game game, Vector2 position, Texture2D texture, int boundWidth,
             int boundHeight)
-            : base(game, position, velocity, texture, textureName, boundWidth, boundHeight)
+            : base(game, position,texture, boundWidth, boundHeight)
         { }
 
         public override void Update(GameTime gameTime)
