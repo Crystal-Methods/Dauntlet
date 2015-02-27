@@ -9,7 +9,7 @@ namespace CollisionTest
     /// </summary>
     public class PlayerEntity : AnimatedEntity
     {
-        private const float MaxSpeed = 4f; // Speed the sprite moves when controlled
+        private const float MaxSpeed = 2.5f; // Speed the sprite moves when controlled
         private string _previousAnimation;
 
         public PlayerEntity(Game game, Vector2 position, Vector2 velocity, Texture2D texture, int boundWidth,

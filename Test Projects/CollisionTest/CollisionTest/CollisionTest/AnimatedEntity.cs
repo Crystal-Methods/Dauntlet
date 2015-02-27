@@ -20,8 +20,7 @@ namespace CollisionTest
             set { _velocity = value; }
         }
 
-        public AnimatedEntity(Game game, Vector2 position, Vector2 velocity, Texture2D texture,
-            int boundWidth,
+        public AnimatedEntity(Game game, Vector2 position, Vector2 velocity, Texture2D texture, int boundWidth,
             int boundHeight)
             : base(game, position, boundWidth, boundHeight)
         {

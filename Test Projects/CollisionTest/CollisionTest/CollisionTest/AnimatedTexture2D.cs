@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq.Expressions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -9,14 +10,12 @@ namespace CollisionTest
     /// </summary>
     public class AnimatedTexture2D
     {
-        // the spritesheet
-        private readonly Texture2D _sheet;
-        // List of animation cycles on the sheet
-        private readonly Dictionary<string, AnimationCycle> _animations = new Dictionary<string, AnimationCycle>();
-        // Current animation playing
-        private AnimationCycle _currentAnimation;
-        // Name of current animation playing
-        private string _currentAnimationName;
+
+        private readonly Texture2D _sheet; // the spritesheet
+        private readonly Dictionary<string, AnimationCycle> _animations = new Dictionary<string, AnimationCycle>(); // List of animation cycles on the sheet
+        private AnimationCycle _currentAnimation; // Current animation playing
+        private string _currentAnimationName; // Name of current animation playing
+        private float frameInterval;
 
         // Height of the current animation frame
         public float Height
@@ -40,6 +39,7 @@ namespace CollisionTest
         public AnimatedTexture2D(Texture2D sheet)
         {
             _sheet = sheet;
+            frameInterval = ((float)1/24)*1000; //default 24 FPS
         }
 
         // Add an animation cycle

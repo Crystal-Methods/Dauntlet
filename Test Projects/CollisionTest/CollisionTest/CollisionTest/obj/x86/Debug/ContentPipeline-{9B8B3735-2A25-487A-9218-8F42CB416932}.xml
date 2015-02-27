@@ -37,6 +37,45 @@
       <Output>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Textures\MarioWalk.xnb</Output>
       <Time>2015-02-25T18:49:13.984497-06:00</Time>
     </Item>
+    <Item>
+      <Source>daFont.spritefont</Source>
+      <Name>daFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\daFont.xnb</Output>
+      <Time>2015-02-26T16:12:04.026696-06:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\DauntletMainTheme.mp3</Source>
+      <Name>Sounds\DauntletMainTheme</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Sounds\DauntletMainTheme.xnb</Output>
+      <Extra>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Sounds\DauntletMainTheme.wma</Extra>
+      <Time>2015-02-26T22:21:28.5850908-06:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\DauntletNoCombat.mp3</Source>
+      <Name>Sounds\DauntletNoCombat</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Sounds\DauntletNoCombat.xnb</Output>
+      <Extra>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Sounds\DauntletNoCombat.wma</Extra>
+      <Time>2015-02-26T22:21:28.5970993-06:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\SkeletonSwing.mp3</Source>
+      <Name>Sounds\SkeletonSwing</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Sounds\SkeletonSwing.xnb</Output>
+      <Extra>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Sounds\SkeletonSwing.wma</Extra>
+      <Time>2015-02-26T22:21:28.6071064-06:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <ContentProjectGUID>{9B8B3735-2A25-487A-9218-8F42CB416932}</ContentProjectGUID>

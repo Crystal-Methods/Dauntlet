@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace CollisionTest
 {
@@ -14,15 +15,20 @@ namespace CollisionTest
         private readonly List<Entity> _entityList = new List<Entity>(); // This is the list of all entities in the game
         private MapRoom _defaultRoom;
         private PlayerEntity _player;
-        
+        private const int VirtualResolutionX = 1024;
+        private const int VirtualResolutionY = 768;
+        private SpriteFont font;
 
 
         public Game1()
         {
             _spriteFactory = new SpriteFactory(this);
             _graphics = new GraphicsDeviceManager(this);
+            Resolution.Init(ref _graphics);
             Content.RootDirectory = "Content";
             TargetElapsedTime = TimeSpan.FromSeconds(1/24.0);
+            Resolution.SetVirtualResolution(VirtualResolutionX, VirtualResolutionY);
+            Resolution.SetResolution(1024, 768, false);
         }
 
         // Adds an entity to the list
@@ -37,9 +43,10 @@ namespace CollisionTest
 
             _defaultRoom = new MapRoom
             {
-                Height = _graphics.GraphicsDevice.Viewport.Height,
-                Width = _graphics.GraphicsDevice.Viewport.Width
+                Height = VirtualResolutionY,
+                Width = VirtualResolutionX
             };
+            Resolution.InitSeparator();
         }
 
         protected override void LoadContent()
@@ -49,6 +56,10 @@ namespace CollisionTest
 
             Pixel = Content.Load<Texture2D>(@"Textures/pixel");
             _spriteFactory.LoadContent(Content);
+
+            font = Content.Load<SpriteFont>(@"daFont");
+
+            SoundManager.LoadContent(Content);
 
             // Creates three enemies
             EnemyEntity enemy1 = _spriteFactory.CreateEnemy(new Vector2(300, 250), new Vector2(0, 0), @"DryBones");
@@ -71,6 +82,18 @@ namespace CollisionTest
 
         protected override void Update(GameTime gameTime)
         {
+            if (Keyboard.GetState().IsKeyDown(Keys.A))
+            {
+                Resolution.SetResolution(1024, 768, false);
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.B))
+            {
+               Resolution.SetResolution(800, 600, false);
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.C))
+                Resolution.SetResolution(1280, 800, false);
+
             base.Update(gameTime);
 
             // Call each entity's override Update
@@ -91,26 +114,36 @@ namespace CollisionTest
                         b.HandleCollision(a);
                     }
                 }
+
+            if (SoundManager.GetCurrentSongName() == null)
+                SoundManager.PlaySong("MainTheme");
+
+            if (SoundManager.GetTimeSpanStart() == SoundManager.GetTimeSpanEnd())
+                SoundManager.PlaySong("MainTheme");
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            base.Draw(gameTime);
-            GraphicsDevice.Clear(Color.CornflowerBlue); // Draw the fugly background
-
+            Resolution.BeginDraw();
             // Handle room scrolling
             int roomOffsetX = ((int) _player.Center.X/_defaultRoom.Width) * _defaultRoom.Width;
             int roomOffsetY = ((int)_player.Center.Y / _defaultRoom.Height) * _defaultRoom.Height;
-            Matrix translateMatrix = Matrix.CreateTranslation(-roomOffsetX, -roomOffsetY, 0);
+            float[] resScale = Resolution.GetResolutionRatios();
+            Matrix theMatrix = Resolution.GetTransformationMatrix() * Matrix.CreateTranslation(-roomOffsetX * resScale[0], -roomOffsetY * resScale[1], 0);
 
 
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, translateMatrix);
-
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, theMatrix);
             // Draw each entity by calling its override
             foreach (var t in _entityList)
                 t.Draw(_spriteBatch, gameTime);
 
+            PlayerEntity player = (PlayerEntity)_entityList[_entityList.Count - 1];
+            _spriteBatch.DrawString(font, "X: " + player.Center.X, new Vector2(50, 10), Color.Black);
+            _spriteBatch.DrawString(font, "Y: " + player.Center.Y, new Vector2(50, 30), Color.Black);
+
             _spriteBatch.End();
+
+            base.Draw(gameTime);
         }
 
         // Small tuple class to handle screen scrolling, might replace

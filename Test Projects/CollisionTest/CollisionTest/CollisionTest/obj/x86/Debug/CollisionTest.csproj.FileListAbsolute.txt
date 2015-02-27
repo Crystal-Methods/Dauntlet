@@ -8,3 +8,10 @@ C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\Collisio
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\obj\x86\Debug\CollisionTest.exe
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\obj\x86\Debug\CollisionTest.pdb
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Textures\MarioWalk.xnb
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\daFont.xnb
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Sounds\DauntletMainTheme.xnb
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Sounds\DauntletNoCombat.xnb
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Sounds\SkeletonSwing.xnb
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Sounds\DauntletMainTheme.wma
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Sounds\DauntletNoCombat.wma
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Sounds\SkeletonSwing.wma
