@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using CollisionTest.Physics;
 using CollisionTest.SpriteSystem;
 using CollisionTest.TileSystem;
@@ -17,8 +18,6 @@ namespace CollisionTest
         private readonly List<Entity> _entityList = new List<Entity>(); // This is the list of all entities in the game
         private MapRoom _defaultRoom;
         private PlayerEntity _player;
-        
-
 
         public Game1()
         {
@@ -51,6 +50,7 @@ namespace CollisionTest
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             TileEngine.LoadContent(Content);
+            GridCheck.Init(TileEngine.Rooms[TileEngine.CurrentRoom]);
 
             Pixel = Content.Load<Texture2D>(@"Textures/pixel");
             _spriteFactory.LoadContent(Content);
@@ -82,20 +82,29 @@ namespace CollisionTest
             foreach (var t in _entityList)
                 t.Update(gameTime);
 
-            // Perform collision detection on all pairs of entities
-            // The double for-loop eliminates duplicate checks
-            for (var i = 0; i < _entityList.Count; i++)
-                for (var j = _entityList.Count - 1; j > i; j--)
+            GridCheck.UpdateCells(_entityList);
+            foreach (var e in _entityList)
+            {
+                Entity e1 = e;
+                foreach (var e2 in GridCheck.GetNearby(e1).Where(e2 => CollisionManager.DetectCollision(e1, e2)))
                 {
-                    Entity a = _entityList[i];
-                    Entity b = _entityList[j];
-                    if (CollisionManager.DetectCollision(a, b))
-                    {
-                        // If a collision is found, call each entity's handler
-                        a.HandleCollision(b);
-                        b.HandleCollision(a);
-                    }
+                    e1.HandleCollision(e2);
+                    e2.HandleCollision(e1);
                 }
+            }
+
+            //for (var i = 0; i < _entityList.Count; i++)
+            //    for (var j = _entityList.Count - 1; j > i; j--)
+            //    {
+            //        Entity a = _entityList[i];
+            //        Entity b = _entityList[j];
+            //        if (CollisionManager.DetectCollision(a, b))
+            //        {
+            //            // If a collision is found, call each entity's handler
+            //            a.HandleCollision(b);
+            //            b.HandleCollision(a);
+            //        }
+            //    }
         }
 
         protected override void Draw(GameTime gameTime)
