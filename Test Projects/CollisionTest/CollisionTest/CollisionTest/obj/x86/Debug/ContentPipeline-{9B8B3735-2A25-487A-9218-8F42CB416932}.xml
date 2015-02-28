@@ -37,6 +37,15 @@
       <Output>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Textures\MarioWalk.xnb</Output>
       <Time>2015-02-25T18:49:13.984497-06:00</Time>
     </Item>
+    <Item>
+      <Source>Textures\tileset.png</Source>
+      <Name>Textures\tileset</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Textures\tileset.xnb</Output>
+      <Time>2015-02-27T17:20:11.5261032-06:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <ContentProjectGUID>{9B8B3735-2A25-487A-9218-8F42CB416932}</ContentProjectGUID>

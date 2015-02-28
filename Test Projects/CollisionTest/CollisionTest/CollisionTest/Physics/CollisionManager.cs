@@ -1,6 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CollisionTest.SpriteSystem;
+using Microsoft.Xna.Framework;
 
-namespace CollisionTest
+namespace CollisionTest.Physics
 {
     public static class CollisionManager
     {

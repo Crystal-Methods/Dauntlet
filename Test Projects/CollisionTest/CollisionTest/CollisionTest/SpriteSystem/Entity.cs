@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace CollisionTest
+namespace CollisionTest.SpriteSystem
 {
     /// <summary>
     /// Represents an object that can interact with the game world

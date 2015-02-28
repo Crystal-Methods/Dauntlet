@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace CollisionTest
+namespace CollisionTest.SpriteSystem
 {
     /// <summary>
     /// Handles an animated texture from a spritesheet

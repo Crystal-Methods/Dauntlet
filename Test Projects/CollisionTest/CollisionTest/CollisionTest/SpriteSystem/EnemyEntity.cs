@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace CollisionTest
+namespace CollisionTest.SpriteSystem
 {
     public class EnemyEntity : StaticEntity
     {

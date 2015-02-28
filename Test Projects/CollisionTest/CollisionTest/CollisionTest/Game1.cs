@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using CollisionTest.Physics;
+using CollisionTest.SpriteSystem;
+using CollisionTest.TileSystem;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -46,6 +49,8 @@ namespace CollisionTest
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            TileEngine.LoadContent(Content);
 
             Pixel = Content.Load<Texture2D>(@"Textures/pixel");
             _spriteFactory.LoadContent(Content);
@@ -105,6 +110,9 @@ namespace CollisionTest
 
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, translateMatrix);
+
+            //Draw the room
+            TileEngine.DrawRoom(_spriteBatch, gameTime);
 
             // Draw each entity by calling its override
             foreach (var t in _entityList)

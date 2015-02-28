@@ -72,17 +72,19 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnimatedEntity.cs" />
-    <Compile Include="AnimatedTexture2D.cs" />
-    <Compile Include="CollisionManager.cs" />
-    <Compile Include="EnemyEntity.cs" />
-    <Compile Include="Entity.cs" />
-    <Compile Include="PlayerEntity.cs" />
+    <Compile Include="SpriteSystem\AnimatedEntity.cs" />
+    <Compile Include="SpriteSystem\AnimatedTexture2D.cs" />
+    <Compile Include="Physics\CollisionManager.cs" />
+    <Compile Include="SpriteSystem\EnemyEntity.cs" />
+    <Compile Include="SpriteSystem\Entity.cs" />
+    <Compile Include="SpriteSystem\PlayerEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
-    <Compile Include="SpriteFactory.cs" />
-    <Compile Include="StaticEntity.cs" />
+    <Compile Include="TileSystem\Room.cs" />
+    <Compile Include="SpriteSystem\SpriteFactory.cs" />
+    <Compile Include="SpriteSystem\StaticEntity.cs" />
+    <Compile Include="TileSystem\TileEngine.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

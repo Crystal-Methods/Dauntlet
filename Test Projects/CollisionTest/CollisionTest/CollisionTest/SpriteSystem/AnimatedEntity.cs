@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace CollisionTest
+namespace CollisionTest.SpriteSystem
 {
     /// <summary>
     /// An Entity that has an animated texture, the ability to move, or both.

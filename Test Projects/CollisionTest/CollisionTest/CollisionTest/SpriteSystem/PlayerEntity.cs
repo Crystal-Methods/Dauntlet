@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace CollisionTest
+namespace CollisionTest.SpriteSystem
 {
     /// <summary>
     /// A player-controlled Entity
