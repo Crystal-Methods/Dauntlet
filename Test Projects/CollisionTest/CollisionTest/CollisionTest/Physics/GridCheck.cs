@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CollisionTest.SpriteSystem;
 using CollisionTest.TileSystem;
+using Microsoft.Xna.Framework;
 
 namespace CollisionTest.Physics
 {
@@ -43,11 +44,14 @@ namespace CollisionTest.Physics
 
         internal static List<int> GetIdForObj(Entity e)
         {
-            int leftTile = e.Bounds.Left / 32;      // bounds = Rectangle of your entity
-            int topTile = e.Bounds.Top / 32;
-            int rightTile = (int)Math.Ceiling((float)e.Bounds.Right / 32) - 1;
-            int bottomTile = (int)Math.Ceiling(((float)e.Bounds.Bottom / 32)) - 1;
+            int leftTile = (int)e.FutureBounds.Left / 32;      // bounds = AABB of your entity
+            int topTile = (int)e.FutureBounds.Top / 32;
+            int rightTile = (int)Math.Ceiling(e.FutureBounds.Right / 32) - 1;
+            int bottomTile = (int)Math.Ceiling((e.FutureBounds.Bottom / 32)) - 1;
             var cellIDs = new List<int>();
+
+            if (e.FutureBounds.Left < 0 || e.FutureBounds.Top < 0 || rightTile >= CurrentRoom.Width || bottomTile >= CurrentRoom.Height)
+                throw new OutOfRoomException("Entity is outside of room boundaries!!");
 
             for (int y = topTile; y <= bottomTile; ++y)
                 for (int x = leftTile; x <= rightTile; ++x)
@@ -62,6 +66,8 @@ namespace CollisionTest.Physics
             List<int> bucketIds = GetIdForObj(e);
             foreach (var item in bucketIds)
             {
+                List<Entity> colliders = Cells[item];
+                colliders.Remove(e);
                 objects.AddRange(Cells[item]);
             }
             return objects;

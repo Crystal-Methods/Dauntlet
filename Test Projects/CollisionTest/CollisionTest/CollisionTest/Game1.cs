@@ -60,8 +60,8 @@ namespace CollisionTest
             AddEntity(enemy1);
             EnemyEntity enemy2 = _spriteFactory.CreateEnemy(new Vector2(375, 300), new Vector2(0, 0), @"DryBones");
             AddEntity(enemy2);
-            EnemyEntity enemy3 = _spriteFactory.CreateEnemy(new Vector2(560, 60), new Vector2(0, 0), @"DryBones");
-            AddEntity(enemy3);
+            //EnemyEntity enemy3 = _spriteFactory.CreateEnemy(new Vector2(560, 60), new Vector2(0, 0), @"DryBones");
+            //AddEntity(enemy3);
 
             // Creates the player
             PlayerEntity playerEntity = _spriteFactory.CreatePlayer(new Vector2(100, 100), new Vector2(0, 0), @"MarioWalk");
@@ -83,15 +83,21 @@ namespace CollisionTest
                 t.Update(gameTime);
 
             GridCheck.UpdateCells(_entityList);
-            foreach (var e in _entityList)
+            foreach (var e1 in _entityList)
             {
-                Entity e1 = e;
-                foreach (var e2 in GridCheck.GetNearby(e1).Where(e2 => CollisionManager.DetectCollision(e1, e2)))
+                foreach (var e2 in GridCheck.GetNearby(e1).Distinct())
                 {
-                    e1.HandleCollision(e2);
-                    e2.HandleCollision(e1);
+                    if (CollisionManager.DetectCollision(e1, e2))
+                    {
+                        CollisionManager.ResolveCollision(e1, e2);
+                        e1.HandleCollision(e2);
+                        e2.HandleCollision(e1);
+                    }
                 }
             }
+
+            foreach (AnimatedEntity ae in _entityList.OfType<AnimatedEntity>())
+                ae.Move();
 
             //for (var i = 0; i < _entityList.Count; i++)
             //    for (var j = _entityList.Count - 1; j > i; j--)
@@ -113,8 +119,8 @@ namespace CollisionTest
             GraphicsDevice.Clear(Color.CornflowerBlue); // Draw the fugly background
 
             // Handle room scrolling
-            int roomOffsetX = ((int) _player.Center.X/_defaultRoom.Width) * _defaultRoom.Width;
-            int roomOffsetY = ((int)_player.Center.Y / _defaultRoom.Height) * _defaultRoom.Height;
+            int roomOffsetX = ((int) _player.Bounds.Center.X/_defaultRoom.Width) * _defaultRoom.Width;
+            int roomOffsetY = ((int)_player.Bounds.Center.Y / _defaultRoom.Height) * _defaultRoom.Height;
             Matrix translateMatrix = Matrix.CreateTranslation(-roomOffsetX, -roomOffsetY, 0);
 
 

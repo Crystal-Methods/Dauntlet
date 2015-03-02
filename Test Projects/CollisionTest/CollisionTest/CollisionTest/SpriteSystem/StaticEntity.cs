@@ -10,10 +10,11 @@ namespace CollisionTest.SpriteSystem
     {
         public Texture2D SpriteTexture { get; set; } // Texture for the entity
 
-        public StaticEntity(Game game, Vector2 position, Texture2D texture, int boundWidth,
-            int boundHeight)
-            : base(game, position, boundWidth, boundHeight)
+        public StaticEntity(Game game, Vector2 position, Texture2D texture, float boundHeight, float boundWidth)
+            : base(game, position, boundHeight, boundWidth)
         {
+            _mass = 0;
+            _velocity = Vector2.Zero;
             SpriteTexture = texture;
         }
 
@@ -27,7 +28,7 @@ namespace CollisionTest.SpriteSystem
         // Gets the position at where to draw the sprite relative to the bounding box
         protected override Vector2 GetSpriteDrawPos()
         {
-            return new Vector2((Center.X - SpriteTexture.Width / 2f), (Center.Y - SpriteTexture.Height + Bounds.Height / 4f));
+            return new Vector2((Bounds.Center.X - SpriteTexture.Width / 2f), (Bounds.Center.Y - SpriteTexture.Height + Bounds.Height / 4f));
         }
     }
 }

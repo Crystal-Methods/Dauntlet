@@ -12,9 +12,8 @@ namespace CollisionTest.SpriteSystem
         private const float MaxSpeed = 4f; // Speed the sprite moves when controlled
         private string _previousAnimation;
 
-        public PlayerEntity(Game game, Vector2 position, Vector2 velocity, Texture2D texture, int boundWidth,
-            int boundHeight)
-            : base(game, position, velocity, texture, boundWidth, boundHeight)
+        public PlayerEntity(Game game, Vector2 position, Vector2 velocity, Texture2D texture, float boundWidth, float boundHeight, float mass)
+            : base(game, position, velocity, texture, boundHeight, boundWidth, mass)
         {
             // Add the various animations the sprite can have
             SpriteTexture.AddAnimation("WalkUp", 0, 0*41, 42, 41, 8);
@@ -89,9 +88,6 @@ namespace CollisionTest.SpriteSystem
             SpriteTexture.SetAnimation(ani ?? _previousAnimation);
             _previousAnimation = ani ?? _previousAnimation;
 
-            // Add velocity to position to move sprite
-            Position = Vector2.Add(Position, Velocity);
         }
-
     }
 }

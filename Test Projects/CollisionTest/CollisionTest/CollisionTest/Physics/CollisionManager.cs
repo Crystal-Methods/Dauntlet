@@ -1,4 +1,5 @@
-﻿using CollisionTest.SpriteSystem;
+﻿using System;
+using CollisionTest.SpriteSystem;
 using Microsoft.Xna.Framework;
 
 namespace CollisionTest.Physics
@@ -8,104 +9,93 @@ namespace CollisionTest.Physics
 
         public static bool DetectCollision(Entity collider1, Entity collider2)
         {
-            var vertices1 = GetVertices(collider1.Bounds); // get verticies of first bounding box
-            var axes1 = new Vector2[vertices1.Length]; // obtain separating axes
-            for (var i = 0; i < vertices1.Length; i++)
-            {
-                Vector2 p1 = vertices1[i];
-                Vector2 p2 = vertices1[i + 1 == vertices1.Length ? 0 : i + 1];
-                Vector2 normal = Perpendicular(p1 - p2);
-                normal.Normalize();
-                axes1[i] = normal;
-            }
+            // Exit with no intersection if found separated along an axis
+            if (collider1.FutureBounds.Bottom < collider2.FutureBounds.Top || collider1.FutureBounds.Top > collider2.FutureBounds.Bottom)
+                return false;
+            if (collider1.FutureBounds.Right < collider2.FutureBounds.Left || collider1.FutureBounds.Left > collider2.FutureBounds.Right)
+                return false;
 
-            var vertices2 = GetVertices(collider2.Bounds); // get verticies of second bounding box
-            var axes2 = new Vector2[vertices2.Length]; // obtain separating axes
-            for (var i = 0; i < vertices2.Length; i++)
-            {
-                Vector2 p1 = vertices2[i];
-                Vector2 p2 = vertices2[i + 1 == vertices2.Length ? 0 : i + 1];
-                Vector2 normal = Perpendicular(p1 - p2);
-                normal.Normalize();
-                axes2[i] = normal;
-            }
-
-            // loop over the axes1
-            for (int i = 0; i < axes1.Length; i++)
-            {
-                Projection p1 = Project(axes1[i], vertices1);
-                Projection p2 = Project(axes1[i], vertices2);
-                if (!p1.DoesOverlap(p2)) // if any projection does not overlap, no intersect
-                    return false;
-            }
-
-            // loop over the axes2
-            for (int i = 0; i < axes2.Length; i++)
-            {
-                Projection p1 = Project(axes2[i], vertices1);
-                Projection p2 = Project(axes2[i], vertices2);
-                if (!p1.DoesOverlap(p2)) // if any projection does not overlap, no intersect
-                    return false;
-            }
-
-            // if we get here then we know that every axis had overlap on it
-            // so we can guarantee an intersection
+            // No separating axis found, therefor there is at least one overlapping axis
             return true;
         }
 
-
-
-        private class Projection
+        public static void ResolveCollision(Entity e1, Entity e2)
         {
-            public float Min { private get; set; }
-            public float Max { private get; set; }
+            // Calculate relative velocity
+            Vector2 relVel = e2.Velocity - e1.Velocity;
 
-            public bool DoesOverlap(Projection other)
+            var pX1 = new Projection(e1.FutureBounds.Left, e1.FutureBounds.Right);
+            var pX2 = new Projection(e2.FutureBounds.Left, e2.FutureBounds.Right);
+            var pY1 = new Projection(e1.FutureBounds.Top, e1.FutureBounds.Bottom);
+            var pY2 = new Projection(e2.FutureBounds.Top, e2.FutureBounds.Bottom);
+
+            float pen1 = GetPenetration(pX1, pX2);
+            float pen2 = GetPenetration(pY1, pY2);
+
+            float penetration = Math.Min(pen1, pen2);
+            Vector2 normal = Math.Abs(penetration - pen1) < 0.000001 ? new Vector2(1, 0) : new Vector2(0, 1);
+
+            // Calculate relative velocity in terms of the normal direction
+            float velAlongNormal = Vector2.Dot(relVel, normal);
+
+            // Do not resolve if velocities are separating
+            //if (velAlongNormal > 0)
+            //    return;
+
+            // Calculate restitution
+            //float e = Math.Min(A.restitution, B.restitution);
+
+            // Calculate impulse scalar
+            //float j = -(1 + e)*velAlongNormal;
+            float j = -velAlongNormal;
+            j /= e1.InvMass + e2.InvMass;
+
+            // Apply impulse
+            Vector2 impulse = j*normal;
+            e1.Velocity -= e1.InvMass*impulse;
+            e2.Velocity += e2.InvMass*impulse;
+        }
+
+        internal struct Projection
+        {
+            private float _min;
+            private float _max;
+
+            public float Min
             {
-                if (Max > other.Min)
-                    return true;
-                if (Min > other.Max)
-                    return true;
-                return false;
+                get { return _min; }
+                set { _min = value; }
+            }
+
+            public float Max
+            {
+                get { return _max; }
+                set { _max = value; }
+            }
+
+            public Projection(float min, float max)
+            {
+                _min = min;
+                _max = max;
             }
         }
 
-        private static Vector2 Perpendicular(Vector2 vector)
+        internal static float GetPenetration(Projection p1, Projection p2)
         {
-            return new Vector2(-vector.Y, vector.X);
-        }
-
-        private static Vector2[] GetVertices(Rectangle sourceRect)
-        {
-            var vertices = new Vector2[4];
-            vertices[0] = new Vector2(sourceRect.X, sourceRect.Y);
-            vertices[1] = new Vector2(sourceRect.X + sourceRect.Width, sourceRect.Y);
-            vertices[2] = new Vector2(sourceRect.X + sourceRect.Width, sourceRect.Y + sourceRect.Height);
-            vertices[3] = new Vector2(sourceRect.X, sourceRect.Y + sourceRect.Height);
-            return vertices;
-        }
-
-        private static Projection Project(Vector2 axis, Vector2[] vertices)
-        {
-            var min = Vector2.Dot(axis, vertices[0]);
-            var max = min;
-            for (var i = 1; i < vertices.Length; i++)
+            if (p1.Max > p2.Max && p1.Min < p2.Min) // if p1 contains p2
             {
-                // NOTE: the axis must be normalized to get accurate projections
-                var p = Vector2.Dot(axis, vertices[i]);
-                if (p < min)
-                    min = p;
-                else if (p > max)
-                    max = p;
+                float a = Math.Abs(p1.Min - p2.Min);
+                float b = Math.Abs(p1.Max - p2.Max);
+                return (p2.Max - p2.Min) + Math.Min(a, b);
             }
-            var proj = new Projection {Max = max, Min = min};
-            return proj;
+            if (p2.Max > p1.Max && p2.Min < p1.Min) // if p2 contains p1
+            {
+                float a = Math.Abs(p1.Min - p2.Min);
+                float b = Math.Abs(p1.Max - p2.Max);
+                return (p1.Max - p1.Min) + Math.Min(a, b);
+            }
+            return Math.Abs(Math.Max(p1.Min, p2.Min) - Math.Min(p1.Max, p2.Max));
         }
-
-        
-
-
-
 
     }
 }

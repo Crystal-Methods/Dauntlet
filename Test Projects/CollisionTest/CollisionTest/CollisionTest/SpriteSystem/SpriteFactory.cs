@@ -31,13 +31,13 @@ namespace CollisionTest.SpriteSystem
         // Calling this will create a Player sprite.  You probably don't want to create more than one at a time!
         public PlayerEntity CreatePlayer(Vector2 newPosition, Vector2 newSpeed, string newTextureName)
         {
-            return new PlayerEntity(_game, newPosition, newSpeed, _textures[newTextureName], 100, 70);
+            return new PlayerEntity(_game, newPosition, newSpeed, _textures[newTextureName], 15f, 20f, 10f);
         }
 
         // Calling this will create an Enemy
         public EnemyEntity CreateEnemy(Vector2 newPosition, Vector2 newSpeed, string newTextureName)
         {
-            return new EnemyEntity(_game, newPosition, _textures[newTextureName], 100, 70);
+            return new EnemyEntity(_game, newPosition, _textures[newTextureName], 40f, 60f);
         }
     }
 }
