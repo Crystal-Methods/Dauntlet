@@ -1,5 +1,4 @@
 ﻿using System;
-using CollisionTest.SpriteSystem;
 using Microsoft.Xna.Framework;
 
 namespace CollisionTest.Physics

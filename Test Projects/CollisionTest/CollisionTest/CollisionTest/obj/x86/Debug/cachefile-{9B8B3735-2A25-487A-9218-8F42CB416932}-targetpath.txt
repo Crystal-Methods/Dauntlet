@@ -3,3 +3,5 @@ Content\Textures\Boo.xnb
 Content\Textures\DryBones.xnb
 Content\Textures\MarioWalk.xnb
 Content\Textures\tileset.xnb
+Content\Textures\BoundingCircle.xnb
+Content\gamefont.xnb

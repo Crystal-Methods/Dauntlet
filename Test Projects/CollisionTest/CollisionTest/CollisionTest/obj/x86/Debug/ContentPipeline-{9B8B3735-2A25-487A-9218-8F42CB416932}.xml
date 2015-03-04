@@ -46,6 +46,24 @@
       <Output>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Textures\tileset.xnb</Output>
       <Time>2015-02-27T17:20:11.5261032-06:00</Time>
     </Item>
+    <Item>
+      <Source>Textures\BoundingCircle.png</Source>
+      <Name>Textures\BoundingCircle</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Textures\BoundingCircle.xnb</Output>
+      <Time>2015-03-02T20:23:34.5485652-06:00</Time>
+    </Item>
+    <Item>
+      <Source>gamefont.spritefont</Source>
+      <Name>gamefont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\gamefont.xnb</Output>
+      <Time>2015-03-02T20:56:41.7636976-06:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <ContentProjectGUID>{9B8B3735-2A25-487A-9218-8F42CB416932}</ContentProjectGUID>

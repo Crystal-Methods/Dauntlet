@@ -16,7 +16,9 @@ namespace CollisionTest.TileSystem
         public static Texture2D TileSet; // Tile texture
         public static Dictionary<string, Room> Rooms; // Holds all the various rooms
         public static List<string> RoomList; // Holds the names of all the rooms in Rooms
-        public static string CurrentRoom = "testroom"; // The current room being drawn
+        public static string CurrentRoomName = "testroom"; // The current room being drawn
+
+        public static Room CurrentRoom { get { return Rooms[CurrentRoomName]; } }
 
         // Creates all the Room objects from any number of .csv files in the Rooms directory
         public static void LoadContent(ContentManager content)
@@ -46,12 +48,11 @@ namespace CollisionTest.TileSystem
         // Draws the room
         public static void DrawRoom(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            Room theRoom = Rooms[CurrentRoom];
-            for (int i = 0; i < theRoom.Map.Length; i++)
-                for (int j = 0; j < theRoom.Map[i].Length; j++)
+            for (int i = 0; i < CurrentRoom.Map.Length; i++)
+                for (int j = 0; j < CurrentRoom.Map[i].Length; j++)
                 {
                     var position = new Vector2(j*32, i*32);
-                    var sourcerect = new Rectangle(theRoom.Map[i][j] * 32, 0, 32, 32);
+                    var sourcerect = new Rectangle(CurrentRoom.Map[i][j] * 32, 0, 32, 32);
                     spriteBatch.Draw(TileSet, position, sourcerect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
                 }
         }

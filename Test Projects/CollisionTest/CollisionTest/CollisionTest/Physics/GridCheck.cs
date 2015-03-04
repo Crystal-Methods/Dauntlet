@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using CollisionTest.SpriteSystem;
 using CollisionTest.TileSystem;
 using Microsoft.Xna.Framework;
 

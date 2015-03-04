@@ -9,3 +9,8 @@ C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\Collisio
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\obj\x86\Debug\CollisionTest.pdb
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Textures\MarioWalk.xnb
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Textures\tileset.xnb
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\FarseerPhysics XNA.dll
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\FarseerPhysics XNA.pdb
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\FarseerPhysics XNA.xml
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\Textures\BoundingCircle.xnb
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Test Projects\CollisionTest\CollisionTest\CollisionTest\bin\x86\Debug\Content\gamefont.xnb

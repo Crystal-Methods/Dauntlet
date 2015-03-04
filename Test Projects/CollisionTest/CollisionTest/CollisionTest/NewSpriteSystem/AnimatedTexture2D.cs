@@ -2,33 +2,19 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace CollisionTest.SpriteSystem
+namespace CollisionTest.NewSpriteSystem
 {
-    /// <summary>
-    /// Handles an animated texture from a spritesheet
-    /// </summary>
-    public class AnimatedTexture2D
+    public struct AnimatedTexture2D
     {
-        // the spritesheet
         private readonly Texture2D _sheet;
-        // List of animation cycles on the sheet
-        private readonly Dictionary<string, AnimationCycle> _animations = new Dictionary<string, AnimationCycle>();
-        // Current animation playing
+        private readonly Dictionary<string, AnimationCycle> _animations;
         private AnimationCycle _currentAnimation;
-        // Name of current animation playing
         private string _currentAnimationName;
 
-        // Height of the current animation frame
-        public float Height
-        {
-            get { return _currentAnimation.FrameHeight; }
-        }
+        public Texture2D Sheet { get { return _sheet; } }
 
-        // Width of the current animation frame
-        public float Width
-        {
-            get { return _currentAnimation.FrameWidth; }
-        }
+        public float Height { get { return _currentAnimation.FrameHeight; } }
+        public float Width { get { return _currentAnimation.FrameWidth; } }
 
         // The number of the current frame
         public int Frame
@@ -40,6 +26,17 @@ namespace CollisionTest.SpriteSystem
         public AnimatedTexture2D(Texture2D sheet)
         {
             _sheet = sheet;
+            _currentAnimationName = "default";
+            _currentAnimation = new AnimationCycle
+            {
+                CurrentFrame = 0,
+                FrameCount = 1,
+                FrameHeight = _sheet.Height,
+                FrameWidth = _sheet.Width,
+                StartPosX = 0,
+                StartPosY = 0
+            };
+            _animations = new Dictionary<string, AnimationCycle> {{_currentAnimationName, _currentAnimation}};
         }
 
         // Add an animation cycle
@@ -66,21 +63,19 @@ namespace CollisionTest.SpriteSystem
             _currentAnimation.CurrentFrame = 0;
         }
 
-        // Draw the correct frame of the animation
-        private const float Rotation = 0f;
-        private readonly Vector2 _origin = new Vector2(0, 0);
-        private const float Scale = 1f;
-        private const float Depth = 0f;
-        public void DrawFrame(SpriteBatch batch, Vector2 position)
+        public Rectangle CurrentFrame
         {
-            var sourcerect =
-                new Rectangle(_currentAnimation.StartPosX + (_currentAnimation.FrameWidth * _currentAnimation.CurrentFrame),
-                    _currentAnimation.StartPosY, _currentAnimation.FrameWidth, _currentAnimation.FrameHeight);
-            batch.Draw(_sheet, position, sourcerect, Color.White, Rotation, _origin, Scale, SpriteEffects.None, Depth);
+            get
+            {
+                return
+                    new Rectangle(
+                        _currentAnimation.StartPosX + (_currentAnimation.FrameWidth*_currentAnimation.CurrentFrame),
+                        _currentAnimation.StartPosY, _currentAnimation.FrameWidth, _currentAnimation.FrameHeight);
+            }
         }
 
         // private class for storing animation cyles
-        private class AnimationCycle
+        private struct AnimationCycle
         {
             public int StartPosX { get; set; } // X position on the sheet where the loop begins
             public int StartPosY { get; set; } // Y position on the sheet where the loop begins
