@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using FarseerPhysics;
 using FarseerPhysics.Dynamics;
+using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,6 +16,7 @@ namespace Dauntlet
         public static Dictionary<string, Room> Rooms; // Holds all the various rooms
         public static List<string> RoomList; // Holds the names of all the rooms in Rooms
         public static string CurrentRoomName = "testroom"; // The current room being drawn
+        internal const int TileSize = 32;
 
         public static Room CurrentRoom { get { return Rooms[CurrentRoomName]; } }
 
@@ -29,33 +32,28 @@ namespace Dauntlet
                 int height = rows.Length;
                 int width = (rows[0].Length + 1) / 2;
                 var map = new int[height][];
-                //var walls = new List<Body>();
+                var walls = new List<Body>();
 
                 for (int i = 0; i < rows.Length; i++)
                 {
                     string[] columns = rows[i].Split(',');
                     var intCells = new int[width];
                     for (int j = 0; j < columns.Length; j++)
-                    {
-                        int cell = Int32.Parse(columns[j]);
-                        intCells[j] = cell;
-                        //if (cell == 1)
-                        //    walls.Add(BodyFactory.CreateRectangle());
-                    }
+                        intCells[j] = Int32.Parse(columns[j]);
                         
                     map[i] = intCells;
                 }
 
                 if (file != null) Rooms.Add(Path.GetFileNameWithoutExtension(file), new Room(map, height, width));
             }
+
+            if (CurrentRoomName == null)
+                CurrentRoomName = "testroom";
         }
 
         // Draws the room
         public static void DrawRoom(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (CurrentRoomName == null)
-                CurrentRoomName = "testroom";
-
             for (int i = 0; i < CurrentRoom.Map.Length; i++)
                 for (int j = 0; j < CurrentRoom.Map[i].Length; j++)
                 {
@@ -68,13 +66,16 @@ namespace Dauntlet
 
     public struct Room
     {
+        public World World;
         public readonly int Height;
         public readonly int Width;
         private readonly int[][] _map;
         //private List<Body> walls;
 
-        public int PixelHeight { get { return Height * 32; } }
-        public int PixelWidth { get { return Width * 32; } }
+        public int PixelHeight { get { return Height * TileEngine.TileSize; } }
+        public int PixelWidth { get { return Width*TileEngine.TileSize; } }
+        public float MetricHeight { get { return ConvertUnits.ToSimUnits(PixelHeight); } }
+        public float MetricWidth { get { return ConvertUnits.ToSimUnits(PixelWidth); } }
         //public List<Body> Walls { get { return walls; } } 
 
         public int[][] Map
@@ -84,9 +85,20 @@ namespace Dauntlet
 
         public Room(int[][] map, int height, int width)
         {
+            ConvertUnits.SetDisplayUnitToSimUnitRatio(32f);
+            World = new World(Vector2.Zero);
             _map = map;
             Height = height;
             Width = width;
+            //float a = ConvertUnits.ToSimUnits(TileEngine.TileSize);
+            for (int i = 0; i < _map.Length; i++)
+                for (int j = 0; j < _map[i].Length; j++)
+                    if (_map[i][j] == 1)
+                    {
+                        Body newBody = BodyFactory.CreateRectangle(World, ConvertUnits.ToSimUnits(TileEngine.TileSize), ConvertUnits.ToSimUnits(TileEngine.TileSize), 1f,
+                            new Vector2(ConvertUnits.ToSimUnits(j * TileEngine.TileSize + TileEngine.TileSize / 2f), ConvertUnits.ToSimUnits(i * TileEngine.TileSize + TileEngine.TileSize / 2f)));
+                        newBody.BodyType = BodyType.Static;
+                    }
         }
     }
 }

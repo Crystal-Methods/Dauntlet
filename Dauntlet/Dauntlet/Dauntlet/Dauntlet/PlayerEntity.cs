@@ -22,13 +22,14 @@ namespace Dauntlet
             Vector2 circlePosition = ConvertUnits.ToSimUnits(screenCenter) + new Vector2(0, -1f);
 
             // Create the circle fixture
-            _playerBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(96 / 2f), 1f, circlePosition);
+            _playerBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(50 / 2f), 0.5f, circlePosition);
             _playerBody.BodyType = BodyType.Dynamic;
 
             // Give it some bounce and friction
             _playerBody.Restitution = 0.3f;
             _playerBody.Friction = 0.5f;
             _playerBody.LinearDamping = 50f;
+            _playerBody.AngularDamping = 100f;
         }
 
         public void Update(GameTime gameTime)
@@ -61,14 +62,17 @@ namespace Dauntlet
         {
             KeyboardState state = Keyboard.GetState();
 
+            //if (state.IsKeyDown(Keys.Escape))
+                
+
             if (state.IsKeyDown(Keys.W))
-                _playerBody.ApplyLinearImpulse(new Vector2(0, -10));
+                _playerBody.ApplyLinearImpulse(new Vector2(0, -30));
             if (state.IsKeyDown(Keys.A))
-                _playerBody.ApplyLinearImpulse(new Vector2(-10, 0));
+                _playerBody.ApplyLinearImpulse(new Vector2(-30, 0));
             if (state.IsKeyDown(Keys.S))
-                _playerBody.ApplyLinearImpulse(new Vector2(0, 10));
+                _playerBody.ApplyLinearImpulse(new Vector2(0, 30));
             if (state.IsKeyDown(Keys.D))
-                _playerBody.ApplyLinearImpulse(new Vector2(10, 0));
+                _playerBody.ApplyLinearImpulse(new Vector2(30, 0));
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
