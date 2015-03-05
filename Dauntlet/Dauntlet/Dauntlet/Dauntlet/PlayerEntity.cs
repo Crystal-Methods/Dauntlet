@@ -16,6 +16,7 @@ namespace Dauntlet
         private Texture2D _playerSprite;
         private float _playerRadius = ConvertUnits.ToSimUnits(15f);
         private bool _isTeleporting;
+        private float _speed = 30f;
 
         private KeyboardState _oldKeyboardState;
 
@@ -92,9 +93,9 @@ namespace Dauntlet
             {
                 //if (padState.Buttons.Back == ButtonState.Pressed)
                 //    Exit();
-                Vector2 force = padState.ThumbSticks.Right * 70;
+                Vector2 force = padState.ThumbSticks.Right;
                 force.Y *= -1;
-                _playerBody.ApplyLinearImpulse(force);
+                _playerBody.ApplyLinearImpulse(force * _speed);
 
                 if (padState.ThumbSticks.Right.Length() > 0.2)
                     _playerBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Right.Y, padState.ThumbSticks.Right.X);
@@ -108,16 +109,21 @@ namespace Dauntlet
         {
             KeyboardState state = Keyboard.GetState();
 
+            Vector2 force = Vector2.Zero;
             if (state.IsKeyDown(Keys.F3) && _oldKeyboardState.IsKeyUp(Keys.F3))
                 Game1.DebugCollision = !Game1.DebugCollision;
             if (state.IsKeyDown(Keys.W))
-                _playerBody.ApplyLinearImpulse(new Vector2(0, -30));
+                force += new Vector2(0, -1);
             if (state.IsKeyDown(Keys.A))
-                _playerBody.ApplyLinearImpulse(new Vector2(-30, 0));
+                force += new Vector2(-1, 0);
             if (state.IsKeyDown(Keys.S))
-                _playerBody.ApplyLinearImpulse(new Vector2(0, 30));
+                force += new Vector2(0, 1);
             if (state.IsKeyDown(Keys.D))
-                _playerBody.ApplyLinearImpulse(new Vector2(30, 0));
+                force += new Vector2(1, 0);
+
+            if (force != Vector2.Zero)
+                force.Normalize();
+            _playerBody.ApplyLinearImpulse(force * _speed);
 
             _oldKeyboardState = state;
         }
