@@ -15,6 +15,8 @@ namespace Dauntlet
         private Vector2 _playerOrigin;
         private Texture2D _playerSprite;
 
+        private KeyboardState _oldKeyboardState;
+
         public Body PlayerBody
         {
             get { return _playerBody; }
@@ -40,6 +42,29 @@ namespace Dauntlet
             _playerBody.Friction = 0.5f;
             _playerBody.LinearDamping = 50f;
             _playerBody.AngularDamping = 100f;
+        }
+
+        public void ChangeRoom(World world, bool isNs, float newPosValue)
+        {
+            Vector2 newPos = _playerBody.Position;
+            if (isNs)
+                newPos.Y = newPosValue;
+            else
+                newPos.X = newPosValue;
+            // Create the circle fixture
+            Body newBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(50 / 2f), 0.5f, newPos);
+            newBody.BodyType = BodyType.Dynamic;
+            newBody.FixedRotation = true;
+
+            // Give it some bounce and friction
+            newBody.Restitution = _playerBody.Restitution;
+            newBody.Friction = _playerBody.Friction;
+            newBody.LinearDamping = _playerBody.LinearDamping;
+            newBody.AngularDamping = _playerBody.AngularDamping;
+            newBody.Rotation = _playerBody.Rotation;
+
+            _playerBody.Dispose();
+            _playerBody = newBody;
         }
 
         public void Update(GameTime gameTime)
@@ -72,9 +97,8 @@ namespace Dauntlet
         {
             KeyboardState state = Keyboard.GetState();
 
-            //if (state.IsKeyDown(Keys.Escape))
-                
-
+            if (state.IsKeyDown(Keys.F3) && _oldKeyboardState.IsKeyUp(Keys.F3))
+                Game1.DebugCollision = !Game1.DebugCollision;
             if (state.IsKeyDown(Keys.W))
                 _playerBody.ApplyLinearImpulse(new Vector2(0, -30));
             if (state.IsKeyDown(Keys.A))
@@ -83,6 +107,8 @@ namespace Dauntlet
                 _playerBody.ApplyLinearImpulse(new Vector2(0, 30));
             if (state.IsKeyDown(Keys.D))
                 _playerBody.ApplyLinearImpulse(new Vector2(30, 0));
+
+            _oldKeyboardState = state;
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)

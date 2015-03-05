@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Permissions;
 using FarseerPhysics;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
@@ -17,12 +18,14 @@ namespace Dauntlet
         public static List<string> RoomList; // Holds the names of all the rooms in Rooms
         public static string CurrentRoomName = "testroom"; // The current room being drawn
         internal const int TileSize = 32;
+        internal static Game1 Game;
 
         public static Room CurrentRoom { get { return Rooms[CurrentRoomName]; } }
 
         // Creates all the Room objects from any number of .csv files in the Rooms directory
-        public static void LoadContent(ContentManager content)
+        public static void LoadContent(Game1 game, ContentManager content)
         {
+            Game = game;
             TileSet = content.Load<Texture2D>(@"Textures/tileset");
             Rooms = new Dictionary<string, Room>();
 
@@ -64,12 +67,29 @@ namespace Dauntlet
                 }
         }
 
-        public static void HandleRooms(ref PlayerEntity player)
+        public static void HandleRooms()
         {
-            if (player.DisplayPosition.X <= 0f)
+            if (Game._player.SimPosition.Y <= 0f)
             {
-                
+                CurrentRoomName = CurrentRoom.AdjRoomN;
+                Game._player.ChangeRoom(CurrentRoom.World, true, CurrentRoom.MetricHeight - ConvertUnits.ToSimUnits(TileSize / 2f));
             }
+            else if (Game._player.SimPosition.Y >= CurrentRoom.MetricHeight)
+            {
+                CurrentRoomName = CurrentRoom.AdjRoomS;
+                Game._player.ChangeRoom(CurrentRoom.World, true, ConvertUnits.ToSimUnits(TileSize/2f));
+            }
+            else if (Game._player.SimPosition.X <= 0f)
+            {
+                CurrentRoomName = CurrentRoom.AdjRoomW;
+                Game._player.ChangeRoom(CurrentRoom.World, false, CurrentRoom.MetricWidth - ConvertUnits.ToSimUnits(TileSize / 2f));
+            }
+            else if (Game._player.SimPosition.X >= CurrentRoom.Width)
+            {
+                CurrentRoomName = CurrentRoom.AdjRoomE;
+                Game._player.ChangeRoom(CurrentRoom.World, false, ConvertUnits.ToSimUnits(TileSize / 2f));
+            }
+            Game.World = CurrentRoom.World;
         }
     }
 
@@ -86,6 +106,10 @@ namespace Dauntlet
         public int PixelWidth { get { return Width*TileEngine.TileSize; } }
         public float MetricHeight { get { return ConvertUnits.ToSimUnits(PixelHeight); } }
         public float MetricWidth { get { return ConvertUnits.ToSimUnits(PixelWidth); } }
+        public string AdjRoomN { get { return adjacentRooms[0]; } }
+        public string AdjRoomS { get { return adjacentRooms[1]; } }
+        public string AdjRoomW { get { return adjacentRooms[2]; } }
+        public string AdjRoomE { get { return adjacentRooms[3]; } }
         
         //public List<Body> Walls { get { return walls; } } 
 
