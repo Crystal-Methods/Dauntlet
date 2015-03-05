@@ -13,8 +13,11 @@ namespace Dauntlet
         SpriteBatch _spriteBatch;
         private World _world;
 
-        
+        // Simple camera controls
+        private Matrix _view;
+        private Vector2 _cameraPosition;
         private Vector2 _screenCenter;
+
 
         private PlayerEntity _player;
 
@@ -26,6 +29,8 @@ namespace Dauntlet
 
         protected override void LoadContent()
         {
+            _view = Matrix.Identity;
+            _cameraPosition = Vector2.Zero;
             _screenCenter = new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2f, _graphics.GraphicsDevice.Viewport.Height / 2f);
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             TileEngine.LoadContent(Content);
@@ -41,6 +46,13 @@ namespace Dauntlet
 
         protected override void Update(GameTime gameTime)
         {
+            // if (_defaultRoom.Width + 64 < _graphics.GraphicsDevice.Viewport.Width)  // For rooms larger than screen
+            _cameraPosition.X = (_graphics.GraphicsDevice.Viewport.Width - TileEngine.CurrentRoom.PixelWidth) / 2f;
+            // if (_defaultRoom.Width + 64 < _graphics.GraphicsDevice.Viewport.Width)  // For rooms larger than screen
+            _cameraPosition.Y = (_graphics.GraphicsDevice.Viewport.Height - TileEngine.CurrentRoom.PixelHeight) / 2f;
+            _view = Matrix.CreateTranslation(new Vector3(_cameraPosition - _screenCenter, 0f)) * Matrix.CreateTranslation(new Vector3(_screenCenter, 0f));
+
+
             //We update the world
             _world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
             _player.Update(gameTime);
@@ -52,12 +64,13 @@ namespace Dauntlet
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-            _spriteBatch.Begin();
+            GraphicsDevice.Clear(Color.Black);
+
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _view);
             TileEngine.DrawRoom(_spriteBatch, gameTime);
             _spriteBatch.End();
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _view);
             var rect = new Texture2D(_graphics.GraphicsDevice, 32, 32);
             var data = new Color[32*32];
             for (int i = 0; i < data.Length; i++) data[i] = new Color(1, 0, 0, 0.1f);
@@ -69,7 +82,7 @@ namespace Dauntlet
             }
             _spriteBatch.End();
 
-            _spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Matrix.Identity);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, _view);
             _player.Draw(gameTime, _spriteBatch);
             _spriteBatch.End();
 

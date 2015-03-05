@@ -8,12 +8,21 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Dauntlet
 {
-    internal class PlayerEntity
+    public class PlayerEntity
     {
         private Body _playerBody;
 
         private Vector2 _playerOrigin;
         private Texture2D _playerSprite;
+
+        public Body PlayerBody
+        {
+            get { return _playerBody; }
+            set { _playerBody = value; }
+        }
+
+        public Vector2 SimPosition { get { return _playerBody.Position; } }
+        public Vector2 DisplayPosition { get { return ConvertUnits.ToDisplayUnits(_playerBody.Position); } }
 
         public PlayerEntity(World world, Vector2 screenCenter, Texture2D playerSprite)
         {
@@ -24,6 +33,7 @@ namespace Dauntlet
             // Create the circle fixture
             _playerBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(50 / 2f), 0.5f, circlePosition);
             _playerBody.BodyType = BodyType.Dynamic;
+            _playerBody.FixedRotation = true;
 
             // Give it some bounce and friction
             _playerBody.Restitution = 0.3f;

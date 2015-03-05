@@ -29,22 +29,23 @@ namespace Dauntlet
             foreach (string file in Directory.EnumerateFiles("Rooms", "*.csv"))
             {
                 string[] rows = File.ReadAllLines(file);
-                int height = rows.Length;
-                int width = (rows[0].Length + 1) / 2;
+                int height = rows.Length -1;
+                int width = (rows[1].Length + 1) / 2;
                 var map = new int[height][];
-                var walls = new List<Body>();
 
-                for (int i = 0; i < rows.Length; i++)
+                string[] adjacentRooms = rows[0].Split(',');
+
+                for (int i = 1; i < rows.Length; i++)
                 {
                     string[] columns = rows[i].Split(',');
                     var intCells = new int[width];
                     for (int j = 0; j < columns.Length; j++)
                         intCells[j] = Int32.Parse(columns[j]);
                         
-                    map[i] = intCells;
+                    map[i-1] = intCells;
                 }
 
-                if (file != null) Rooms.Add(Path.GetFileNameWithoutExtension(file), new Room(map, height, width));
+                if (file != null) Rooms.Add(Path.GetFileNameWithoutExtension(file), new Room(map, adjacentRooms, height, width));
             }
 
             if (CurrentRoomName == null)
@@ -62,6 +63,14 @@ namespace Dauntlet
                     spriteBatch.Draw(TileSet, position, sourcerect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
                 }
         }
+
+        public static void HandleRooms(ref PlayerEntity player)
+        {
+            if (player.DisplayPosition.X <= 0f)
+            {
+                
+            }
+        }
     }
 
     public struct Room
@@ -70,12 +79,14 @@ namespace Dauntlet
         public readonly int Height;
         public readonly int Width;
         private readonly int[][] _map;
+        private readonly string[] adjacentRooms;
         //private List<Body> walls;
 
         public int PixelHeight { get { return Height * TileEngine.TileSize; } }
         public int PixelWidth { get { return Width*TileEngine.TileSize; } }
         public float MetricHeight { get { return ConvertUnits.ToSimUnits(PixelHeight); } }
         public float MetricWidth { get { return ConvertUnits.ToSimUnits(PixelWidth); } }
+        
         //public List<Body> Walls { get { return walls; } } 
 
         public int[][] Map
@@ -83,11 +94,12 @@ namespace Dauntlet
             get { return _map; }
         }
 
-        public Room(int[][] map, int height, int width)
+        public Room(int[][] map, string[] adjRooms, int height, int width)
         {
             ConvertUnits.SetDisplayUnitToSimUnitRatio(32f);
             World = new World(Vector2.Zero);
             _map = map;
+            adjacentRooms = adjRooms;
             Height = height;
             Width = width;
             //float a = ConvertUnits.ToSimUnits(TileEngine.TileSize);
