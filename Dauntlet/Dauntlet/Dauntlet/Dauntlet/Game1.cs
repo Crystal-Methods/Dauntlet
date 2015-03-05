@@ -7,24 +7,28 @@ namespace Dauntlet
 {
     public class Game1 : Game
     {
-        GraphicsDeviceManager _graphics;
+        readonly GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
 
         public World World { get; set; }
         public static bool DebugCollision { get; set; }
+        public Vector2 DisplayRoomCenter { get { return new Vector2(TileEngine.CurrentRoom.PixelWidth/2f, TileEngine.CurrentRoom.PixelHeight/2f);} }
+        public Vector2 SimRoomCenter { get { return ConvertUnits.ToSimUnits(DisplayRoomCenter); } }
 
         // Simple camera controls
         private Matrix _view;
         private Vector2 _cameraPosition;
         private Vector2 _screenCenter;
 
-        public PlayerEntity _player;
+        public PlayerEntity Player;
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             DebugCollision = false;
+            _graphics.PreferredBackBufferWidth = 1024;
+            _graphics.PreferredBackBufferHeight = 768;
         }
 
         protected override void LoadContent()
@@ -40,14 +44,12 @@ namespace Dauntlet
 
             ConvertUnits.SetDisplayUnitToSimUnitRatio(32f);
 
-            _player = new PlayerEntity(World, _screenCenter, playerSprite);
+            Player = new PlayerEntity(World, DisplayRoomCenter, playerSprite);
 
         }
 
         protected override void Update(GameTime gameTime)
         {
-            TileEngine.HandleRooms();
-
             // if (_defaultRoom.Width + 64 < _graphics.GraphicsDevice.Viewport.Width)  // For rooms larger than screen
             _cameraPosition.X = (_graphics.GraphicsDevice.Viewport.Width - TileEngine.CurrentRoom.PixelWidth) / 2f;
             // if (_defaultRoom.Width + 64 < _graphics.GraphicsDevice.Viewport.Width)  // For rooms larger than screen
@@ -57,7 +59,7 @@ namespace Dauntlet
 
             //We update the world
             World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
-            _player.Update(gameTime);
+            Player.Update(gameTime);
             //float a = ConvertUnits.ToSimUnits(TileEngine.TileSize);
 
             //List<Vector2> posList = (from b in _world.BodyList where b.IsStatic select ConvertUnits.ToDisplayUnits(b.Position)).ToList();
@@ -84,13 +86,14 @@ namespace Dauntlet
                     if (body.IsStatic)
                         _spriteBatch.Draw(rect,
                             ConvertUnits.ToDisplayUnits(body.Position) -
-                            new Vector2(TileEngine.TileSize/2f, TileEngine.TileSize/2f), Color.White);
+                            new Vector2(TileEngine.TileSize/2f, TileEngine.TileSize/2f),
+                            body.FixtureList[0].CollisionCategories != Category.Cat10 ? Color.Red : Color.Blue);
                 }
                 _spriteBatch.End();
             }
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, _view);
-            _player.Draw(gameTime, _spriteBatch);
+            Player.Draw(gameTime, _spriteBatch);
             _spriteBatch.End();
 
             base.Draw(gameTime);

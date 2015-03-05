@@ -14,6 +14,8 @@ namespace Dauntlet
 
         private Vector2 _playerOrigin;
         private Texture2D _playerSprite;
+        private float _playerRadius = ConvertUnits.ToSimUnits(15f);
+        private bool _isTeleporting;
 
         private KeyboardState _oldKeyboardState;
 
@@ -26,14 +28,14 @@ namespace Dauntlet
         public Vector2 SimPosition { get { return _playerBody.Position; } }
         public Vector2 DisplayPosition { get { return ConvertUnits.ToDisplayUnits(_playerBody.Position); } }
 
-        public PlayerEntity(World world, Vector2 screenCenter, Texture2D playerSprite)
+        public PlayerEntity(World world, Vector2 roomCenter, Texture2D playerSprite)
         {
             _playerSprite = playerSprite;
             _playerOrigin = new Vector2(_playerSprite.Width / 2f, _playerSprite.Height / 2f);
-            Vector2 circlePosition = ConvertUnits.ToSimUnits(screenCenter) + new Vector2(0, -1f);
+            Vector2 circlePosition = ConvertUnits.ToSimUnits(roomCenter) + new Vector2(0, -1f);
 
             // Create the circle fixture
-            _playerBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(50 / 2f), 0.5f, circlePosition);
+            _playerBody = BodyFactory.CreateCircle(world, _playerRadius, 0.7f, circlePosition);
             _playerBody.BodyType = BodyType.Dynamic;
             _playerBody.FixedRotation = true;
 
@@ -42,17 +44,24 @@ namespace Dauntlet
             _playerBody.Friction = 0.5f;
             _playerBody.LinearDamping = 50f;
             _playerBody.AngularDamping = 100f;
+
+            _playerBody.OnCollision += _playerBody_OnCollision;
         }
 
-        public void ChangeRoom(World world, bool isNs, float newPosValue)
+        bool _playerBody_OnCollision(Fixture fixtureA, Fixture fixtureB, FarseerPhysics.Dynamics.Contacts.Contact contact)
         {
-            Vector2 newPos = _playerBody.Position;
-            if (isNs)
-                newPos.Y = newPosValue;
-            else
-                newPos.X = newPosValue;
+            if (fixtureA.Body.GetType() == _playerBody.GetType() & fixtureB.CollisionCategories == Category.Cat10 && !_isTeleporting)
+            {
+                TileEngine.HandleTeleport(fixtureB.Body);
+                _isTeleporting = true;
+            }
+            return true;
+        }
+
+        public void ChangeRoom(World world, Vector2 newPos)
+        {
             // Create the circle fixture
-            Body newBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(50 / 2f), 0.5f, newPos);
+            Body newBody = BodyFactory.CreateCircle(world, _playerRadius, 0.7f, newPos);
             newBody.BodyType = BodyType.Dynamic;
             newBody.FixedRotation = true;
 
@@ -65,10 +74,12 @@ namespace Dauntlet
 
             _playerBody.Dispose();
             _playerBody = newBody;
+            _playerBody.OnCollision += _playerBody_OnCollision;
         }
 
         public void Update(GameTime gameTime)
         {
+            _isTeleporting = false;
             HandleKeyboard();
             HandleGamePad();
         }
@@ -113,7 +124,7 @@ namespace Dauntlet
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_playerSprite, ConvertUnits.ToDisplayUnits(_playerBody.Position), null, Color.White, _playerBody.Rotation, _playerOrigin, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(_playerSprite, ConvertUnits.ToDisplayUnits(_playerBody.Position), null, Color.White, _playerBody.Rotation, _playerOrigin, ConvertUnits.ToDisplayUnits(_playerRadius)/25f, SpriteEffects.None, 0f);
         }
 
         
