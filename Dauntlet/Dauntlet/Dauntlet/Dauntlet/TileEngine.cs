@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using FarseerPhysics;
 using FarseerPhysics.Dynamics;
-using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -14,16 +14,20 @@ namespace Dauntlet
 {
     public static class TileEngine
     {
-        public static Texture2D TileSet; // Tile texture
-        public static Dictionary<string, Room> Rooms; // Holds all the various rooms
-        public static List<string> RoomList; // Holds the names of all the rooms in Rooms
-        public static string CurrentRoomName = "testroom1"; // The current room being drawn
-        internal const int TileSize = 32;
+        internal const int TileSize = 32; // Size of 1 tile in pixels
+
+        // -----------------------------
+
         internal static Game1 Game;
+        public static Texture2D TileSet;
+        public static Dictionary<string, Room> Rooms;
+        public static List<string> RoomList;
+        public static string CurrentRoomName = "testroom1";
 
         public static Room CurrentRoom { get { return Rooms[CurrentRoomName]; } }
 
-        // Creates all the Room objects from any number of .csv files in the Rooms directory
+        // -----------------------------
+
         public static void LoadContent(Game1 game, ContentManager content)
         {
             Game = game;
@@ -32,19 +36,17 @@ namespace Dauntlet
 
             foreach (string file in Directory.EnumerateFiles("Rooms", "*.csv"))
             {
+                #region ReadFiles
                 string[] lines = File.ReadAllLines(file);
-                int height = lines.Length -1;
+                int height = lines.Length - 1;
                 int width = lines[1].Split(',').Length;
                 var map = new Tile[height][];
 
                 var tpTos = new Dictionary<char, string>();
                 string[] teleports = lines[0].Split(';');
-                foreach (string s in teleports)
-                {
-                    string[] tpIds = s.Split(',');
+                foreach (string[] tpIds in teleports.Select(s => s.Split(',')))
                     for (int i = 0; i < tpIds.Length - 1; i++)
-                       tpTos.Add(Convert.ToChar(tpIds[i]), tpIds[tpIds.Length-1]);
-                }
+                        tpTos.Add(Convert.ToChar(tpIds[i]), tpIds[tpIds.Length - 1]);
 
                 var tpFroms = new Dictionary<char, Tile>();
                 for (int i = 1; i < lines.Length; i++)
@@ -58,31 +60,32 @@ namespace Dauntlet
                         String s = columns[j];
                         if (Regex.Matches(s, @"[A-Z]").Count > 0)
                         {
-                            char tpId = s.ToCharArray(0,1)[0];
+                            char tpId = s.ToCharArray(0, 1)[0];
                             string tpTo = tpTos[tpId];
-                            int tileId = Int32.Parse(s.Substring(1,1));
-                            var pos = new Vector2(j, i-1);
+                            int tileId = Int32.Parse(s.Substring(1, 1));
+                            var pos = new Vector2(j, i - 1);
                             t = new Tile(tileId, pos, tpId, tpTo);
                         }
                         else if (Regex.Matches(s, @"[a-z]").Count > 0)
                         {
                             char tpId = s.ToCharArray(0, 1)[0];
-                            var pos = new Vector2(j, i-1);
-                            t = new Tile(Int32.Parse(s.Substring(1,1)), pos);
+                            var pos = new Vector2(j, i - 1);
+                            t = new Tile(Int32.Parse(s.Substring(1, 1)), pos);
                             tpFroms.Add(tpId, t);
                         }
                         else
                         {
-                            var pos = new Vector2(j, i-1);
+                            var pos = new Vector2(j, i - 1);
                             t = new Tile(Int32.Parse(s), pos);
                         }
                         tiles[j] = t;
                     }
 
-                    map[i-1] = tiles;
-                }
+                    map[i - 1] = tiles;
+                } 
 
                 if (file != null) Rooms.Add(Path.GetFileNameWithoutExtension(file), new Room(map, tpFroms, height, width));
+                #endregion
             }
 
             if (CurrentRoomName == null)
@@ -101,6 +104,21 @@ namespace Dauntlet
                 }
         }
 
+        public static void DrawDebug(SpriteBatch spriteBatch, GraphicsDevice graphics)
+        {
+            var rectRed = new Texture2D(graphics, 32, 32);
+            var rectBlue = new Texture2D(graphics, 32, 32);
+            var data = new Color[32 * 32];
+            for (int i = 0; i < data.Length; i++) data[i] = new Color(1, 0, 0, 0.1f);
+            rectRed.SetData(data);
+            for (int i = 0; i < data.Length; i++) data[i] = new Color(0, 0, 1, 0.1f);
+            rectBlue.SetData(data);
+            foreach (var body in CurrentRoom.World.BodyList.Where(body => body.IsStatic))
+                spriteBatch.Draw(body.FixtureList[0].CollisionCategories != Category.Cat10 ? rectRed : rectBlue,
+                    ConvertUnits.ToDisplayUnits(body.Position) -
+                    new Vector2(TileSize / 2f, TileSize / 2f), Color.White);
+        }
+
         public static void HandleTeleport(Body collidedTpBody)
         {
             Tile from = CurrentRoom.Map[(int)ConvertUnits.ToDisplayUnits(collidedTpBody.Position.Y) / TileSize][(int)ConvertUnits.ToDisplayUnits(collidedTpBody.Position.X) / TileSize];
@@ -116,6 +134,7 @@ namespace Dauntlet
         }
     }
 
+    // Represents a map tile
     public struct Tile
     {
         public int SpriteId;
@@ -146,6 +165,7 @@ namespace Dauntlet
         }
     }
 
+    // Represents a room
     public struct Room
     {
         public World World;
@@ -158,11 +178,7 @@ namespace Dauntlet
         public int PixelWidth { get { return Width*TileEngine.TileSize; } }
         public float MetricHeight { get { return ConvertUnits.ToSimUnits(PixelHeight); } }
         public float MetricWidth { get { return ConvertUnits.ToSimUnits(PixelWidth); } }
-
-        public Tile[][] Map
-        {
-            get { return _map; }
-        }
+        public Tile[][] Map { get { return _map; } }
 
         public Room(Tile[][] map, Dictionary<char, Tile> tpFroms,  int height, int width)
         {
@@ -172,7 +188,7 @@ namespace Dauntlet
             _tpFroms = tpFroms;
             Height = height;
             Width = width;
-            //float a = ConvertUnits.ToSimUnits(TileEngine.TileSize);
+            
             for (int i = 0; i < _map.Length; i++)
                 for (int j = 0; j < _map[i].Length; j++)
                 {
@@ -196,46 +212,7 @@ namespace Dauntlet
                 }
         }
 
-        public Tile GetTpDestination(char key)
-        {
-            return _tpFroms[key];
-        }
+        public Tile GetTpDestination(char key) { return _tpFroms[key]; }
     }
 
-    public enum CollisionDirection
-    {
-        Right,
-        Left,
-        Top,
-        Bottom
-    }
-    public static class AxiosExtensionsContact
-    {
-        /// http://farseerphysics.codeplex.com/discussions/281783
-        /// <summary>
-        /// Returns the direction that the collision happened.
-        /// Should be used in the event OnAfterCollision
-        /// </summary>
-        /// <param name="c"></param>
-        /// <returns></returns>
-        public static CollisionDirection Direction(this Contact c)
-        {
-            CollisionDirection direction;
-            // Work out collision direction
-            Vector2 colNorm = c.Manifold.LocalNormal;
-            if (Math.Abs(colNorm.X) > Math.Abs(colNorm.Y))
-            {
-                // X direction is dominant
-                direction = colNorm.X > 0 ? CollisionDirection.Right : CollisionDirection.Left;
-            }
-            else
-            {
-                // Y direction is dominant
-                direction = colNorm.Y > 0 ? CollisionDirection.Bottom : CollisionDirection.Top;
-
-            }
-
-            return direction;
-        }
-    }
 }

@@ -10,24 +10,26 @@ namespace Dauntlet
 {
     public class PlayerEntity
     {
+        private const float Speed = 30f; // Speed of the player; CHANGES DEPENDING ON RADIUS!!
+        private const float Radius = 15f; // Radius of player's bounding circle
+
+        // ---------------------------------
+
+        private readonly Vector2 _playerOrigin;
+        private readonly Texture2D _playerSprite;
         private Body _playerBody;
-
-        private Vector2 _playerOrigin;
-        private Texture2D _playerSprite;
-        private float _playerRadius = ConvertUnits.ToSimUnits(15f);
         private bool _isTeleporting;
-        private float _speed = 30f;
-
         private KeyboardState _oldKeyboardState;
 
+        public Vector2 SimPosition { get { return _playerBody.Position; } }
+        public Vector2 DisplayPosition { get { return ConvertUnits.ToDisplayUnits(_playerBody.Position); } }
         public Body PlayerBody
         {
             get { return _playerBody; }
             set { _playerBody = value; }
         }
 
-        public Vector2 SimPosition { get { return _playerBody.Position; } }
-        public Vector2 DisplayPosition { get { return ConvertUnits.ToDisplayUnits(_playerBody.Position); } }
+        // --------------------------------
 
         public PlayerEntity(World world, Vector2 roomCenter, Texture2D playerSprite)
         {
@@ -35,12 +37,10 @@ namespace Dauntlet
             _playerOrigin = new Vector2(_playerSprite.Width / 2f, _playerSprite.Height / 2f);
             Vector2 circlePosition = ConvertUnits.ToSimUnits(roomCenter) + new Vector2(0, -1f);
 
-            // Create the circle fixture
-            _playerBody = BodyFactory.CreateCircle(world, _playerRadius, 0.7f, circlePosition);
+            // Create player body
+            _playerBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(Radius), 0.7f, circlePosition);
             _playerBody.BodyType = BodyType.Dynamic;
             _playerBody.FixedRotation = true;
-
-            // Give it some bounce and friction
             _playerBody.Restitution = 0.3f;
             _playerBody.Friction = 0.5f;
             _playerBody.LinearDamping = 50f;
@@ -51,6 +51,7 @@ namespace Dauntlet
 
         bool _playerBody_OnCollision(Fixture fixtureA, Fixture fixtureB, FarseerPhysics.Dynamics.Contacts.Contact contact)
         {
+            // Detects teleportation
             if (fixtureA.Body.GetType() == _playerBody.GetType() & fixtureB.CollisionCategories == Category.Cat10 && !_isTeleporting)
             {
                 TileEngine.HandleTeleport(fixtureB.Body);
@@ -61,18 +62,17 @@ namespace Dauntlet
 
         public void ChangeRoom(World world, Vector2 newPos)
         {
-            // Create the circle fixture
-            Body newBody = BodyFactory.CreateCircle(world, _playerRadius, 0.7f, newPos);
+            // Create new body in the new room
+            Body newBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(Radius), 0.7f, newPos);
             newBody.BodyType = BodyType.Dynamic;
             newBody.FixedRotation = true;
-
-            // Give it some bounce and friction
             newBody.Restitution = _playerBody.Restitution;
             newBody.Friction = _playerBody.Friction;
             newBody.LinearDamping = _playerBody.LinearDamping;
             newBody.AngularDamping = _playerBody.AngularDamping;
             newBody.Rotation = _playerBody.Rotation;
 
+            // Kill old body and set new one
             _playerBody.Dispose();
             _playerBody = newBody;
             _playerBody.OnCollision += _playerBody_OnCollision;
@@ -95,7 +95,7 @@ namespace Dauntlet
                 //    Exit();
                 Vector2 force = padState.ThumbSticks.Right;
                 force.Y *= -1;
-                _playerBody.ApplyLinearImpulse(force * _speed);
+                _playerBody.ApplyLinearImpulse(force * Speed);
 
                 if (padState.ThumbSticks.Right.Length() > 0.2)
                     _playerBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Right.Y, padState.ThumbSticks.Right.X);
@@ -123,16 +123,15 @@ namespace Dauntlet
 
             if (force != Vector2.Zero)
                 force.Normalize();
-            _playerBody.ApplyLinearImpulse(force * _speed);
+            _playerBody.ApplyLinearImpulse(force * Speed);
 
             _oldKeyboardState = state;
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_playerSprite, ConvertUnits.ToDisplayUnits(_playerBody.Position), null, Color.White, _playerBody.Rotation, _playerOrigin, ConvertUnits.ToDisplayUnits(_playerRadius)/25f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(_playerSprite, ConvertUnits.ToDisplayUnits(_playerBody.Position), null, Color.White, _playerBody.Rotation, _playerOrigin, 2*Radius/50f, SpriteEffects.None, 0f);
         }
 
-        
     }
 }
