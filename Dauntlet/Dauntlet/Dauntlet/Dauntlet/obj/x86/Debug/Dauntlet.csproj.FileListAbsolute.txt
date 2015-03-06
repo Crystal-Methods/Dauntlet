@@ -63,3 +63,5 @@ C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\Sounds\Songs\DauntletMainThemeExtended.wma
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\Sounds\Songs\DauntletNoCombatExtended.wma
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\Sounds\Songs\SkeletonSwingExtended.wma
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\Textures\Dauntlet.xnb
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\Textures\Fist.xnb

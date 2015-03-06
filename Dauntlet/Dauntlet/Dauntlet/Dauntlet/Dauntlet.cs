@@ -16,7 +16,7 @@ namespace Dauntlet
     {
         readonly Dictionary<Screen, GameScreen> _screens = new Dictionary<Screen, GameScreen>();
 
-        private readonly Screen _currentScreenType;
+        private Screen _currentScreenType;
         private GameScreen CurrentScreen { get { return _screens[_currentScreenType]; } }
         public SpriteBatch SpriteBatch { get; set; }
         public GraphicsDevice Graphics { get { return GraphicsDevice; } }
@@ -27,14 +27,18 @@ namespace Dauntlet
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 1024;
             graphics.PreferredBackBufferHeight = 768;
-            _currentScreenType = Screen.GameplayScreen;
+            _currentScreenType = Screen.TitleScreen;
         }
 
         protected override void LoadContent()
         {
+            SoundManager.LoadContent(Content);
             _screens.Add(Screen.GameplayScreen, new GameplayScreen(this));
-            foreach (KeyValuePair<Screen, GameScreen> gs in _screens)
-                gs.Value.LoadContent();
+            _screens.Add(Screen.TitleScreen, new MainMenuScreen(this));
+            //foreach (KeyValuePair<Screen, GameScreen> gs in _screens)
+            //    gs.Value.LoadContent();
+            CurrentScreen.LoadContent();
+            
         }
 
         protected override void Update(GameTime gameTime)
@@ -47,6 +51,13 @@ namespace Dauntlet
         {
             CurrentScreen.Draw(gameTime);
             base.Draw(gameTime);
+        }
+
+        public void ChangeScreens(Screen newSceen)
+        {
+            CurrentScreen.UnloadContent();
+            _currentScreenType = newSceen;
+            CurrentScreen.LoadContent();
         }
 
 
