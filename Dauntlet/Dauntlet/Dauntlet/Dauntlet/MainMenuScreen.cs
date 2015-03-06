@@ -28,7 +28,7 @@ namespace Dauntlet
             _bgTex = _content.Load<Texture2D>("Textures/Dauntlet");
             _fistTex = _content.Load<Texture2D>("Textures/Fist");
 
-            SoundManager.PlaySong("MainTheme");
+            SoundManager.PlaySong("SkeletonSwing");
             SoundManager.VolumeChange(0.5f);
         }
 
@@ -61,7 +61,7 @@ namespace Dauntlet
             if (state.IsKeyDown(Keys.Space))
             {
                 MainGame.ChangeScreens(Screen.GameplayScreen);
-                SoundManager.PlaySong("NoCombat");
+                SoundManager.PlaySong("MainTheme");
             }
         }
 
