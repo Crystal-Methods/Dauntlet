@@ -5,6 +5,8 @@ using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+//used for testing
+using System.Windows.Forms;
 
 namespace Dauntlet
 {
@@ -72,6 +74,10 @@ namespace Dauntlet
             newBody.AngularDamping = _playerBody.AngularDamping;
             newBody.Rotation = _playerBody.Rotation;
 
+            //Sound Test
+            SoundManager.PlaySong("NoCombat");
+            
+
             // Kill old body and set new one
             _playerBody.Dispose();
             _playerBody = newBody;
@@ -110,16 +116,19 @@ namespace Dauntlet
             KeyboardState state = Keyboard.GetState();
 
             Vector2 force = Vector2.Zero;
-            if (state.IsKeyDown(Keys.F3) && _oldKeyboardState.IsKeyUp(Keys.F3))
+            //Keys are really long because i was testing something that conflicted with the word Keys
+            if (state.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.F3) && _oldKeyboardState.IsKeyUp(Microsoft.Xna.Framework.Input.Keys.F3))
                 Game1.DebugCollision = !Game1.DebugCollision;
-            if (state.IsKeyDown(Keys.W))
+            if (state.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.W))
                 force += new Vector2(0, -1);
-            if (state.IsKeyDown(Keys.A))
+            if (state.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.A))
                 force += new Vector2(-1, 0);
-            if (state.IsKeyDown(Keys.S))
+            if (state.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.S))
                 force += new Vector2(0, 1);
-            if (state.IsKeyDown(Keys.D))
+            if (state.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.D))
                 force += new Vector2(1, 0);
+            if (state.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Space))
+                SoundManager.Play("Swish");
 
             if (force != Vector2.Zero)
                 force.Normalize();

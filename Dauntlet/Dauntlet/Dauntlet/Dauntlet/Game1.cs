@@ -32,12 +32,16 @@ namespace Dauntlet
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Initialize things
+            SoundManager.LoadContent(Content);
             CameraManager.Init(GraphicsDevice);
             TileEngine.LoadContent(this, Content);
             ConvertUnits.SetDisplayUnitToSimUnitRatio(TileEngine.TileSize); // 1 meter = 1 tile
-
             World = TileEngine.CurrentRoom.World;
             Player = new PlayerEntity(World, DisplayRoomCenter, Content.Load<Texture2D>("Circle"));
+
+            //Plays sound
+            SoundManager.PlaySong("MainTheme");
+            SoundManager.VolumeChange(.5f);
         }
 
         protected override void Update(GameTime gameTime)
@@ -48,6 +52,7 @@ namespace Dauntlet
 
             // Update camera
             _view = CameraManager.MoveCamera(Player.DisplayPosition);
+            
             
             base.Update(gameTime);
         }
