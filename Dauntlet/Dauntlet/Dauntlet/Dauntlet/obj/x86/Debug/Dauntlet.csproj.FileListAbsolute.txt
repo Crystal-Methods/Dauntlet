@@ -7,3 +7,11 @@ C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\obj\x86\Debug\Dauntlet.exe
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\obj\x86\Debug\Dauntlet.pdb
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\Textures\tileset.xnb
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\Sounds\Songs\DauntletMainTheme.xnb
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\Sounds\Songs\DauntletNoCombat.xnb
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\Sounds\Songs\SkeletonSwing.xnb
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\Sounds\SoundFX\Hop.xnb
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\Sounds\SoundFX\Swish_1.xnb
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\Sounds\Songs\DauntletMainTheme.wma
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\Sounds\Songs\DauntletNoCombat.wma
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\Sounds\Songs\SkeletonSwing.wma

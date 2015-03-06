@@ -1,2 +1,10 @@
 Content\Circle.xnb
 Content\Textures\tileset.xnb
+Content\Sounds\Songs\DauntletMainTheme.xnb
+Content\Sounds\Songs\DauntletMainTheme.wma
+Content\Sounds\Songs\DauntletNoCombat.xnb
+Content\Sounds\Songs\DauntletNoCombat.wma
+Content\Sounds\Songs\SkeletonSwing.xnb
+Content\Sounds\Songs\SkeletonSwing.wma
+Content\Sounds\SoundFX\Hop.xnb
+Content\Sounds\SoundFX\Swish_1.xnb

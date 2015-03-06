@@ -35,12 +35,16 @@ namespace Dauntlet
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Initialize things
+            SoundManager.LoadContent(_content);
             CameraManager.Init(GraphicsDevice);
             TileEngine.LoadContent(this, _content);
             ConvertUnits.SetDisplayUnitToSimUnitRatio(TileEngine.TileSize); // 1 meter = 1 tile
 
             World = TileEngine.CurrentRoom.World;
             Player = new PlayerEntity(World, DisplayRoomCenter, _content.Load<Texture2D>("Circle"));
+
+            SoundManager.PlaySong("MainTheme");
+            SoundManager.VolumeChange(0.5f);
         }
 
         public override void UnloadContent()
