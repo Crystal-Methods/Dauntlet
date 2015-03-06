@@ -185,7 +185,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\Textures\Dauntlet.xnb</Output>
-      <Time>2015-03-06T13:12:21.1569284-06:00</Time>
+      <Time>2015-03-06T14:18:19.3809628-06:00</Time>
     </Item>
     <Item>
       <Source>Textures\Fist.png</Source>
@@ -194,7 +194,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\Textures\Fist.xnb</Output>
-      <Time>2015-03-06T13:19:54.7638927-06:00</Time>
+      <Time>2015-03-06T14:18:19.3829629-06:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
