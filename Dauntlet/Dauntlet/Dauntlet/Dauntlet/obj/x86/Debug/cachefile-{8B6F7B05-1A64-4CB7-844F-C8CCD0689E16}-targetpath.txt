@@ -25,3 +25,4 @@ Content\Sounds\SoundFX\Hurt_2.xnb
 Content\Sounds\SoundFX\Swish_1.xnb
 Content\Textures\Dauntlet.xnb
 Content\Textures\Fist.xnb
+Content\loadingFont.xnb

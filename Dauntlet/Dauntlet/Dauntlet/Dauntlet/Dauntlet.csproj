@@ -80,6 +80,7 @@
     <Compile Include="CameraManager.cs" />
     <Compile Include="GameplayScreen.cs" />
     <Compile Include="GameScreen.cs" />
+    <Compile Include="LoadScreen.cs" />
     <Compile Include="MainMenuScreen.cs" />
     <Compile Include="PlayerEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

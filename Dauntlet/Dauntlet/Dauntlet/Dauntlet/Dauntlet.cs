@@ -35,8 +35,11 @@ namespace Dauntlet
             SoundManager.LoadContent(Content);
             _screens.Add(Screen.GameplayScreen, new GameplayScreen(this));
             _screens.Add(Screen.TitleScreen, new MainMenuScreen(this));
-            //foreach (KeyValuePair<Screen, GameScreen> gs in _screens)
-            //    gs.Value.LoadContent();
+            _screens.Add(Screen.LoadingScreen, new LoadScreen(this));
+            
+            // The Loading screen is always loaded
+            _screens[Screen.LoadingScreen].LoadContent();
+            
             CurrentScreen.LoadContent();
             
         }
@@ -56,8 +59,21 @@ namespace Dauntlet
         public void ChangeScreens(Screen newSceen)
         {
             CurrentScreen.UnloadContent();
-            _currentScreenType = newSceen;
-            CurrentScreen.LoadContent();
+            if (newSceen != Screen.GameplayScreen)
+            {
+                _currentScreenType = newSceen;
+                CurrentScreen.LoadContent();
+            }
+            else
+            {
+                _currentScreenType = Screen.LoadingScreen;
+                _screens[Screen.GameplayScreen].LoadContent();
+            }
+        }
+
+        public void ForceChangeGameplayScreen()
+        {
+            _currentScreenType = Screen.GameplayScreen;
         }
 
 

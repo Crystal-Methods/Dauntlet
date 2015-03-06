@@ -14,6 +14,7 @@ namespace Dauntlet
         SpriteBatch _spriteBatch;
         private static Matrix _view;
 
+        public static bool Initialized { get; set; }
         public World World { get; set; }
         public static bool DebugCollision { get; set; }
         public Vector2 DisplayRoomCenter { get { return new Vector2(TileEngine.CurrentRoom.PixelWidth/2f, TileEngine.CurrentRoom.PixelHeight/2f);} }
@@ -42,11 +43,12 @@ namespace Dauntlet
             World = TileEngine.CurrentRoom.World;
             Player = new PlayerEntity(World, DisplayRoomCenter, _content.Load<Texture2D>("Circle"));
 
-            
+            Initialized = true;
         }
 
         public override void UnloadContent()
         {
+            Initialized = false;
             _content.Unload();
         }
 
