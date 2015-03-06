@@ -111,7 +111,7 @@ namespace Dauntlet
 
             Vector2 force = Vector2.Zero;
             if (state.IsKeyDown(Keys.F3) && _oldKeyboardState.IsKeyUp(Keys.F3))
-                Game1.DebugCollision = !Game1.DebugCollision;
+                GameplayScreen.DebugCollision = !GameplayScreen.DebugCollision;
             if (state.IsKeyDown(Keys.W))
                 force += new Vector2(0, -1);
             if (state.IsKeyDown(Keys.A))

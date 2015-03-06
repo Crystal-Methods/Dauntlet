@@ -77,10 +77,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraManager.cs" />
+    <Compile Include="GameplayScreen.cs" />
+    <Compile Include="GameScreen.cs" />
     <Compile Include="PlayerEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Game1.cs" />
+    <Compile Include="Dauntlet.cs" />
     <Compile Include="TileEngine.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,12 +1,15 @@
-using FarseerPhysics;
+﻿using FarseerPhysics;
 using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Dauntlet
 {
-    public class Game1 : Game
+    public class GameplayScreen : GameScreen
     {
+
+        private ContentManager _content;
         public PlayerEntity Player;
         SpriteBatch _spriteBatch;
         private static Matrix _view;
@@ -18,29 +21,35 @@ namespace Dauntlet
 
         // ------------------------------------
 
-        public Game1()
+        public GameplayScreen(Dauntlet game) : base(game)
         {
-            var graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
+
             DebugCollision = false;
-            graphics.PreferredBackBufferWidth = 1024;
-            graphics.PreferredBackBufferHeight = 768;
         }
 
-        protected override void LoadContent()
+        public override void LoadContent()
         {
+            if (_content == null)
+                _content = new ContentManager(MainGame.Services, "Content");
+
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Initialize things
             CameraManager.Init(GraphicsDevice);
-            TileEngine.LoadContent(this, Content);
+            TileEngine.LoadContent(this, _content);
             ConvertUnits.SetDisplayUnitToSimUnitRatio(TileEngine.TileSize); // 1 meter = 1 tile
 
             World = TileEngine.CurrentRoom.World;
-            Player = new PlayerEntity(World, DisplayRoomCenter, Content.Load<Texture2D>("Circle"));
+            Player = new PlayerEntity(World, DisplayRoomCenter, _content.Load<Texture2D>("Circle"));
         }
 
-        protected override void Update(GameTime gameTime)
+        public override void UnloadContent()
+        {
+            _content.Unload();
+        }
+
+
+        public override void Update(GameTime gameTime)
         {
             // Update the world
             World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
@@ -48,11 +57,9 @@ namespace Dauntlet
 
             // Update camera
             _view = CameraManager.MoveCamera(Player.DisplayPosition);
-            
-            base.Update(gameTime);
         }
 
-        protected override void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
 
@@ -77,7 +84,7 @@ namespace Dauntlet
             Player.Draw(gameTime, _spriteBatch);
             _spriteBatch.End();
 
-            base.Draw(gameTime);
+            
         }
     }
 }
