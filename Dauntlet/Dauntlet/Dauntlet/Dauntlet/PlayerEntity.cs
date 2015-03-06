@@ -98,8 +98,9 @@ namespace Dauntlet
 
             if (padState.IsConnected)
             {
-                //if (padState.Buttons.Back == ButtonState.Pressed)
-                //    Exit();
+                if (padState.Buttons.A == ButtonState.Pressed)
+                    SoundManager.Play("Swish");
+
                 Vector2 force = padState.ThumbSticks.Right;
                 force.Y *= -1;
                 _playerBody.ApplyLinearImpulse(force * Speed);
@@ -118,7 +119,6 @@ namespace Dauntlet
 
             Vector2 force = Vector2.Zero;
             //Keys are really long because i was testing something that conflicted with the word Keys
-            if (state.IsKeyDown(Keys.W))
             if (state.IsKeyDown(Keys.F3) && _oldKeyboardState.IsKeyUp(Keys.F3))
                 GameplayScreen.DebugCollision = !GameplayScreen.DebugCollision;
             if (state.IsKeyDown(Keys.W))

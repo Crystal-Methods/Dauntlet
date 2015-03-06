@@ -178,6 +178,24 @@
       <Output>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\Sounds\SoundFX\Swish_1.xnb</Output>
       <Time>2015-03-06T11:10:08.7223102-06:00</Time>
     </Item>
+    <Item>
+      <Source>Textures\Dauntlet.jpg</Source>
+      <Name>Textures\Dauntlet</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\Textures\Dauntlet.xnb</Output>
+      <Time>2015-03-06T13:12:21.1569284-06:00</Time>
+    </Item>
+    <Item>
+      <Source>Textures\Fist.png</Source>
+      <Name>Textures\Fist</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\Textures\Fist.xnb</Output>
+      <Time>2015-03-06T13:19:54.7638927-06:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <ContentProjectGUID>{8B6F7B05-1A64-4CB7-844F-C8CCD0689E16}</ContentProjectGUID>
