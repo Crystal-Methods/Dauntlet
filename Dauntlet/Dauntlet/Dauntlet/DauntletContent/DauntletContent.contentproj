@@ -37,6 +37,23 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Sounds\Songs\DauntletMainTheme.mp3">
+      <Name>DauntletMainTheme</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\Songs\DauntletNoCombat.mp3">
+      <Name>DauntletNoCombat</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\Songs\SkeletonSwing.mp3">
+      <Name>SkeletonSwing</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Textures\tileset.png">
       <Name>tileset</Name>
       <Importer>TextureImporter</Importer>

@@ -18,7 +18,7 @@ namespace Dauntlet
 
         // -----------------------------
 
-        internal static Game1 Game;
+        internal static GameplayScreen Game;
         public static Texture2D TileSet;
         public static Dictionary<string, Room> Rooms;
         public static List<string> RoomList;
@@ -28,7 +28,7 @@ namespace Dauntlet
 
         // -----------------------------
 
-        public static void LoadContent(Game1 game, ContentManager content)
+        public static void LoadContent(GameplayScreen game, ContentManager content)
         {
             Game = game;
             TileSet = content.Load<Texture2D>(@"Textures/tileset");

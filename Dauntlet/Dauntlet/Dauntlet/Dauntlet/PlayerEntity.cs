@@ -1,12 +1,13 @@
 ﻿using System;
 using FarseerPhysics;
 using FarseerPhysics.Dynamics;
+using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 //used for testing
-using System.Windows.Forms;
+using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace Dauntlet
 {
@@ -51,7 +52,7 @@ namespace Dauntlet
             _playerBody.OnCollision += _playerBody_OnCollision;
         }
 
-        bool _playerBody_OnCollision(Fixture fixtureA, Fixture fixtureB, FarseerPhysics.Dynamics.Contacts.Contact contact)
+        bool _playerBody_OnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
         {
             // Detects teleportation
             if (fixtureA.Body.GetType() == _playerBody.GetType() & fixtureB.CollisionCategories == Category.Cat10 && !_isTeleporting)
@@ -117,17 +118,18 @@ namespace Dauntlet
 
             Vector2 force = Vector2.Zero;
             //Keys are really long because i was testing something that conflicted with the word Keys
-            if (state.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.F3) && _oldKeyboardState.IsKeyUp(Microsoft.Xna.Framework.Input.Keys.F3))
-                Game1.DebugCollision = !Game1.DebugCollision;
-            if (state.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.W))
+            if (state.IsKeyDown(Keys.W))
+            if (state.IsKeyDown(Keys.F3) && _oldKeyboardState.IsKeyUp(Keys.F3))
+                GameplayScreen.DebugCollision = !GameplayScreen.DebugCollision;
+            if (state.IsKeyDown(Keys.W))
                 force += new Vector2(0, -1);
-            if (state.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.A))
+            if (state.IsKeyDown(Keys.A))
                 force += new Vector2(-1, 0);
-            if (state.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.S))
+            if (state.IsKeyDown(Keys.S))
                 force += new Vector2(0, 1);
-            if (state.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.D))
+            if (state.IsKeyDown(Keys.D))
                 force += new Vector2(1, 0);
-            if (state.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Space))
+            if (state.IsKeyDown(Keys.Space))
                 SoundManager.Play("Swish");
 
             if (force != Vector2.Zero)
