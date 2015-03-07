@@ -2,7 +2,6 @@ C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Dauntlet.exe
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Dauntlet.pdb
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\FarseerPhysics XNA.dll
-C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\obj\x86\Debug\Dauntlet.csprojResolveAssemblyReference.cache
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\obj\x86\Debug\Dauntlet.exe
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\obj\x86\Debug\Dauntlet.pdb
@@ -67,3 +66,4 @@ C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\
 C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\Textures\Fist.xnb
 C:\Users\Tyler\Desktop\CSCI 313\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Dauntlet.xnb
 C:\Users\Tyler\Desktop\CSCI 313\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Fist.xnb
+C:\Users\Adam\SkyDrive\Crystal Methods\Main\Dauntlet\Dauntlet\Dauntlet\Dauntlet\bin\x86\Debug\Content\loadingFont.xnb
