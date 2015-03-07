@@ -155,5 +155,5 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 *.exe
-Dauntlet/Dauntlet/Dauntlet/Dauntlet/obj/x86/Debug/cachefile-*-targetpath.txt
-Dauntlet/Dauntlet/Dauntlet/Dauntlet/obj/x86/Debug/ContentPipeline-*.xml
+*/Debug/*.txt
+*/Debug/*.xml
