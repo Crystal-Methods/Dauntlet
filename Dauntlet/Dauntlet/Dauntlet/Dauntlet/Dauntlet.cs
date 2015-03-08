@@ -71,7 +71,7 @@ namespace Dauntlet
             }
         }
 
-        public void ForceChangeGameplayScreen()
+        public void ToGameplayScreen()
         {
             _currentScreenType = Screen.GameplayScreen;
         }

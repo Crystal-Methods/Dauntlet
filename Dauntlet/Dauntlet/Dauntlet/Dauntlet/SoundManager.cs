@@ -17,9 +17,8 @@ namespace Dauntlet
         public static void LoadContent(ContentManager contentManager)
         {
             // Initialize songs
-            Song temp;
 
-            temp = contentManager.Load<Song>(@"Sounds/Songs/DauntletMainTheme");
+            var temp = contentManager.Load<Song>(@"Sounds/Songs/DauntletMainTheme");
             SongList.Add(@"MainTheme", temp);
 
             temp = contentManager.Load<Song>(@"Sounds/Songs/DauntletNoCombat");
@@ -29,9 +28,8 @@ namespace Dauntlet
             SongList.Add(@"SkeletonSwing", temp);
 
             //Initialize SFX
-            SoundEffect effect;
 
-            effect = contentManager.Load<SoundEffect>(@"Sounds/SoundFX/Hop");
+            var effect = contentManager.Load<SoundEffect>(@"Sounds/SoundFX/Hop");
             SfxList.Add("Hop", effect.CreateInstance());
 
             effect = contentManager.Load<SoundEffect>(@"Sounds/SoundFX/Swish_1");

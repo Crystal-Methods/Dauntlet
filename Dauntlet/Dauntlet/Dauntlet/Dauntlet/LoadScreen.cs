@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,7 +32,7 @@ namespace Dauntlet
         public override void Update(GameTime gameTime)
         {
             if (GameplayScreen.Initialized)
-                MainGame.ForceChangeGameplayScreen();
+                MainGame.ToGameplayScreen();
         }
 
         public override void Draw(GameTime gametime)

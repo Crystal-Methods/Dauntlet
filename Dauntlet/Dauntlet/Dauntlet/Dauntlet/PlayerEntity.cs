@@ -76,11 +76,8 @@ namespace Dauntlet
             newBody.Rotation = _playerBody.Rotation;
 
             //Sound Test
-            if(TileEngine.CurrentRoomName.ToString() == "testroom1")
-                SoundManager.PlaySong("MainTheme");
-            else
-                SoundManager.PlaySong("NoCombat");
-            
+            SoundManager.PlaySong(TileEngine.CurrentRoomName == "testroom1" ? "SkeletonSwing" : "NoCombat");
+
 
             // Kill old body and set new one
             _playerBody.Dispose();

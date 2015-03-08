@@ -1,5 +1,3 @@
-using System;
-
 namespace Dauntlet
 {
 #if WINDOWS || XBOX
@@ -8,9 +6,9 @@ namespace Dauntlet
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        static void Main(string[] args)
+        static void Main()
         {
-            using (Dauntlet game = new Dauntlet())
+            using (var game = new Dauntlet())
             {
                 game.Run();
             }
