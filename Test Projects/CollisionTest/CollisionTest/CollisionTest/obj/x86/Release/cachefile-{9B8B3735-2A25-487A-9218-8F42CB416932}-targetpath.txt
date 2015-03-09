@@ -1,0 +1,3 @@
+Content\Textures\pixel.xnb
+Content\Textures\Boo.xnb
+Content\Textures\DryBones.xnb
