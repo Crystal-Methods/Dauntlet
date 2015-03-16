@@ -11,6 +11,7 @@ namespace Dauntlet
 
         private ContentManager _content;
         public PlayerEntity Player;
+        public EnemyEntity Enemy;
         SpriteBatch _spriteBatch;
         private static Matrix _view;
 
@@ -42,6 +43,7 @@ namespace Dauntlet
 
             World = TileEngine.CurrentRoom.World;
             Player = new PlayerEntity(World, DisplayRoomCenter, _content.Load<Texture2D>("Circle"));
+            //Enemy = new EnemyEntity(new Vector2(0,0), _content.Load<Texture2D>("sprite_enemy_guapo"));
 
             Initialized = true;
         }
@@ -68,7 +70,7 @@ namespace Dauntlet
             GraphicsDevice.Clear(Color.Black);
 
             // First pass: Draw room
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _view);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, _view);
             TileEngine.DrawRoom(_spriteBatch, gameTime);
             _spriteBatch.End();
 
