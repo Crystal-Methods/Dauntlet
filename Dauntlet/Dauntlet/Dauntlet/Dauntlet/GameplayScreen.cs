@@ -8,7 +8,6 @@ namespace Dauntlet
 {
     public class GameplayScreen : GameScreen
     {
-
         private ContentManager _content;
         public PlayerEntity Player;
         public EnemyEntity Enemy;
@@ -43,7 +42,7 @@ namespace Dauntlet
 
             World = TileEngine.CurrentRoom.World;
             Player = new PlayerEntity(World, DisplayRoomCenter, _content.Load<Texture2D>("Circle"));
-            //Enemy = new EnemyEntity(new Vector2(0,0), _content.Load<Texture2D>("sprite_enemy_guapo"));
+            Enemy = new EnemyEntity(World, DisplayRoomCenter, _content.Load<Texture2D>("Textures/Enemies/sprite_enemy_guapo"), 5);
 
             Initialized = true;
         }
@@ -60,6 +59,7 @@ namespace Dauntlet
             // Update the world
             World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
             Player.Update(gameTime);
+            Enemy.Update(gameTime);
 
             // Update camera
             _view = CameraManager.MoveCamera(Player.DisplayPosition);
@@ -88,6 +88,7 @@ namespace Dauntlet
             // Fourth pass: Draw entities
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, _view);
             Player.Draw(gameTime, _spriteBatch);
+            Enemy.Draw(gameTime, _spriteBatch);
             _spriteBatch.End();
 
             
