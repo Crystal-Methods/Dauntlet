@@ -17,11 +17,11 @@ namespace Dauntlet.GameScreens
         SpriteBatch _spriteBatch;
         private static Matrix _view;
 
-        public static bool Initialized { get; set; }
         public World World { get; set; }
         public static bool DebugCollision { get; set; }
         public Vector2 DisplayRoomCenter { get { return new Vector2(TileEngine.CurrentRoom.PixelWidth/2f, TileEngine.CurrentRoom.PixelHeight/2f);} }
         public Vector2 SimRoomCenter { get { return ConvertUnits.ToSimUnits(DisplayRoomCenter); } }
+        public override Screen ScreenType { get { return Screen.GameplayScreen;} }
 
         // ------------------------------------
 
@@ -47,12 +47,12 @@ namespace Dauntlet.GameScreens
             Player = new PlayerEntity(World, DisplayRoomCenter, _content.Load<Texture2D>("Circle"));
             Enemy = new EnemyEntity(World, DisplayRoomCenter, _content.Load<Texture2D>("Textures/Enemies/sprite_enemy_guapo"), 5);
 
-            Initialized = true;
+            isLoaded = true;
         }
 
         public override void UnloadContent()
         {
-            Initialized = false;
+            isLoaded = false;
             _content.Unload();
         }
 
@@ -67,8 +67,8 @@ namespace Dauntlet.GameScreens
             // Update camera
             _view = CameraManager.MoveCamera(Player.DisplayPosition);
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-                MainGame.OverlayMenu(Screen.PauseScreen);
+            if (MainGame.Input.IsPauseGame())
+                ((MenuScreen)MainGame.GetScreen(Screen.PauseScreen)).OverlayScreen(this);
         }
 
         public override void Draw(GameTime gameTime)

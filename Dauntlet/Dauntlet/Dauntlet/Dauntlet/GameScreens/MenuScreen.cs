@@ -7,10 +7,12 @@ namespace Dauntlet.GameScreens
 {
     public abstract class MenuScreen : GameScreen
     {
-
         readonly List<MenuItem> _menuEntries = new List<MenuItem>();
         int _selectedEntry;
         readonly string _menuTitle;
+        protected GameScreen LowerScreen;
+        private Texture2D _darkness;
+        
 
         protected IList<MenuItem> MenuEntries
         {
@@ -20,6 +22,12 @@ namespace Dauntlet.GameScreens
         protected MenuScreen(Dauntlet game, string menuTitle) : base(game)
         {
             _menuTitle = menuTitle;
+        }
+
+        public void OverlayScreen(GameScreen lowerScreen)
+        {
+            LowerScreen = lowerScreen;
+            MainGame.OverlayScreen(Screen.PauseScreen);
         }
 
         public void HandleInput(InputState input)
@@ -65,7 +73,7 @@ namespace Dauntlet.GameScreens
 
         protected virtual void OnCancel(object sender, EventArgs eventArgs)
         {
-            MainGame.ToGameplayScreen();
+            MainGame.ChangeScreen(LowerScreen.ScreenType);
         }
         
         protected virtual void UpdateMenuItemLocations()
@@ -97,6 +105,20 @@ namespace Dauntlet.GameScreens
             }
         }
 
+        public override void LoadContent()
+        {
+            isLoaded = true;
+            _darkness = new Texture2D(MainGame.Graphics, MainGame.Graphics.Viewport.Width, MainGame.Graphics.Viewport.Height);
+            var data = new Color[MainGame.Graphics.Viewport.Width * MainGame.Graphics.Viewport.Height];
+            for (int i = 0; i < data.Length; i++) data[i] = new Color(0, 0, 0, 0.25f);
+            _darkness.SetData(data);
+        }
+
+        public override void UnloadContent()
+        {
+            // This screen does not get unloaded
+        }
+
         public override void Update(GameTime gameTime)
         {
             //base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
@@ -112,14 +134,17 @@ namespace Dauntlet.GameScreens
 
         public override void Draw(GameTime gameTime)
         {
+            LowerScreen.Draw(gameTime);
+
             // make sure our entries are in the right place before we draw them
             UpdateMenuItemLocations();
 
             GraphicsDevice graphics = MainGame.GraphicsDevice;
-            SpriteBatch spriteBatch = SpriteBatch;
             SpriteFont font = MainGame.Font;
 
-            spriteBatch.Begin();
+            SpriteBatch.Begin();
+
+            SpriteBatch.Draw(_darkness, Vector2.Zero, Color.White);
 
             // Draw each menu entry in turn.
             for (int i = 0; i < _menuEntries.Count; i++)
@@ -136,10 +161,10 @@ namespace Dauntlet.GameScreens
 
             //titlePosition.Y -= transitionOffset * 100;
 
-            spriteBatch.DrawString(font, _menuTitle, titlePosition, titleColor, 0,
+            SpriteBatch.DrawString(font, _menuTitle, titlePosition, titleColor, 0,
                                    titleOrigin, titleScale, SpriteEffects.None, 0);
 
-            spriteBatch.End();
+            SpriteBatch.End();
         }
 
     }

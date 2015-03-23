@@ -12,6 +12,7 @@ namespace Dauntlet.GameScreens
         private SpriteBatch _spriteBatch;
         private Texture2D _bgTex;
         private Texture2D _fistTex;
+        public override Screen ScreenType { get { return Screen.TitleScreen;} }
 
 
         public MainMenuScreen(Dauntlet game) : base(game)
@@ -49,7 +50,7 @@ namespace Dauntlet.GameScreens
 
             if (padState.IsButtonDown(Buttons.Start))
             {
-                MainGame.ChangeScreens(Screen.GameplayScreen);
+                MainGame.ChangeScreen(Screen.GameplayScreen);
                 SoundManager.PlaySong("SkeletonSwing");
             }
         }
@@ -60,7 +61,7 @@ namespace Dauntlet.GameScreens
 
             if (state.IsKeyDown(Keys.Space))
             {
-                MainGame.ChangeScreens(Screen.GameplayScreen);
+                MainGame.ChangeScreen(Screen.GameplayScreen);
                 SoundManager.PlaySong("SkeletonSwing");
             }
         }

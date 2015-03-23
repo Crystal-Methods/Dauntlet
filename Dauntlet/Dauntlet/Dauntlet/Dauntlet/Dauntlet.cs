@@ -19,9 +19,9 @@ namespace Dauntlet
 
         private readonly GraphicsDeviceManager _graphics;
         private Screen _currentScreenType;
-        private Screen _previousScreenType;
+        //private Screen _previousScreenType;
         private GameScreen CurrentScreen { get { return _screens[_currentScreenType]; } }
-        private GameScreen PreviousScreen { get { return _screens[_previousScreenType]; } }
+        //private GameScreen PreviousScreen { get { return _screens[_previousScreenType]; } }
         //public SpriteBatch SpriteBatch { get; set; }
         public GraphicsDevice Graphics { get { return _graphics.GraphicsDevice; } }
         public SpriteFont Font { get; set; }
@@ -69,33 +69,30 @@ namespace Dauntlet
             base.Draw(gameTime);
         }
 
-        public void ChangeScreens(Screen newSceen)
+        public GameScreen GetScreen(Screen screenType)
         {
-            _previousScreenType = _currentScreenType;
-            CurrentScreen.UnloadContent();
-            if (newSceen != Screen.GameplayScreen)
-            {
-                _currentScreenType = newSceen;
-                CurrentScreen.LoadContent();
-            }
-            else
-            {
-                _currentScreenType = Screen.LoadingScreen;
-                _screens[Screen.GameplayScreen].LoadContent();
-            }
+            return _screens[screenType];
         }
 
-        public void ToGameplayScreen()
+        // Load a new primary screen without unloading the previous
+        public void OverlayScreen(Screen screenType)
         {
-            _currentScreenType = Screen.GameplayScreen;
-        }
-
-        public void OverlayMenu(Screen screenType)
-        {
-            _previousScreenType = _currentScreenType;
             _currentScreenType = screenType;
         }
 
+        // Load a new primary screen by first unloading the previous
+        public void ChangeScreen(Screen screenType)
+        {
+            CurrentScreen.UnloadContent();
+
+            if (!_screens[screenType].IsLoaded)
+            {
+                ((LoadScreen)_screens[Screen.LoadingScreen]).BeginLoadingScreen(screenType);
+                _currentScreenType = Screen.LoadingScreen;
+            }
+            else
+                _currentScreenType = screenType;
+        }
 
     }
 }

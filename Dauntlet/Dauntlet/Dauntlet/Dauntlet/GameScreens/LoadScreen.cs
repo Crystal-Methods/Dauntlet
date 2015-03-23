@@ -10,13 +10,22 @@ namespace Dauntlet.GameScreens
         private ContentManager _content;
         private SpriteBatch _spriteBatch;
         private SpriteFont _font;
+        private Screen _screenToLoad;
+        public override Screen ScreenType { get { return Screen.LoadingScreen; } }
 
         public LoadScreen(Dauntlet game) : base(game)
         {
         }
 
+        public void BeginLoadingScreen(Screen screenToLoad)
+        {
+            _screenToLoad = screenToLoad;
+            MainGame.GetScreen(_screenToLoad).LoadContent();
+        }
+
         public override void LoadContent()
         {
+            isLoaded = true;
             if (_content == null)
                 _content = new ContentManager(MainGame.Services, "Content");
 
@@ -26,13 +35,13 @@ namespace Dauntlet.GameScreens
 
         public override void UnloadContent()
         {
-            throw new NotImplementedException();
+            // This screen cannot be unloaded
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (GameplayScreen.Initialized)
-                MainGame.ToGameplayScreen();
+            if (MainGame.GetScreen(_screenToLoad).IsLoaded)
+                MainGame.ChangeScreen(_screenToLoad);
         }
 
         public override void Draw(GameTime gametime)

@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Dauntlet.GameScreens
@@ -8,7 +7,10 @@ namespace Dauntlet.GameScreens
     {
         private const string MenuTitle = "PAUSED";
 
-        private Texture2D _darkness;
+        public override Screen ScreenType
+        {
+            get { return Screen.PauseScreen; }
+        }
 
         public PauseScreen(Dauntlet game) : base(game, MenuTitle)
         {
@@ -23,19 +25,6 @@ namespace Dauntlet.GameScreens
             // Add entries to the menu.
             MenuEntries.Add(resumeGameMenuEntry);
             MenuEntries.Add(quitGameMenuEntry);
-        }
-
-        public override void LoadContent()
-        {
-            _darkness = new Texture2D(MainGame.Graphics, MainGame.Graphics.Viewport.Width, MainGame.Graphics.Viewport.Height);
-            var data = new Color[MainGame.Graphics.Viewport.Width * MainGame.Graphics.Viewport.Height];
-            for (int i = 0; i < data.Length; i++) data[i] = new Color(0, 0, 0, 0.1f);
-            _darkness.SetData(data);
-        }
-
-        public override void UnloadContent()
-        {
-            throw new NotImplementedException();
         }
 
         void QuitGameMenuEntrySelected(object sender, EventArgs eventArgs)
