@@ -15,13 +15,12 @@ namespace Dauntlet.Entities
     {
         private const float speed = 30f; // Speed of the player; CHANGES DEPENDING ON RADIUS!!
         private const float radius = 15f; // Radius of player's bounding circle
-
+        private const float defaultOffGroundHeight = 10f;
+        
         // ---------------------------------
 
         private bool _isTeleporting;
         private KeyboardState _oldKeyboardState;
-        internal float Fps = 5 / 24f;
-        internal float Timer = 0;
 
         // --------------------------------
 
@@ -29,12 +28,12 @@ namespace Dauntlet.Entities
         {
             Speed = speed;
             Radius = radius;
+            OffGroundHeight = defaultOffGroundHeight;
 
             SpriteTexture = new AnimatedTexture2D(spriteTexture);
-            SpriteTexture.AddAnimation("Animate", 0, 0, 16, 16, 2);
+            SpriteTexture.AddAnimation("Animate", 0, 0, 16, 16, 2, 1/4f);
             SpriteTexture.SetAnimation("Animate");
 
-            SpriteOrigin = new Vector2(SpriteTexture.Width / 2f, SpriteTexture.Height / 2f);
             Vector2 circlePosition = ConvertUnits.ToSimUnits(roomCenter) + new Vector2(0, -1f);
 
             // Create player body
@@ -84,14 +83,10 @@ namespace Dauntlet.Entities
 
         public void Update(GameTime gameTime)
         {
+            SpriteTexture.StepAnimation(gameTime);
             _isTeleporting = false;
             HandleKeyboard();
             HandleGamePad();
-
-            Timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (!(Timer > Fps * 1000)) return;
-            SpriteTexture.Frame++;
-            Timer = 0;
         }
 
         private void HandleGamePad()
@@ -143,7 +138,9 @@ namespace Dauntlet.Entities
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(SpriteTexture.Sheet, ConvertUnits.ToDisplayUnits(CollisionBody.Position), SpriteTexture.CurrentFrame, Color.White, 0f, SpriteOrigin, 2f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(Shadow, DisplayPosition, null, Color.White, 0f,
+                ShadowOrigin, 1f, SpriteEffects.None, 0.5f);
+            spriteBatch.Draw(SpriteTexture.Sheet, SpritePosition, SpriteTexture.CurrentFrame, Color.White, 0f, SpriteOrigin, 2f, SpriteEffects.None, 0f);
         }
 
     }

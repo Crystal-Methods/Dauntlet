@@ -10,6 +10,7 @@ namespace Dauntlet
         private readonly Dictionary<string, AnimationCycle> _animations;
         private AnimationCycle _currentAnimation;
         private string _currentAnimationName;
+        internal float Timer;
 
         public Texture2D Sheet { get { return _sheet; } }
 
@@ -34,13 +35,23 @@ namespace Dauntlet
                 FrameHeight = _sheet.Height,
                 FrameWidth = _sheet.Width,
                 StartPosX = 0,
-                StartPosY = 0
+                StartPosY = 0,
+                FramesPerSecond = 1/24f
             };
             _animations = new Dictionary<string, AnimationCycle> { { _currentAnimationName, _currentAnimation } };
+            Timer = 0;
+        }
+
+        public void StepAnimation(GameTime gameTime)
+        {
+            Timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (!(Timer > _currentAnimation.FramesPerSecond * 1000)) return;
+            Frame++;
+            Timer = 0;
         }
 
         // Add an animation cycle
-        public void AddAnimation(string name, int startPosX, int startPosY, int frameWidth, int frameHeight, int frameCount)
+        public void AddAnimation(string name, int startPosX, int startPosY, int frameWidth, int frameHeight, int frameCount, float FPS)
         {
             var newAni = new AnimationCycle
             {
@@ -49,7 +60,8 @@ namespace Dauntlet
                 FrameWidth = frameWidth,
                 FrameHeight = frameHeight,
                 FrameCount = frameCount,
-                CurrentFrame = 0
+                CurrentFrame = 0,
+                FramesPerSecond = FPS
             };
             _animations.Add(name, newAni);
         }
@@ -61,6 +73,7 @@ namespace Dauntlet
             _currentAnimationName = name;
             _currentAnimation = _animations[name];
             _currentAnimation.CurrentFrame = 0;
+            Timer = 0;
         }
 
         public Rectangle CurrentFrame
@@ -83,6 +96,7 @@ namespace Dauntlet
             public int FrameHeight { get; set; } // Height of each animation frame
             public int FrameCount { get; set; } // Total number of frames in the animation
             public int CurrentFrame { get; set; } // The current frame this animation displays
+            public float FramesPerSecond { get; set; } // The FPS at which to animate this cycle
         }
 
     }
