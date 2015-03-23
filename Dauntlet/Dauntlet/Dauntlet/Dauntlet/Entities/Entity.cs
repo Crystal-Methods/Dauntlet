@@ -3,7 +3,7 @@ using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Dauntlet
+namespace Dauntlet.Entities
 {
     public abstract class Entity
     {

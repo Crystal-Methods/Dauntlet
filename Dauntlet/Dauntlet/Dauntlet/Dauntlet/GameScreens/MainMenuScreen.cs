@@ -29,7 +29,7 @@ namespace Dauntlet.GameScreens
             _fistTex = _content.Load<Texture2D>("Textures/Fist");
 
             SoundManager.PlaySong("MainTheme");
-            SoundManager.VolumeChange(0.5f);
+            SoundManager.VolumeChange(0.4f);
         }
 
         public override void UnloadContent()

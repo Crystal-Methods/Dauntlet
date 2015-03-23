@@ -1,4 +1,5 @@
-﻿using FarseerPhysics;
+﻿using Dauntlet.Entities;
+using FarseerPhysics;
 using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -12,6 +13,7 @@ namespace Dauntlet.GameScreens
 
         private ContentManager _content;
         public PlayerEntity Player;
+        public EnemyEntity Enemy;
         SpriteBatch _spriteBatch;
         private static Matrix _view;
 
@@ -43,6 +45,7 @@ namespace Dauntlet.GameScreens
 
             World = TileEngine.CurrentRoom.World;
             Player = new PlayerEntity(World, DisplayRoomCenter, _content.Load<Texture2D>("Circle"));
+            Enemy = new EnemyEntity(World, DisplayRoomCenter, _content.Load<Texture2D>("Textures/Enemies/sprite_enemy_guapo"), 5);
 
             Initialized = true;
         }
@@ -59,6 +62,7 @@ namespace Dauntlet.GameScreens
             // Update the world
             World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
             Player.Update(gameTime);
+            Enemy.Update(gameTime);
 
             // Update camera
             _view = CameraManager.MoveCamera(Player.DisplayPosition);
@@ -72,7 +76,7 @@ namespace Dauntlet.GameScreens
             GraphicsDevice.Clear(Color.Black);
 
             // First pass: Draw room
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _view);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, _view);
             TileEngine.DrawRoom(_spriteBatch, gameTime);
             _spriteBatch.End();
 
@@ -90,6 +94,7 @@ namespace Dauntlet.GameScreens
             // Fourth pass: Draw entities
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, _view);
             Player.Draw(gameTime, _spriteBatch);
+            Enemy.Draw(gameTime, _spriteBatch);
             _spriteBatch.End();
 
             

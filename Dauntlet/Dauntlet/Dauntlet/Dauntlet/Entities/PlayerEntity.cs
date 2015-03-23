@@ -1,4 +1,5 @@
-﻿using System;
+﻿//used for testing
+using System;
 using Dauntlet.GameScreens;
 using FarseerPhysics;
 using FarseerPhysics.Dynamics;
@@ -7,15 +8,13 @@ using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-//used for testing
-using Keys = Microsoft.Xna.Framework.Input.Keys;
 
-namespace Dauntlet
+namespace Dauntlet.Entities
 {
     public class PlayerEntity : Entity
     {
-        //private const float Speed = 30f; // Speed of the player; CHANGES DEPENDING ON RADIUS!!
-        //private const float Radius = 15f; // Radius of player's bounding circle
+        private const float speed = 30f; // Speed of the player; CHANGES DEPENDING ON RADIUS!!
+        private const float radius = 15f; // Radius of player's bounding circle
 
         // ---------------------------------
 
@@ -26,6 +25,9 @@ namespace Dauntlet
 
         public PlayerEntity(World world, Vector2 roomCenter, Texture2D spriteTextures)
         {
+            Speed = speed;
+            Radius = radius;
+
             SpriteTexture = spriteTextures;
             SpriteOrigin = new Vector2(SpriteTexture.Width / 2f, SpriteTexture.Height / 2f);
             Vector2 circlePosition = ConvertUnits.ToSimUnits(roomCenter) + new Vector2(0, -1f);
