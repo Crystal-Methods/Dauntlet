@@ -11,7 +11,7 @@ namespace Dauntlet.Entities
         public float Radius;
 
         protected Vector2 SpriteOrigin;
-        protected Texture2D SpriteTexture;
+        protected AnimatedTexture2D SpriteTexture;
         protected Body CollisionBody;
 
         public Vector2 SimPosition { get { return CollisionBody.Position; } }
@@ -21,5 +21,7 @@ namespace Dauntlet.Entities
             get { return CollisionBody; }
             set { CollisionBody = value; }
         }
+
+        public static Texture2D DebugCircleTexture;
     }
 }

@@ -20,15 +20,20 @@ namespace Dauntlet.Entities
 
         private bool _isTeleporting;
         private KeyboardState _oldKeyboardState;
+        internal float Fps = 5 / 24f;
+        internal float Timer = 0;
 
         // --------------------------------
 
-        public PlayerEntity(World world, Vector2 roomCenter, Texture2D spriteTextures)
+        public PlayerEntity(World world, Vector2 roomCenter, Texture2D spriteTexture)
         {
             Speed = speed;
             Radius = radius;
 
-            SpriteTexture = spriteTextures;
+            SpriteTexture = new AnimatedTexture2D(spriteTexture);
+            SpriteTexture.AddAnimation("Animate", 0, 0, 16, 16, 2);
+            SpriteTexture.SetAnimation("Animate");
+
             SpriteOrigin = new Vector2(SpriteTexture.Width / 2f, SpriteTexture.Height / 2f);
             Vector2 circlePosition = ConvertUnits.ToSimUnits(roomCenter) + new Vector2(0, -1f);
 
@@ -82,6 +87,11 @@ namespace Dauntlet.Entities
             _isTeleporting = false;
             HandleKeyboard();
             HandleGamePad();
+
+            Timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (!(Timer > Fps * 1000)) return;
+            SpriteTexture.Frame++;
+            Timer = 0;
         }
 
         private void HandleGamePad()
@@ -133,7 +143,7 @@ namespace Dauntlet.Entities
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(SpriteTexture, ConvertUnits.ToDisplayUnits(CollisionBody.Position), null, Color.White, CollisionBody.Rotation, SpriteOrigin, 2*Radius/50f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(SpriteTexture.Sheet, ConvertUnits.ToDisplayUnits(CollisionBody.Position), SpriteTexture.CurrentFrame, Color.White, 0f, SpriteOrigin, 2f, SpriteEffects.None, 0f);
         }
 
     }

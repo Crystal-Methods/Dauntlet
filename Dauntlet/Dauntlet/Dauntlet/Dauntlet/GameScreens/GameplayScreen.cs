@@ -44,7 +44,8 @@ namespace Dauntlet.GameScreens
             ConvertUnits.SetDisplayUnitToSimUnitRatio(TileEngine.TileSize); // 1 meter = 1 tile
 
             World = TileEngine.CurrentRoom.World;
-            Player = new PlayerEntity(World, DisplayRoomCenter, _content.Load<Texture2D>("Circle"));
+            Entity.DebugCircleTexture = _content.Load<Texture2D>("Circle");
+            Player = new PlayerEntity(World, DisplayRoomCenter, _content.Load<Texture2D>("Textures/BooSheet"));
             Enemy = new EnemyEntity(World, DisplayRoomCenter, _content.Load<Texture2D>("Textures/Enemies/sprite_enemy_guapo"), 5);
 
             isLoaded = true;
