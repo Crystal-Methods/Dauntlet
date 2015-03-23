@@ -3,8 +3,9 @@ using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
-namespace Dauntlet
+namespace Dauntlet.GameScreens
 {
     public class GameplayScreen : GameScreen
     {
@@ -61,6 +62,9 @@ namespace Dauntlet
 
             // Update camera
             _view = CameraManager.MoveCamera(Player.DisplayPosition);
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                MainGame.OverlayMenu(Screen.PauseScreen);
         }
 
         public override void Draw(GameTime gameTime)

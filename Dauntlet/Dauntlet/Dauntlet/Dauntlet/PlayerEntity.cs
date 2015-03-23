@@ -1,4 +1,5 @@
 ﻿using System;
+using Dauntlet.GameScreens;
 using FarseerPhysics;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
@@ -11,51 +12,40 @@ using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace Dauntlet
 {
-    public class PlayerEntity
+    public class PlayerEntity : Entity
     {
-        private const float Speed = 30f; // Speed of the player; CHANGES DEPENDING ON RADIUS!!
-        private const float Radius = 15f; // Radius of player's bounding circle
+        //private const float Speed = 30f; // Speed of the player; CHANGES DEPENDING ON RADIUS!!
+        //private const float Radius = 15f; // Radius of player's bounding circle
 
         // ---------------------------------
 
-        private readonly Vector2 _playerOrigin;
-        private readonly Texture2D _playerSprite;
-        private Body _playerBody;
         private bool _isTeleporting;
         private KeyboardState _oldKeyboardState;
 
-        public Vector2 SimPosition { get { return _playerBody.Position; } }
-        public Vector2 DisplayPosition { get { return ConvertUnits.ToDisplayUnits(_playerBody.Position); } }
-        public Body PlayerBody
-        {
-            get { return _playerBody; }
-            set { _playerBody = value; }
-        }
-
         // --------------------------------
 
-        public PlayerEntity(World world, Vector2 roomCenter, Texture2D playerSprite)
+        public PlayerEntity(World world, Vector2 roomCenter, Texture2D spriteTextures)
         {
-            _playerSprite = playerSprite;
-            _playerOrigin = new Vector2(_playerSprite.Width / 2f, _playerSprite.Height / 2f);
+            SpriteTexture = spriteTextures;
+            SpriteOrigin = new Vector2(SpriteTexture.Width / 2f, SpriteTexture.Height / 2f);
             Vector2 circlePosition = ConvertUnits.ToSimUnits(roomCenter) + new Vector2(0, -1f);
 
             // Create player body
-            _playerBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(Radius), 0.7f, circlePosition);
-            _playerBody.BodyType = BodyType.Dynamic;
-            _playerBody.FixedRotation = true;
-            _playerBody.Restitution = 0.3f;
-            _playerBody.Friction = 0.5f;
-            _playerBody.LinearDamping = 50f;
-            _playerBody.AngularDamping = 100f;
+            CollisionBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(Radius), 0.7f, circlePosition);
+            CollisionBody.BodyType = BodyType.Dynamic;
+            CollisionBody.FixedRotation = true;
+            CollisionBody.Restitution = 0.3f;
+            CollisionBody.Friction = 0.5f;
+            CollisionBody.LinearDamping = 50f;
+            CollisionBody.AngularDamping = 100f;
 
-            _playerBody.OnCollision += _playerBody_OnCollision;
+            CollisionBody.OnCollision += CollisionBodyOnCollision;
         }
 
-        bool _playerBody_OnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
+        bool CollisionBodyOnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
         {
             // Detects teleportation
-            if (fixtureA.Body.GetType() == _playerBody.GetType() & fixtureB.CollisionCategories == Category.Cat10 && !_isTeleporting)
+            if (fixtureA.Body.GetType() == CollisionBody.GetType() & fixtureB.CollisionCategories == Category.Cat10 && !_isTeleporting)
             {
                 TileEngine.HandleTeleport(fixtureB.Body);
                 _isTeleporting = true;
@@ -69,20 +59,20 @@ namespace Dauntlet
             Body newBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(Radius), 0.7f, newPos);
             newBody.BodyType = BodyType.Dynamic;
             newBody.FixedRotation = true;
-            newBody.Restitution = _playerBody.Restitution;
-            newBody.Friction = _playerBody.Friction;
-            newBody.LinearDamping = _playerBody.LinearDamping;
-            newBody.AngularDamping = _playerBody.AngularDamping;
-            newBody.Rotation = _playerBody.Rotation;
+            newBody.Restitution = CollisionBody.Restitution;
+            newBody.Friction = CollisionBody.Friction;
+            newBody.LinearDamping = CollisionBody.LinearDamping;
+            newBody.AngularDamping = CollisionBody.AngularDamping;
+            newBody.Rotation = CollisionBody.Rotation;
 
             //Sound Test
             SoundManager.PlaySong(TileEngine.CurrentRoomName == "testroom1" ? "SkeletonSwing" : "NoCombat");
 
 
             // Kill old body and set new one
-            _playerBody.Dispose();
-            _playerBody = newBody;
-            _playerBody.OnCollision += _playerBody_OnCollision;
+            CollisionBody.Dispose();
+            CollisionBody = newBody;
+            CollisionBody.OnCollision += CollisionBodyOnCollision;
         }
 
         public void Update(GameTime gameTime)
@@ -103,13 +93,13 @@ namespace Dauntlet
 
                 Vector2 force = padState.ThumbSticks.Right;
                 force.Y *= -1;
-                _playerBody.ApplyLinearImpulse(force * Speed);
+                CollisionBody.ApplyLinearImpulse(force * Speed);
 
                 if (padState.ThumbSticks.Right.Length() > 0.2)
-                    _playerBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Right.Y, padState.ThumbSticks.Right.X);
+                    CollisionBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Right.Y, padState.ThumbSticks.Right.X);
 
                 if (padState.ThumbSticks.Left.Length() > 0.2)
-                    _playerBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Left.Y, padState.ThumbSticks.Left.X);
+                    CollisionBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Left.Y, padState.ThumbSticks.Left.X);
             }
         }
 
@@ -134,14 +124,14 @@ namespace Dauntlet
 
             if (force != Vector2.Zero)
                 force.Normalize();
-            _playerBody.ApplyLinearImpulse(force * Speed);
+            CollisionBody.ApplyLinearImpulse(force * Speed);
 
             _oldKeyboardState = state;
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_playerSprite, ConvertUnits.ToDisplayUnits(_playerBody.Position), null, Color.White, _playerBody.Rotation, _playerOrigin, 2*Radius/50f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(SpriteTexture, ConvertUnits.ToDisplayUnits(CollisionBody.Position), null, Color.White, CollisionBody.Rotation, SpriteOrigin, 2*Radius/50f, SpriteEffects.None, 0f);
         }
 
     }
