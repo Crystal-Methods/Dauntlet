@@ -28,12 +28,16 @@ namespace Dauntlet.GameScreens
             // Draw the selected entry in yellow, otherwise white.
             Color color = isSelected ? Color.Yellow : Color.White;
 
+            float scale = 1;
             // Pulsate the size of the selected menu entry.
-            double time = gameTime.TotalGameTime.TotalSeconds;
+            if (isSelected)
+            {
+                double time = gameTime.TotalGameTime.TotalSeconds;
 
-            float pulsate = (float)Math.Sin(time * 12) + 1;
+                float pulsate = (float) Math.Sin(time*12) + 1;
 
-            float scale = 1 + pulsate * 0.15f;
+                scale += pulsate*0.15f;
+            }
 
             // Modify the alpha to fade text out during transitions.
             //color *= screen.TransitionAlpha;
@@ -42,8 +46,8 @@ namespace Dauntlet.GameScreens
             Dauntlet mainGame = ms.MainGame;
             SpriteBatch spriteBatch = ms.SpriteBatch;
             SpriteFont font = mainGame.Font;
-
-            var origin = new Vector2(0, font.LineSpacing / 2f);
+            
+            var origin = font.MeasureString(Text)/2f;
 
             spriteBatch.DrawString(font, Text, Position, color, 0,
                                    origin, scale, SpriteEffects.None, 0);

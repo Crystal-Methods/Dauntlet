@@ -29,7 +29,7 @@ namespace Dauntlet.GameScreens
 
         void QuitGameMenuEntrySelected(object sender, EventArgs eventArgs)
         {
-            //LoadingScreen.Load(ScreenManager, false, null, new BackgroundScreen(), new MainMenuScreen());
+            MainGame.ChangeScreen(Screen.TitleScreen);
         }
 
     }

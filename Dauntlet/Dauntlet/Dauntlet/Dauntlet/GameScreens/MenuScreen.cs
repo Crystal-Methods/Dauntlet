@@ -73,7 +73,7 @@ namespace Dauntlet.GameScreens
 
         protected virtual void OnCancel(object sender, EventArgs eventArgs)
         {
-            MainGame.ChangeScreen(LowerScreen.ScreenType);
+            MainGame.OverlayScreen(LowerScreen.ScreenType);
         }
         
         protected virtual void UpdateMenuItemLocations()
@@ -90,7 +90,7 @@ namespace Dauntlet.GameScreens
             foreach (MenuItem menuItem in _menuEntries)
             {
                 // each entry is to be centered horizontally
-                position.X = MainGame.GraphicsDevice.Viewport.Width / 2 - menuItem.GetWidth(this) / 2;
+                position.X = MainGame.GraphicsDevice.Viewport.Width / 2f;
 
                 //if (ScreenState == ScreenState.TransitionOn)
                 //    position.X -= transitionOffset * 256;
@@ -101,7 +101,7 @@ namespace Dauntlet.GameScreens
                 menuItem.Position = position;
 
                 // move down for the next entry the size of this entry
-                position.Y += menuItem.GetHeight(this);
+                position.Y += menuItem.GetHeight(this)+10;
             }
         }
 
@@ -117,6 +117,7 @@ namespace Dauntlet.GameScreens
         public override void UnloadContent()
         {
             // This screen does not get unloaded
+            LowerScreen.UnloadContent();
         }
 
         public override void Update(GameTime gameTime)

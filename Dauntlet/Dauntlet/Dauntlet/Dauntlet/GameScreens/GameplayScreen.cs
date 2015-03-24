@@ -69,8 +69,12 @@ namespace Dauntlet.GameScreens
             // Update camera
             _view = CameraManager.MoveCamera(Player.DisplayPosition);
 
+            if (MainGame.Input.IsMovement())
+                Player.Move(MainGame.Input.CurrentKeyboardState, MainGame.Input.CurrentGamePadState);
             if (MainGame.Input.IsPauseGame())
                 ((MenuScreen)MainGame.GetScreen(Screen.PauseScreen)).OverlayScreen(this);
+            if (MainGame.Input.IsToggleDebug())
+                DebugCollision = !DebugCollision;
         }
 
         public override void Draw(GameTime gameTime)
@@ -94,7 +98,7 @@ namespace Dauntlet.GameScreens
             }
 
             // Fourth pass: Draw entities
-            _spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, _view);
+            _spriteBatch.Begin(SpriteSortMode.FrontToBack, null, null, null, null, null, _view);
             Player.Draw(gameTime, _spriteBatch);
             Enemy.Draw(gameTime, _spriteBatch);
             _spriteBatch.End();

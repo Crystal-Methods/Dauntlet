@@ -21,6 +21,7 @@ namespace Dauntlet.GameScreens
 
         public override void LoadContent()
         {
+            isLoaded = true;
             if (_content == null)
                 _content = new ContentManager(MainGame.Services, "Content");
 
@@ -35,6 +36,7 @@ namespace Dauntlet.GameScreens
 
         public override void UnloadContent()
         {
+            isLoaded = false;
             _content.Unload();
         }
 
@@ -42,6 +44,8 @@ namespace Dauntlet.GameScreens
         {
             HandleKeyboard();
             HandleGamePad();
+            if (MainGame.Input.IsQuitGame())
+                MainGame.Exit();
         }
 
         private void HandleGamePad()

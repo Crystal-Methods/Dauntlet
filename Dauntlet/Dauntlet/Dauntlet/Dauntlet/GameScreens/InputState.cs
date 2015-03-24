@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace Dauntlet.GameScreens
 {
@@ -75,6 +76,23 @@ namespace Dauntlet.GameScreens
         {
             return IsNewKeyPress(Keys.Escape) || IsNewButtonPress(Buttons.Back) ||
                    IsNewButtonPress(Buttons.Start);
+        }
+
+        public bool IsQuitGame()
+        {
+            return IsNewKeyPress(Keys.Escape) || IsNewButtonPress(Buttons.Back);
+        }
+
+        public bool IsMovement()
+        {
+            return CurrentKeyboardState.IsKeyDown(Keys.W) || CurrentKeyboardState.IsKeyDown(Keys.A) ||
+                   CurrentKeyboardState.IsKeyDown(Keys.S) ||
+                   CurrentKeyboardState.IsKeyDown(Keys.D) || CurrentGamePadState.ThumbSticks.Right != Vector2.Zero;
+        }
+
+        public bool IsToggleDebug()
+        {
+            return IsNewKeyPress(Keys.F3);
         }
 
     }

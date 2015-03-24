@@ -15,12 +15,11 @@ namespace Dauntlet.Entities
     {
         private const float speed = 30f; // Speed of the player; CHANGES DEPENDING ON RADIUS!!
         private const float radius = 15f; // Radius of player's bounding circle
-        private const float defaultOffGroundHeight = 10f;
+        private const float defaultOffGroundHeight = 10f; // How far the base of the sprite is from the center of the shadow
         
         // ---------------------------------
 
         private bool _isTeleporting;
-        private KeyboardState _oldKeyboardState;
 
         // --------------------------------
 
@@ -29,6 +28,7 @@ namespace Dauntlet.Entities
             Speed = speed;
             Radius = radius;
             OffGroundHeight = defaultOffGroundHeight;
+            IsBobbing = true;
 
             SpriteTexture = new AnimatedTexture2D(spriteTexture);
             SpriteTexture.AddAnimation("Animate", 0, 0, 16, 16, 2, 1/4f);
@@ -83,64 +83,70 @@ namespace Dauntlet.Entities
 
         public void Update(GameTime gameTime)
         {
-            SpriteTexture.StepAnimation(gameTime);
             _isTeleporting = false;
-            HandleKeyboard();
-            HandleGamePad();
+            //HandleKeyboard();
+            //HandleGamePad();
         }
 
-        private void HandleGamePad()
+        public void Move(KeyboardState keyState, GamePadState padState)
         {
-            GamePadState padState = GamePad.GetState(0, GamePadDeadZone.Circular);
-
-            if (padState.IsConnected)
-            {
-                if (padState.Buttons.A == ButtonState.Pressed)
-                    SoundManager.Play("Swish");
-
-                Vector2 force = padState.ThumbSticks.Right;
-                force.Y *= -1;
-                CollisionBody.ApplyLinearImpulse(force * Speed);
-
-                if (padState.ThumbSticks.Right.Length() > 0.2)
-                    CollisionBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Right.Y, padState.ThumbSticks.Right.X);
-
-                if (padState.ThumbSticks.Left.Length() > 0.2)
-                    CollisionBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Left.Y, padState.ThumbSticks.Left.X);
-            }
-        }
-
-        private void HandleKeyboard()
-        {
-            KeyboardState state = Keyboard.GetState();
-
             Vector2 force = Vector2.Zero;
-            //Keys are really long because i was testing something that conflicted with the word Keys
-            if (state.IsKeyDown(Keys.F3) && _oldKeyboardState.IsKeyUp(Keys.F3))
-                GameplayScreen.DebugCollision = !GameplayScreen.DebugCollision;
-            if (state.IsKeyDown(Keys.W))
-                force += new Vector2(0, -1);
-            if (state.IsKeyDown(Keys.A))
-                force += new Vector2(-1, 0);
-            if (state.IsKeyDown(Keys.S))
-                force += new Vector2(0, 1);
-            if (state.IsKeyDown(Keys.D))
-                force += new Vector2(1, 0);
-            if (state.IsKeyDown(Keys.Space))
-                SoundManager.Play("Swish");
 
+            if (keyState.IsKeyDown(Keys.W)) force.Y--;
+            if (keyState.IsKeyDown(Keys.A)) force.X--;
+            if (keyState.IsKeyDown(Keys.S)) force.Y++;
+            if (keyState.IsKeyDown(Keys.D)) force.X++;
             if (force != Vector2.Zero)
+            {
                 force.Normalize();
+                CollisionBody.ApplyLinearImpulse(force*Speed);
+                CollisionBody.Rotation = (float)Math.Atan2(force.Y, force.X);
+            }
+
+            if (!padState.IsConnected) return;
+            force = padState.ThumbSticks.Right;
+            force.Y *= -1;
             CollisionBody.ApplyLinearImpulse(force * Speed);
 
-            _oldKeyboardState = state;
+            if (padState.ThumbSticks.Right.Length() > 0.2)
+                CollisionBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Right.Y, padState.ThumbSticks.Right.X);
         }
+
+        //private void HandleGamePad()
+        //{
+        //    GamePadState padState = GamePad.GetState(0, GamePadDeadZone.Circular);
+
+        //    if (padState.IsConnected)
+        //    {
+        //        if (padState.Buttons.A == ButtonState.Pressed)
+        //            SoundManager.Play("Swish");
+
+        //        if (padState.ThumbSticks.Left.Length() > 0.2)
+        //            CollisionBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Left.Y, padState.ThumbSticks.Left.X);
+        //    }
+        //}
+
+        //private void HandleKeyboard()
+        //{
+        //    Vector2 force = Vector2.Zero;
+        //    //Keys are really long because i was testing something that conflicted with the word Keys
+        //    if (state.IsKeyDown(Keys.F3) && _oldKeyboardState.IsKeyUp(Keys.F3))
+        //        GameplayScreen.DebugCollision = !GameplayScreen.DebugCollision;
+            
+        //    if (state.IsKeyDown(Keys.Space))
+        //        SoundManager.Play("Swish");
+        //}
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            SpriteTexture.StepAnimation(gameTime);
             spriteBatch.Draw(Shadow, DisplayPosition, null, Color.White, 0f,
-                ShadowOrigin, 1f, SpriteEffects.None, 0.5f);
-            spriteBatch.Draw(SpriteTexture.Sheet, SpritePosition, SpriteTexture.CurrentFrame, Color.White, 0f, SpriteOrigin, 2f, SpriteEffects.None, 0f);
+                ShadowOrigin, 1f, SpriteEffects.None, LayerDepth - 2/10000f);
+            if (GameplayScreen.DebugCollision)
+                spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,
+                    CenterOrigin(DebugCircleTexture), 2*Radius/50f, SpriteEffects.None, LayerDepth - 1/10000f);
+            float bobFactor = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 4)*3 + 1;
+            spriteBatch.Draw(SpriteTexture.Sheet, IsBobbing ? SpritePosition(bobFactor) : SpritePosition(), SpriteTexture.CurrentFrame, Color.White, 0f, SpriteOrigin, 2f, SpriteEffects.None, LayerDepth);
         }
 
     }
