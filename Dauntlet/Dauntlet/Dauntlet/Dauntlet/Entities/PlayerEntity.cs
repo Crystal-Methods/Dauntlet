@@ -13,9 +13,10 @@ namespace Dauntlet.Entities
 {
     public class PlayerEntity : Entity
     {
-        private const float speed = 30f; // Speed of the player; CHANGES DEPENDING ON RADIUS!!
+        private const float speed = 15f; // Speed of the player
         private const float radius = 15f; // Radius of player's bounding circle
         private const float defaultOffGroundHeight = 10f; // How far the base of the sprite is from the center of the shadow
+        private const float mass = 1f;
         
         // ---------------------------------
 
@@ -31,19 +32,28 @@ namespace Dauntlet.Entities
             IsBobbing = true;
 
             SpriteTexture = new AnimatedTexture2D(spriteTexture);
-            SpriteTexture.AddAnimation("Animate", 0, 0, 16, 16, 2, 1/4f);
-            SpriteTexture.SetAnimation("Animate");
+            SpriteTexture.AddAnimation("LookDown", 0, 0, 32, 32, 4, 1/8f, false);
+            SpriteTexture.AddAnimation("LookDownRight", 0, 32, 32, 32, 4, 1 / 8f, false);
+            SpriteTexture.AddAnimation("LookRight", 0, 64, 32, 32, 4, 1 / 8f, false);
+            SpriteTexture.AddAnimation("LookUpRight", 0, 96, 32, 32, 4, 1 / 8f, false);
+            SpriteTexture.AddAnimation("LookUp", 0, 128, 32, 32, 4, 1 / 8f, false);
+            SpriteTexture.AddAnimation("LookDownLeft", 0, 32, 32, 32, 4, 1 / 8f, true);
+            SpriteTexture.AddAnimation("LookLeft", 0, 64, 32, 32, 4, 1 / 8f, true);
+            SpriteTexture.AddAnimation("LookUpLeft", 0, 96, 32, 32, 4, 1 / 8f, true);
+            SpriteTexture.SetAnimation("LookRight");
 
             Vector2 circlePosition = ConvertUnits.ToSimUnits(roomCenter) + new Vector2(0, -1f);
 
             // Create player body
-            CollisionBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(Radius), 0.7f, circlePosition);
+            float density = mass/(float)(Math.PI*Math.Pow(ConvertUnits.ToSimUnits(Radius), 2));
+            CollisionBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(Radius), density, circlePosition);
             CollisionBody.BodyType = BodyType.Dynamic;
             CollisionBody.FixedRotation = true;
-            CollisionBody.Restitution = 0.3f;
+            CollisionBody.Restitution = 0;
             CollisionBody.Friction = 0.5f;
-            CollisionBody.LinearDamping = 50f;
+            CollisionBody.LinearDamping = 25f;
             CollisionBody.AngularDamping = 100f;
+            float m = CollisionBody.Mass;
 
             CollisionBody.OnCollision += CollisionBodyOnCollision;
         }
@@ -81,13 +91,6 @@ namespace Dauntlet.Entities
             CollisionBody.OnCollision += CollisionBodyOnCollision;
         }
 
-        public void Update(GameTime gameTime)
-        {
-            _isTeleporting = false;
-            //HandleKeyboard();
-            //HandleGamePad();
-        }
-
         public void Move(KeyboardState keyState, GamePadState padState)
         {
             Vector2 force = Vector2.Zero;
@@ -110,6 +113,26 @@ namespace Dauntlet.Entities
 
             if (padState.ThumbSticks.Right.Length() > 0.2)
                 CollisionBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Right.Y, padState.ThumbSticks.Right.X);
+        }
+
+        public void ResolveAnimation()
+        {
+            if (CollisionBody.Rotation > 7 * Math.PI / 8f || CollisionBody.Rotation <= -7 * Math.PI / 8f)
+                SpriteTexture.SetAnimation("LookLeft");
+            else if (CollisionBody.Rotation > 5 * Math.PI/8f)
+                SpriteTexture.SetAnimation("LookDownLeft");
+            else if (CollisionBody.Rotation > 3 * Math.PI / 8f)
+                SpriteTexture.SetAnimation("LookDown");
+            else if (CollisionBody.Rotation > Math.PI / 8f)
+                SpriteTexture.SetAnimation("LookDownRight");
+            else if (CollisionBody.Rotation > -Math.PI / 8f)
+                SpriteTexture.SetAnimation("LookRight");
+            else if (CollisionBody.Rotation > -3 * Math.PI / 8f)
+                SpriteTexture.SetAnimation("LookUpRight");
+            else if (CollisionBody.Rotation > -5 * Math.PI / 8f)
+                SpriteTexture.SetAnimation("LookUp");
+            else if (CollisionBody.Rotation > -7 * Math.PI / 8f)
+                SpriteTexture.SetAnimation("LookUpLeft");
         }
 
         //private void HandleGamePad()
@@ -137,6 +160,12 @@ namespace Dauntlet.Entities
         //        SoundManager.Play("Swish");
         //}
 
+        public void Update(GameTime gameTime)
+        {
+            ResolveAnimation();
+            _isTeleporting = false;
+        }
+
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             SpriteTexture.StepAnimation(gameTime);
@@ -146,7 +175,8 @@ namespace Dauntlet.Entities
                 spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,
                     CenterOrigin(DebugCircleTexture), 2*Radius/50f, SpriteEffects.None, LayerDepth - 1/10000f);
             float bobFactor = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 4)*3 + 1;
-            spriteBatch.Draw(SpriteTexture.Sheet, IsBobbing ? SpritePosition(bobFactor) : SpritePosition(), SpriteTexture.CurrentFrame, Color.White, 0f, SpriteOrigin, 2f, SpriteEffects.None, LayerDepth);
+            spriteBatch.Draw(SpriteTexture.Sheet, IsBobbing ? SpritePosition(bobFactor) : SpritePosition(), SpriteTexture.CurrentFrame, Color.White, 0f,
+                SpriteOrigin, 2f, SpriteTexture.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, LayerDepth);
         }
 
     }

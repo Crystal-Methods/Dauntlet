@@ -19,7 +19,7 @@ namespace Dauntlet.Entities
         {
             OffGroundHeight = defaultOffGroundHeight;
 
-            SpriteTexture.AddAnimation("Fly", 0, 0, 32, 32, 5, 1/24f);
+            SpriteTexture.AddAnimation("Fly", 0, 0, 32, 32, 5, 1/24f, false);
             SpriteTexture.SetAnimation("Fly");
         }
     }

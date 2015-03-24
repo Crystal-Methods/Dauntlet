@@ -46,7 +46,7 @@ namespace Dauntlet.Entities
             if (GameplayScreen.DebugCollision)
                 spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,
                     CenterOrigin(DebugCircleTexture), 2 * Radius / 50f, SpriteEffects.None, LayerDepth - 1/10000f);
-            spriteBatch.Draw(SpriteTexture.Sheet, SpritePosition(), SpriteTexture.CurrentFrame, Color.White, 0f, SpriteOrigin, 1f, SpriteEffects.None, LayerDepth);
+            spriteBatch.Draw(SpriteTexture.Sheet, SpritePosition(), SpriteTexture.CurrentFrame, Color.White, 0f, SpriteOrigin, 2f, SpriteEffects.None, LayerDepth);
         }
 
 

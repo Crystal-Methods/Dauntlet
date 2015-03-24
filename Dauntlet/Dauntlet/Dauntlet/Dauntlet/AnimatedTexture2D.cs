@@ -13,7 +13,7 @@ namespace Dauntlet
         internal float Timer;
 
         public Texture2D Sheet { get { return _sheet; } }
-
+        public bool Flipped { get { return _currentAnimation.Flipped; } }
         public float Height { get { return _currentAnimation.FrameHeight; } }
         public float Width { get { return _currentAnimation.FrameWidth; } }
 
@@ -36,7 +36,8 @@ namespace Dauntlet
                 FrameWidth = _sheet.Width,
                 StartPosX = 0,
                 StartPosY = 0,
-                FramesPerSecond = 1/24f
+                FramesPerSecond = 1/24f,
+                Flipped = false
             };
             _animations = new Dictionary<string, AnimationCycle> { { _currentAnimationName, _currentAnimation } };
             Timer = 0;
@@ -51,7 +52,7 @@ namespace Dauntlet
         }
 
         // Add an animation cycle
-        public void AddAnimation(string name, int startPosX, int startPosY, int frameWidth, int frameHeight, int frameCount, float FPS)
+        public void AddAnimation(string name, int startPosX, int startPosY, int frameWidth, int frameHeight, int frameCount, float FPS, bool flipped)
         {
             var newAni = new AnimationCycle
             {
@@ -61,7 +62,8 @@ namespace Dauntlet
                 FrameHeight = frameHeight,
                 FrameCount = frameCount,
                 CurrentFrame = 0,
-                FramesPerSecond = FPS
+                FramesPerSecond = FPS,
+                Flipped = flipped
             };
             _animations.Add(name, newAni);
         }
@@ -97,6 +99,7 @@ namespace Dauntlet
             public int FrameCount { get; set; } // Total number of frames in the animation
             public int CurrentFrame { get; set; } // The current frame this animation displays
             public float FramesPerSecond { get; set; } // The FPS at which to animate this cycle
+            public bool Flipped { get; set; } // If this sprite is to be flipped horizontally on render
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using Dauntlet.Entities;
+﻿using System;
+using Dauntlet.Entities;
 using FarseerPhysics;
 using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
@@ -46,7 +47,7 @@ namespace Dauntlet.GameScreens
             World = TileEngine.CurrentRoom.World;
             Entity.DebugCircleTexture = _content.Load<Texture2D>("Textures/Circle");
             Entity.Shadow = _content.Load<Texture2D>("Textures/Shadow");
-            Player = new PlayerEntity(World, DisplayRoomCenter - new Vector2(40,0), _content.Load<Texture2D>("Textures/BooSheet"));
+            Player = new PlayerEntity(World, DisplayRoomCenter - new Vector2(40,0), _content.Load<Texture2D>("Textures/NewBooSheet"));
             Enemy = new Guapo(World, DisplayRoomCenter, _content.Load<Texture2D>("Textures/Enemies/sprite_enemy_guapo"));
 
             isLoaded = true;
