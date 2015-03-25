@@ -33,8 +33,8 @@ namespace Dauntlet
 
         public static Matrix MoveCamera(Vector2 playerPosition)
         {
-            if (TileEngine.CurrentRoom.PixelWidth + (2 * Buffer) <= _screenWidth &&
-                TileEngine.CurrentRoom.PixelHeight + (2 * Buffer) <= _screenHeight)
+            if (TileEngine.CurrentRoom.PixelWidth <= _screenWidth &&
+                TileEngine.CurrentRoom.PixelHeight <= _screenHeight)
             {
                 //Center room on screen
                 _cameraPosition.X = (_screenWidth - Room.X) / 2f;
