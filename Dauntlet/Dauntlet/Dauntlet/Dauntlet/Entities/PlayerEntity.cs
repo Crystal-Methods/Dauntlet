@@ -13,7 +13,6 @@ namespace Dauntlet.Entities
 {
     public class PlayerEntity : Entity
     {
-        private const float speed = 15f; // Speed of the player
         private const float radius = 15f; // Radius of player's bounding circle
         private const float defaultOffGroundHeight = 10f; // How far the base of the sprite is from the center of the shadow
         private const float mass = 1f;
@@ -51,7 +50,6 @@ namespace Dauntlet.Entities
             CollisionBody.FixedRotation = true;
             CollisionBody.Restitution = 0;
             CollisionBody.Friction = 0.5f;
-            CollisionBody.LinearDamping = 25f;
             CollisionBody.AngularDamping = 100f;
             float m = CollisionBody.Mass;
 
