@@ -14,7 +14,7 @@ namespace Dauntlet.Entities
         protected float OffGroundHeight { get; set; }
         protected Vector2 CenterOrigin(Texture2D texture) { return new Vector2(texture.Width/2f, texture.Height/2f); }
         protected Vector2 ShadowOrigin { get { return new Vector2(Shadow.Width / 2f, Shadow.Height / 2f); } }
-        protected Vector2 SpriteOrigin { get { return new Vector2(SpriteTexture.Width / 2f, SpriteTexture.Height); } }
+        protected Vector2 SpriteOrigin { get { return new Vector2(SpriteTexture.Width / 2f, 3 * SpriteTexture.Height / 4f); } }
         protected AnimatedTexture2D SpriteTexture;
         protected Body CollisionBody;
         protected Vector2 SpritePosition() { return new Vector2(DisplayPosition.X, DisplayPosition.Y - OffGroundHeight); }
