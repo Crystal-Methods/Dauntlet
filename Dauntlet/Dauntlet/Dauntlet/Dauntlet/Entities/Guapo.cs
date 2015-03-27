@@ -10,7 +10,7 @@ namespace Dauntlet.Entities
     {
 
         private const float speed = 30f; // Speed of the player; CHANGES DEPENDING ON RADIUS!!
-        private const float radius = 15f; // Radius of player's bounding circle
+        private const float radius = 14f; // Radius of player's bounding circle
         private const float defaultOffGroundHeight = 15f;
 
         // ---------------------------------

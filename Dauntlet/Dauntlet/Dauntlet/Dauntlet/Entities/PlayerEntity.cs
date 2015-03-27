@@ -13,9 +13,9 @@ namespace Dauntlet.Entities
 {
     public class PlayerEntity : Entity
     {
-        private const float speed = 15f;
+        private const float speed = 10f;
         private const float radius = 15f; // Radius of player's bounding circle
-        private const float defaultOffGroundHeight = 15f; // How far the base of the sprite is from the center of the shadow
+        private const float defaultOffGroundHeight = 14f; // How far the base of the sprite is from the center of the shadow
         private const float mass = 1f;
         
         // ---------------------------------
@@ -32,14 +32,14 @@ namespace Dauntlet.Entities
             IsBobbing = true;
 
             SpriteTexture = new AnimatedTexture2D(spriteTexture);
-            SpriteTexture.AddAnimation("LookDown", 0, 0, 64, 64, 4, 1 / 8f, false);
-            SpriteTexture.AddAnimation("LookDownRight", 0, 64, 64, 64, 4, 1 / 8f, false);
-            SpriteTexture.AddAnimation("LookRight", 0, 128, 64, 64, 4, 1 / 8f, false);
-            SpriteTexture.AddAnimation("LookUpRight", 0, 192, 64, 64, 4, 1 / 8f, false);
-            SpriteTexture.AddAnimation("LookUp", 0, 256, 64, 64, 4, 1 / 8f, false);
-            SpriteTexture.AddAnimation("LookDownLeft", 0, 64, 64, 64, 4, 1 / 8f, true);
-            SpriteTexture.AddAnimation("LookLeft", 0, 128, 64, 64, 4, 1 / 8f, true);
-            SpriteTexture.AddAnimation("LookUpLeft", 0, 192, 64, 64, 4, 1 / 8f, true);
+            SpriteTexture.AddAnimation("LookDown", 0, 0, 23, 33, 6, 1 / 12f, false);
+            SpriteTexture.AddAnimation("LookDownLeft", 0, 33, 23, 33, 6, 1 / 12f, false);
+            SpriteTexture.AddAnimation("LookLeft", 0, 66, 23, 33, 6, 1 / 12f, false);
+            SpriteTexture.AddAnimation("LookUpLeft", 0, 99, 23, 33, 6, 1 / 12f, false);
+            SpriteTexture.AddAnimation("LookUp", 0, 132, 23, 33, 6, 1 / 12f, false);
+            SpriteTexture.AddAnimation("LookDownRight", 0, 33, 23, 33, 6, 1 / 12f, true);
+            SpriteTexture.AddAnimation("LookRight", 0, 66, 23, 33, 6, 1 / 12f, true);
+            SpriteTexture.AddAnimation("LookUpRight", 0, 99, 23, 33, 6, 1 / 12f, true);
             SpriteTexture.SetAnimation("LookRight");
 
             Vector2 circlePosition = ConvertUnits.ToSimUnits(roomCenter) + new Vector2(0, -1f);
@@ -51,7 +51,7 @@ namespace Dauntlet.Entities
             CollisionBody.FixedRotation = true;
             CollisionBody.Restitution = 0;
             CollisionBody.Friction = 0.5f;
-            CollisionBody.LinearDamping = 25f;
+            CollisionBody.LinearDamping = 35f;
             CollisionBody.AngularDamping = 100f;
             float m = CollisionBody.Mass;
 
@@ -117,21 +117,24 @@ namespace Dauntlet.Entities
 
         public void ResolveAnimation()
         {
-            if (CollisionBody.Rotation > 7 * Math.PI / 8f || CollisionBody.Rotation <= -7 * Math.PI / 8f)
+            const float e = (float)Math.PI/8f;
+            float r = CollisionBody.Rotation;
+
+            if (r > 7 * e || r <= -7 * e)
                 SpriteTexture.SetAnimation("LookLeft");
-            else if (CollisionBody.Rotation > 5 * Math.PI/8f)
+            else if (r > 5 * e)
                 SpriteTexture.SetAnimation("LookDownLeft");
-            else if (CollisionBody.Rotation > 3 * Math.PI / 8f)
+            else if (r > 3 * e)
                 SpriteTexture.SetAnimation("LookDown");
-            else if (CollisionBody.Rotation > Math.PI / 8f)
+            else if (r > e)
                 SpriteTexture.SetAnimation("LookDownRight");
-            else if (CollisionBody.Rotation > -Math.PI / 8f)
+            else if (r > -e)
                 SpriteTexture.SetAnimation("LookRight");
-            else if (CollisionBody.Rotation > -3 * Math.PI / 8f)
+            else if (r > -3 * e)
                 SpriteTexture.SetAnimation("LookUpRight");
-            else if (CollisionBody.Rotation > -5 * Math.PI / 8f)
+            else if (r > -5 * e)
                 SpriteTexture.SetAnimation("LookUp");
-            else if (CollisionBody.Rotation > -7 * Math.PI / 8f)
+            else if (r > -7 * e)
                 SpriteTexture.SetAnimation("LookUpLeft");
         }
 
@@ -170,7 +173,7 @@ namespace Dauntlet.Entities
         {
             SpriteTexture.StepAnimation(gameTime);
             spriteBatch.Draw(Shadow, DisplayPosition, null, Color.White, 0f,
-                ShadowOrigin, 1f, SpriteEffects.None, LayerDepth - 2/10000f);
+                ShadowOrigin, 0.8f, SpriteEffects.None, LayerDepth - 2/10000f);
             if (GameplayScreen.DebugCollision)
                 spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,
                     CenterOrigin(DebugCircleTexture), 2*Radius/50f, SpriteEffects.None, LayerDepth - 1/10000f);

@@ -10,7 +10,7 @@ namespace Dauntlet.Entities
         public float Speed;
         public float Radius;
 
-        protected float LayerDepth { get { return SimPosition.Y/10000f; } }
+        protected float LayerDepth { get { return SimPosition.Y/100f; } }
         protected float OffGroundHeight { get; set; }
         protected Vector2 CenterOrigin(Texture2D texture) { return new Vector2(texture.Width/2f, texture.Height/2f); }
         protected Vector2 ShadowOrigin { get { return new Vector2(Shadow.Width / 2f, Shadow.Height / 2f); } }

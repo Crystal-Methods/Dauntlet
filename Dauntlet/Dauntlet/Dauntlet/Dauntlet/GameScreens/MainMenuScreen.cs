@@ -55,7 +55,7 @@ namespace Dauntlet.GameScreens
             if (padState.IsButtonDown(Buttons.Start))
             {
                 MainGame.ChangeScreen(Screen.GameplayScreen);
-                SoundManager.PlaySong("SkeletonSwing");
+                SoundManager.PlaySong("NoCombat");
             }
         }
 
@@ -66,7 +66,7 @@ namespace Dauntlet.GameScreens
             if (state.IsKeyDown(Keys.Space))
             {
                 MainGame.ChangeScreen(Screen.GameplayScreen);
-                SoundManager.PlaySong("SkeletonSwing");
+                SoundManager.PlaySong("NoCombat");
             }
         }
 

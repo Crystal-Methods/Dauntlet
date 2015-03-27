@@ -45,7 +45,7 @@ namespace Dauntlet.GameScreens
             World = TileEngine.CurrentRoom.World;
             Entity.DebugCircleTexture = _content.Load<Texture2D>("Textures/Circle");
             Entity.Shadow = _content.Load<Texture2D>("Textures/Shadow");
-            Player = new PlayerEntity(World, DisplayRoomCenter - new Vector2(40,0), _content.Load<Texture2D>("Textures/NewBooSheet"));
+            Player = new PlayerEntity(World, DisplayRoomCenter - new Vector2(40,0), _content.Load<Texture2D>("Textures/Dante"));
             Enemy = new Guapo(World, DisplayRoomCenter, _content.Load<Texture2D>("Textures/Enemies/sprite_enemy_guapo"));
 
             isLoaded = true;
@@ -78,7 +78,7 @@ namespace Dauntlet.GameScreens
 
         public override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(new Color(0, 141, 158));
 
             // First pass: Draw room
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, _view);
@@ -97,7 +97,7 @@ namespace Dauntlet.GameScreens
             }
 
             // Fourth pass: Draw entities
-            _spriteBatch.Begin(SpriteSortMode.FrontToBack, null, null, null, null, null, _view);
+            _spriteBatch.Begin(SpriteSortMode.FrontToBack, null, SamplerState.PointClamp, null, null, null, _view);
             Player.Draw(gameTime, _spriteBatch);
             Enemy.Draw(gameTime, _spriteBatch);
             _spriteBatch.End();

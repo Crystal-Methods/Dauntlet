@@ -23,7 +23,7 @@ namespace Dauntlet
         public static Texture2D TileSet;
         public static Dictionary<string, Room> Rooms;
         public static List<string> RoomList;
-        public static string CurrentRoomName = "Fountain";
+        public static string CurrentRoomName = "Fountain2";
 
         public static Room CurrentRoom { get { return Rooms[CurrentRoomName]; } }
         public static int TileSize { get { return tileSize; } }
@@ -33,11 +33,11 @@ namespace Dauntlet
         public static void LoadContent(GameplayScreen game, ContentManager content)
         {
             Game = game;
-            TileSet = content.Load<Texture2D>(@"Textures/tilesheet");
+            TileSet = content.Load<Texture2D>(@"Textures/tilesheet2");
             Rooms = new Dictionary<string, Room>();
 
             // Parse Collision Data file
-            string[] theStringArray = File.ReadAllLines("CollisionData.csv");
+            string[] theStringArray = File.ReadAllLines("CollisionData2.csv");
             var collisionData = new bool[theStringArray.Length][][];
             for (int i = 0; i < theStringArray.Length; i++)
             {

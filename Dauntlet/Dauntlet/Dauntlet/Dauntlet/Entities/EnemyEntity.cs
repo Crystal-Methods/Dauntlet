@@ -27,7 +27,7 @@ namespace Dauntlet.Entities
             CollisionBody.FixedRotation = true;
             CollisionBody.Restitution = 0.3f;
             CollisionBody.Friction = 0.5f;
-            CollisionBody.LinearDamping = 50f;
+            CollisionBody.LinearDamping = 5f;
             CollisionBody.AngularDamping = 100f;
 
             //CollisionBody.OnCollision += CollisionBodyOnCollision;
@@ -42,7 +42,7 @@ namespace Dauntlet.Entities
         {
             SpriteTexture.StepAnimation(gameTime);
             spriteBatch.Draw(Shadow, DisplayPosition, null, Color.White, 0f,
-                ShadowOrigin, 1f, SpriteEffects.None, LayerDepth - 2/10000f);
+                ShadowOrigin, 0.8f, SpriteEffects.None, LayerDepth - 2/10000f);
             if (GameplayScreen.DebugCollision)
                 spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,
                     CenterOrigin(DebugCircleTexture), 2 * Radius / 50f, SpriteEffects.None, LayerDepth - 1/10000f);
