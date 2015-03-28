@@ -171,8 +171,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Enemies\sprite_enemy_guapo.png">
-      <Name>sprite_enemy_guapo</Name>
+    <Compile Include="Textures\Guapo.png">
+      <Name>Guapo</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
