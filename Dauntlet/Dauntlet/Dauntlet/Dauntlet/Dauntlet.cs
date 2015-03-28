@@ -7,6 +7,7 @@ namespace Dauntlet
 {
     public enum Screen
     {
+        SplashScreen,
         GameplayScreen,
         PauseScreen,
         TitleScreen,
@@ -15,14 +16,11 @@ namespace Dauntlet
 
     public class Dauntlet : Game
     {
-        readonly Dictionary<Screen, GameScreen> _screens = new Dictionary<Screen, GameScreen>();
-
+        private readonly Dictionary<Screen, GameScreen> _screens = new Dictionary<Screen, GameScreen>();
         private readonly GraphicsDeviceManager _graphics;
         private Screen _currentScreenType;
-        //private Screen _previousScreenType;
         private GameScreen CurrentScreen { get { return _screens[_currentScreenType]; } }
-        //private GameScreen PreviousScreen { get { return _screens[_previousScreenType]; } }
-        //public SpriteBatch SpriteBatch { get; set; }
+
         public GraphicsDevice Graphics { get { return _graphics.GraphicsDevice; } }
         public SpriteFont Font { get; set; }
         public InputState Input;
@@ -35,7 +33,6 @@ namespace Dauntlet
             _graphics.PreferredBackBufferHeight = 768;
             _currentScreenType = Screen.TitleScreen;
             Input = new InputState();
-            //SpriteBatch = new SpriteBatch(GraphicsDevice);
         }
 
         protected override void LoadContent()
@@ -43,6 +40,7 @@ namespace Dauntlet
             Font = Content.Load<SpriteFont>("loadingFont");
 
             SoundManager.LoadContent(Content);
+            //_screens.Add(Screen.SplashScreen, new SplashScreen(this));
             _screens.Add(Screen.GameplayScreen, new GameplayScreen(this));
             _screens.Add(Screen.TitleScreen, new MainMenuScreen(this));
             _screens.Add(Screen.LoadingScreen, new LoadScreen(this));
@@ -53,7 +51,6 @@ namespace Dauntlet
             _screens[Screen.PauseScreen].LoadContent();
             
             CurrentScreen.LoadContent();
-            
         }
 
         protected override void Update(GameTime gameTime)

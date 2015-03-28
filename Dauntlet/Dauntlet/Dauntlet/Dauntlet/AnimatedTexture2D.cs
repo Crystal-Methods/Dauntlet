@@ -12,17 +12,28 @@ namespace Dauntlet
         private string _currentAnimationName;
         internal float Timer;
 
+        // =============================================================
+
         public Texture2D Sheet { get { return _sheet; } }
         public bool Flipped { get { return _currentAnimation.Flipped; } }
         public float Height { get { return _currentAnimation.FrameHeight; } }
         public float Width { get { return _currentAnimation.FrameWidth; } }
-
-        // The number of the current frame
         public int Frame
         {
             get { return _currentAnimation.CurrentFrame; }
             set { _currentAnimation.CurrentFrame = value % _currentAnimation.FrameCount; }
         }
+        public Rectangle CurrentFrame
+        {
+            get
+            {
+                return new Rectangle(
+                        _currentAnimation.StartPosX + (_currentAnimation.FrameWidth * _currentAnimation.CurrentFrame),
+                        _currentAnimation.StartPosY, _currentAnimation.FrameWidth, _currentAnimation.FrameHeight);
+            }
+        }
+
+        // =============================================================
 
         public AnimatedTexture2D(Texture2D sheet)
         {
@@ -51,8 +62,7 @@ namespace Dauntlet
             Timer = 0;
         }
 
-        // Add an animation cycle
-        public void AddAnimation(string name, int startPosX, int startPosY, int frameWidth, int frameHeight, int frameCount, float FPS, bool flipped)
+        public void AddAnimation(string name, int startPosX, int startPosY, int frameWidth, int frameHeight, int frameCount, float fps, bool flipped)
         {
             var newAni = new AnimationCycle
             {
@@ -62,13 +72,12 @@ namespace Dauntlet
                 FrameHeight = frameHeight,
                 FrameCount = frameCount,
                 CurrentFrame = 0,
-                FramesPerSecond = FPS,
+                FramesPerSecond = fps,
                 Flipped = flipped
             };
             _animations.Add(name, newAni);
         }
 
-        // Set the current animation to play
         public void SetAnimation(string name)
         {
             if (name.Equals(_currentAnimationName)) return;
@@ -78,18 +87,7 @@ namespace Dauntlet
             Timer = 0;
         }
 
-        public Rectangle CurrentFrame
-        {
-            get
-            {
-                return
-                    new Rectangle(
-                        _currentAnimation.StartPosX + (_currentAnimation.FrameWidth * _currentAnimation.CurrentFrame),
-                        _currentAnimation.StartPosY, _currentAnimation.FrameWidth, _currentAnimation.FrameHeight);
-            }
-        }
-
-        // private class for storing animation cyles
+        // private struct for storing animation cyles
         private struct AnimationCycle
         {
             public int StartPosX { get; set; } // X position on the sheet where the loop begins

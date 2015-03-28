@@ -1,16 +1,13 @@
 ﻿using System;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Dauntlet.GameScreens
 {
     public class PauseScreen : MenuScreen
     {
         private const string MenuTitle = "PAUSED";
+        public override Screen ScreenType { get { return Screen.PauseScreen; } }
 
-        public override Screen ScreenType
-        {
-            get { return Screen.PauseScreen; }
-        }
+        // ===============================
 
         public PauseScreen(Dauntlet game) : base(game, MenuTitle)
         {

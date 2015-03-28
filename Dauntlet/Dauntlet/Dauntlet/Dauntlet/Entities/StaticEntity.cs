@@ -19,7 +19,7 @@ namespace Dauntlet.Entities
             Radius = radius;
             SpriteTexture = new AnimatedTexture2D(spriteTexture);
 
-             // Create player body
+             // Create body
             CollisionBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(Radius), 0.7f, ConvertUnits.ToSimUnits(position));
             CollisionBody.BodyType = BodyType.Static;
             CollisionBody.FixedRotation = true;
@@ -34,8 +34,7 @@ namespace Dauntlet.Entities
             Radius = 0f;
             SpriteTexture = new AnimatedTexture2D(spriteTexture);
 
-            // Create player body
-            //CollisionBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(Radius), 0.7f, ConvertUnits.ToSimUnits(position));
+            // Create body
             CollisionBody = BodyFactory.CreateRectangle(world, bounds.X, bounds.Y, 1f, ConvertUnits.ToSimUnits(position));
             CollisionBody.BodyType = BodyType.Static;
             CollisionBody.FixedRotation = true;

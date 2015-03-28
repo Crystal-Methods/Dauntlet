@@ -5,12 +5,17 @@ namespace Dauntlet.GameScreens
 {
     public abstract class GameScreen
     {
-        public Dauntlet MainGame;
+        protected bool IsScreenLoaded;
         protected GraphicsDevice GraphicsDevice { get { return MainGame.Graphics; } }
+
+        // ================================
+
+        public Dauntlet MainGame;
         public SpriteBatch SpriteBatch { get; set; }
-        protected bool isLoaded;
-        public bool IsLoaded { get { return isLoaded; } }
+        public bool IsLoaded { get { return IsScreenLoaded; } }
         abstract public Screen ScreenType { get; }
+
+        // ===============================
         
         protected GameScreen(Dauntlet game)
         {

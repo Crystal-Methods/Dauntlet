@@ -8,11 +8,12 @@ namespace Dauntlet
 {
     public static class SoundManager
     {
-        
         static readonly Dictionary<String, SoundEffectInstance> SfxList = new Dictionary<string, SoundEffectInstance>();
         static readonly Dictionary<String, Song> SongList = new Dictionary<string, Song>();
         private static Song _currentSong;
         private static string _currentSongName;
+
+        // =============================================================
 
         public static void LoadContent(ContentManager contentManager)
         {

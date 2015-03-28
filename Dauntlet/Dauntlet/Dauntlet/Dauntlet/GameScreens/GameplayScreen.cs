@@ -9,32 +9,28 @@ namespace Dauntlet.GameScreens
 {
     public class GameplayScreen : GameScreen
     {
-
         private ContentManager _content;
-        public PlayerEntity Player;
-        SpriteBatch _spriteBatch;
+        private SpriteBatch _spriteBatch;
         private static Matrix _view;
 
+        // ===================================
+
+        public PlayerEntity Player;
         public World World { get; set; }
         public static bool DebugCollision { get; set; }
         public Vector2 DisplayRoomCenter { get { return new Vector2(TileEngine.CurrentRoom.PixelWidth/2f, TileEngine.CurrentRoom.PixelHeight/2f);} }
         public Vector2 SimRoomCenter { get { return ConvertUnits.ToSimUnits(DisplayRoomCenter); } }
         public override Screen ScreenType { get { return Screen.GameplayScreen;} }
 
-        // ------------------------------------
+        // ==================================
 
-        public GameplayScreen(Dauntlet game) : base(game)
-        {
-
-            DebugCollision = false;
-        }
+        public GameplayScreen(Dauntlet game) : base(game) { }
 
         public override void LoadContent()
         {
-            if (_content == null)
-                _content = new ContentManager(MainGame.Services, "Content");
-
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            // Lazy load things
+            if (_content == null) _content = new ContentManager(MainGame.Services, "Content");
+            if (_spriteBatch == null) _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Initialize things
             CameraManager.Init(GraphicsDevice);
@@ -43,20 +39,17 @@ namespace Dauntlet.GameScreens
             ConvertUnits.SetDisplayUnitToSimUnitRatio(TileEngine.TileSize); // 1 meter = 1 tile
 
             World = TileEngine.CurrentRoom.World;
-            Entity.DebugCircleTexture = _content.Load<Texture2D>("Textures/Circle");
-            Entity.Shadow = _content.Load<Texture2D>("Textures/Shadow");
             Player = new PlayerEntity(World, DisplayRoomCenter + new Vector2(40, -40),
                 _content.Load<Texture2D>("Textures/Dante"));
 
-            isLoaded = true;
+            IsScreenLoaded = true;
         }
 
         public override void UnloadContent()
         {
-            isLoaded = false;
+            IsScreenLoaded = false;
             _content.Unload();
         }
-
 
         public override void Update(GameTime gameTime)
         {
@@ -66,10 +59,10 @@ namespace Dauntlet.GameScreens
             foreach (var entity in TileEngine.CurrentRoom.Entities)
                 entity.Update(gameTime);
             
-
             // Update camera
             _view = CameraManager.MoveCamera(Player.DisplayPosition);
-
+            
+            // Handle input
             if (MainGame.Input.IsMovement())
                 Player.Move(MainGame.Input.CurrentKeyboardState, MainGame.Input.CurrentGamePadState);
             if (MainGame.Input.IsRotate())
@@ -78,6 +71,8 @@ namespace Dauntlet.GameScreens
                 ((MenuScreen)MainGame.GetScreen(Screen.PauseScreen)).OverlayScreen(this);
             if (MainGame.Input.IsToggleDebug())
                 DebugCollision = !DebugCollision;
+            if (MainGame.Input.IsAttack())
+                SoundManager.Play("Swish");
         }
 
         public override void Draw(GameTime gameTime)

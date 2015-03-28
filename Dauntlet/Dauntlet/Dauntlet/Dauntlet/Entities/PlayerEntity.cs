@@ -13,10 +13,10 @@ namespace Dauntlet.Entities
 {
     public class PlayerEntity : Entity
     {
-        private const float speed = 10f;
-        private const float radius = 15f; // Radius of player's bounding circle
-        private const float defaultOffGroundHeight = 14f; // How far the base of the sprite is from the center of the shadow
-        private const float mass = 1f;
+        private const float PlayerSpeed = 10f;
+        private const float PlayerRadius = 15f; // Radius of player's bounding circle
+        private const float PlayerFloatHeight = 14f; // How far the base of the sprite is from the center of the shadow
+        private const float PlayerMass = 1f;
         
         // ---------------------------------
 
@@ -26,9 +26,9 @@ namespace Dauntlet.Entities
 
         public PlayerEntity(World world, Vector2 position, Texture2D spriteTexture)
         {
-            Speed = speed;
-            Radius = radius;
-            OffGroundHeight = defaultOffGroundHeight;
+            Speed = PlayerSpeed;
+            Radius = PlayerRadius;
+            OffGroundHeight = PlayerFloatHeight;
             IsBobbing = true;
 
             SpriteTexture = new AnimatedTexture2D(spriteTexture);
@@ -45,7 +45,7 @@ namespace Dauntlet.Entities
             Vector2 circlePosition = ConvertUnits.ToSimUnits(position) + new Vector2(0, -1f);
 
             // Create player body
-            float density = mass/(float)(Math.PI*Math.Pow(ConvertUnits.ToSimUnits(Radius), 2));
+            float density = PlayerMass/(float)(Math.PI*Math.Pow(ConvertUnits.ToSimUnits(Radius), 2));
             CollisionBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(Radius), density, circlePosition);
             CollisionBody.BodyType = BodyType.Dynamic;
             CollisionBody.FixedRotation = true;
@@ -82,7 +82,6 @@ namespace Dauntlet.Entities
 
             //Sound Test
             SoundManager.PlaySong(TileEngine.CurrentRoomName == "testroom1" ? "SkeletonSwing" : "NoCombat");
-
 
             // Kill old body and set new one
             CollisionBody.Dispose();
@@ -125,48 +124,15 @@ namespace Dauntlet.Entities
             const float e = (float)Math.PI/8f;
             float r = CollisionBody.Rotation;
 
-            if (r > 7 * e || r <= -7 * e)
-                SpriteTexture.SetAnimation("LookLeft");
-            else if (r > 5 * e)
-                SpriteTexture.SetAnimation("LookDownLeft");
-            else if (r > 3 * e)
-                SpriteTexture.SetAnimation("LookDown");
-            else if (r > e)
-                SpriteTexture.SetAnimation("LookDownRight");
-            else if (r > -e)
-                SpriteTexture.SetAnimation("LookRight");
-            else if (r > -3 * e)
-                SpriteTexture.SetAnimation("LookUpRight");
-            else if (r > -5 * e)
-                SpriteTexture.SetAnimation("LookUp");
-            else if (r > -7 * e)
-                SpriteTexture.SetAnimation("LookUpLeft");
+            if (r > 7 * e || r <= -7 * e) SpriteTexture.SetAnimation("LookLeft");
+            else if (r > 5 * e) SpriteTexture.SetAnimation("LookDownLeft");
+            else if (r > 3 * e) SpriteTexture.SetAnimation("LookDown");
+            else if (r > e) SpriteTexture.SetAnimation("LookDownRight");
+            else if (r > -e) SpriteTexture.SetAnimation("LookRight");
+            else if (r > -3 * e) SpriteTexture.SetAnimation("LookUpRight");
+            else if (r > -5 * e) SpriteTexture.SetAnimation("LookUp");
+            else if (r > -7 * e) SpriteTexture.SetAnimation("LookUpLeft");
         }
-
-        //private void HandleGamePad()
-        //{
-        //    GamePadState padState = GamePad.GetState(0, GamePadDeadZone.Circular);
-
-        //    if (padState.IsConnected)
-        //    {
-        //        if (padState.Buttons.A == ButtonState.Pressed)
-        //            SoundManager.Play("Swish");
-
-        //        if (padState.ThumbSticks.Left.Length() > 0.2)
-        //            CollisionBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Left.Y, padState.ThumbSticks.Left.X);
-        //    }
-        //}
-
-        //private void HandleKeyboard()
-        //{
-        //    Vector2 force = Vector2.Zero;
-        //    //Keys are really long because i was testing something that conflicted with the word Keys
-        //    if (state.IsKeyDown(Keys.F3) && _oldKeyboardState.IsKeyUp(Keys.F3))
-        //        GameplayScreen.DebugCollision = !GameplayScreen.DebugCollision;
-            
-        //    if (state.IsKeyDown(Keys.Space))
-        //        SoundManager.Play("Swish");
-        //}
 
         public override void Update(GameTime gameTime)
         {

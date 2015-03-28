@@ -9,9 +9,9 @@ namespace Dauntlet.Entities
 {
     public class EnemyEntity : Entity
     {
-        private int hitPoints;
-        private int attack;
-        private int speed;
+        //private int hitPoints;
+        //private int attack;
+        //private int speed;
 
         public EnemyEntity(World world, Vector2 roomCenter, Texture2D spriteTexture, float speed, float radius)
         {

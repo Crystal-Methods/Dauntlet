@@ -9,14 +9,11 @@ namespace Dauntlet.GameScreens
         public String Text { get; set; }
         public Vector2 Position { get; set; }
 
-        public MenuItem(string text)
-        {
-            Text = text;
-        }
+        // ==================
+
+        public MenuItem(string text) { Text = text; }
 
         public event EventHandler Selected;
-
-        // Method for raising the Selected event.
         protected internal virtual void OnSelectEntry()
         {
             if (Selected != null)
@@ -39,9 +36,6 @@ namespace Dauntlet.GameScreens
                 scale += pulsate*0.15f;
             }
 
-            // Modify the alpha to fade text out during transitions.
-            //color *= screen.TransitionAlpha;
-
             // Draw text, centered on the middle of each line.
             Dauntlet mainGame = ms.MainGame;
             SpriteBatch spriteBatch = ms.SpriteBatch;
@@ -53,10 +47,7 @@ namespace Dauntlet.GameScreens
                                    origin, scale, SpriteEffects.None, 0);
         }
 
-        public void Update(MenuScreen ms, bool isSelected, GameTime gameTime)
-        {
-            
-        }
+        public void Update(MenuScreen ms, bool isSelected, GameTime gameTime) { }
 
         public virtual int GetHeight(MenuScreen screen)
         {

@@ -5,14 +5,13 @@ namespace Dauntlet.GameScreens
 {
     public class InputState
     {
-
         public KeyboardState CurrentKeyboardState;
         public GamePadState CurrentGamePadState;
-
         public KeyboardState LastKeyboardState;
         public GamePadState LastGamePadState;
-
         public bool GamePadWasConnected;
+
+        // =========================================
 
         public InputState()
         {
@@ -98,6 +97,11 @@ namespace Dauntlet.GameScreens
         public bool IsToggleDebug()
         {
             return IsNewKeyPress(Keys.F3);
+        }
+
+        public bool IsAttack()
+        {
+            return IsNewKeyPress(Keys.Space) || IsNewButtonPress(Buttons.A);
         }
 
     }

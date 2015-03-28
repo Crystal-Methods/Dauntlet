@@ -23,10 +23,8 @@ namespace Dauntlet
 
     public static class SpriteFactory
     {
-        // This keeps track of all the textures and gives each one a unique name
         private static readonly Dictionary<String, Texture2D> Textures = new Dictionary<string, Texture2D>();
 
-        // Loads all the textures and puts them in the Dictionary
         public static void Init(ContentManager contentManager)
         {
             string[] files = Directory.GetFiles(@"Content/Textures", "*.xnb");
@@ -43,15 +41,17 @@ namespace Dauntlet
                 var texture = contentManager.Load<Texture2D>(@"Textures/" + s);
                 Textures.Add(s, texture);
             }
+
+            // Load these general-purpose textures
+            Entity.DebugCircleTexture = Textures["Circle"];
+            Entity.Shadow = Textures["Shadow"];
         }
 
-        //Calling this will create a Player sprite.  You probably don't want to create more than one at a time!
         public static PlayerEntity CreatePlayer(World world, Vector2 position)
         {
             return new PlayerEntity(world, position, Textures["Dante"]);
         }
 
-        // Calling this will create an Enemy
         public static EnemyEntity CreateEnemy(World world, Vector2 position, EnemyTypes type)
         {
             if (type == EnemyTypes.Guapo)
@@ -74,8 +74,5 @@ namespace Dauntlet
             }
             throw new ArgumentException("One or more object types do not exist!");
         }
-
-        internal static Texture2D BoundingCircle { get { return Textures["Circle"]; } }
-
     }
 }

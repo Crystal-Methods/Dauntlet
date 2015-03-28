@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -25,7 +24,7 @@ namespace Dauntlet.GameScreens
 
         public override void LoadContent()
         {
-            isLoaded = true;
+            IsScreenLoaded = true;
             if (_content == null)
                 _content = new ContentManager(MainGame.Services, "Content");
 

@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace Dauntlet.GameScreens
 {
@@ -12,62 +11,43 @@ namespace Dauntlet.GameScreens
         private SpriteBatch _spriteBatch;
         private Texture2D _bgTex;
         private Texture2D _fistTex;
+
+        // ==============================================
+
         public override Screen ScreenType { get { return Screen.TitleScreen;} }
 
+        // ==============================================
 
-        public MainMenuScreen(Dauntlet game) : base(game)
-        {
-        }
+        public MainMenuScreen(Dauntlet game) : base(game) { }
 
         public override void LoadContent()
         {
-            isLoaded = true;
-            if (_content == null)
-                _content = new ContentManager(MainGame.Services, "Content");
-
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            if (_content == null) _content = new ContentManager(MainGame.Services, "Content");
+            if (_spriteBatch == null) _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             _bgTex = _content.Load<Texture2D>("Textures/Dauntlet");
             _fistTex = _content.Load<Texture2D>("Textures/Fist");
 
             SoundManager.PlaySong("MainTheme");
             SoundManager.VolumeChange(0.4f);
+            IsScreenLoaded = true;
         }
 
         public override void UnloadContent()
         {
-            isLoaded = false;
+            IsScreenLoaded = false;
             _content.Unload();
         }
 
         public override void Update(GameTime gameTime)
         {
-            HandleKeyboard();
-            HandleGamePad();
+            if (MainGame.Input.IsMenuSelect())
+            {
+                MainGame.ChangeScreen(Screen.GameplayScreen);
+                SoundManager.PlaySong("NoCombat");
+            }
             if (MainGame.Input.IsQuitGame())
                 MainGame.Exit();
-        }
-
-        private void HandleGamePad()
-        {
-            GamePadState padState = GamePad.GetState(0, GamePadDeadZone.Circular);
-
-            if (padState.IsButtonDown(Buttons.Start))
-            {
-                MainGame.ChangeScreen(Screen.GameplayScreen);
-                SoundManager.PlaySong("NoCombat");
-            }
-        }
-
-        private void HandleKeyboard()
-        {
-            KeyboardState state = Keyboard.GetState();
-
-            if (state.IsKeyDown(Keys.Space))
-            {
-                MainGame.ChangeScreen(Screen.GameplayScreen);
-                SoundManager.PlaySong("NoCombat");
-            }
         }
 
         public override void Draw(GameTime gametime)
