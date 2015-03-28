@@ -24,7 +24,7 @@ namespace Dauntlet.Entities
 
         // --------------------------------
 
-        public PlayerEntity(World world, Vector2 roomCenter, Texture2D spriteTexture)
+        public PlayerEntity(World world, Vector2 position, Texture2D spriteTexture)
         {
             Speed = speed;
             Radius = radius;
@@ -42,7 +42,7 @@ namespace Dauntlet.Entities
             SpriteTexture.AddAnimation("LookUpRight", 0, 99, 23, 33, 6, 1 / 12f, true);
             SpriteTexture.SetAnimation("LookRight");
 
-            Vector2 circlePosition = ConvertUnits.ToSimUnits(roomCenter) + new Vector2(0, -1f);
+            Vector2 circlePosition = ConvertUnits.ToSimUnits(position) + new Vector2(0, -1f);
 
             // Create player body
             float density = mass/(float)(Math.PI*Math.Pow(ConvertUnits.ToSimUnits(Radius), 2));
@@ -53,7 +53,6 @@ namespace Dauntlet.Entities
             CollisionBody.Friction = 0.5f;
             CollisionBody.LinearDamping = 35f;
             CollisionBody.AngularDamping = 100f;
-            float m = CollisionBody.Mass;
 
             CollisionBody.OnCollision += CollisionBodyOnCollision;
         }
@@ -169,13 +168,13 @@ namespace Dauntlet.Entities
         //        SoundManager.Play("Swish");
         //}
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             ResolveAnimation();
             _isTeleporting = false;
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             SpriteTexture.StepAnimation(gameTime);
             spriteBatch.Draw(Shadow, DisplayPosition, null, Color.White, 0f,

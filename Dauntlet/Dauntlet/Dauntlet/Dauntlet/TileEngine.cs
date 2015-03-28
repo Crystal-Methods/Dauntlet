@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
+using Dauntlet.Entities;
 using Dauntlet.GameScreens;
 using FarseerPhysics;
 using FarseerPhysics.Dynamics;
@@ -15,7 +15,7 @@ namespace Dauntlet
 {
     public static class TileEngine
     {
-        internal const int tileSize = 64; // Size of 1 tile in pixels
+        internal const int SizeOfOneTile = 64; // Size of 1 tile in pixels
 
         // -----------------------------
 
@@ -26,7 +26,7 @@ namespace Dauntlet
         public static string CurrentRoomName = "Fountain2";
 
         public static Room CurrentRoom { get { return Rooms[CurrentRoomName]; } }
-        public static int TileSize { get { return tileSize; } }
+        public static int TileSize { get { return SizeOfOneTile; } }
 
         // -----------------------------
 
@@ -61,6 +61,14 @@ namespace Dauntlet
             }
 
             // Parse Room files
+            ParseRooms(collisionData);
+
+            if (CurrentRoomName == null)
+                CurrentRoomName = "testroom";
+        }
+
+        private static void ParseRooms(bool[][][] collisionData)
+        {
             foreach (string file in Directory.EnumerateFiles("Rooms", "*.csv"))
             {
                 string[] fileLines = File.ReadAllLines(file);
@@ -75,18 +83,36 @@ namespace Dauntlet
                     for (int j = 0; j < columns.Length; j++)
                     {
                         string[] tileId = columns[j].Split(';');
-                        int Y = Int32.Parse(tileId[0]);
-                        int X = Int32.Parse(tileId[1]);
-                        tiles[j] = new Tile(new []{X, Y}, new Vector2(j, i - 1), collisionData[Y][X]);
+                        int y = Int32.Parse(tileId[0]);
+                        int x = Int32.Parse(tileId[1]);
+                        tiles[j] = new Tile(new[] {x, y}, new Vector2(j, i - 1), collisionData[y][x]);
                     }
                     map[i] = tiles;
                 }
 
-                if (file != null) Rooms.Add(Path.GetFileNameWithoutExtension(file), new Room(map, null, mapHeight, mapWidth));
-            }
+                var theRoom = new Room(map, null, mapHeight, mapWidth);
+                if (file != null) Rooms.Add(Path.GetFileNameWithoutExtension(file), theRoom);
 
-            if (CurrentRoomName == null)
-                CurrentRoomName = "testroom";
+                string[] staticEntities = fileLines[fileLines.Length - 2].Split(',');
+                foreach (var s in staticEntities)
+                {
+                    string[] info = s.Split(';');
+                    var type = (ObjectTypes) Enum.Parse(typeof (ObjectTypes), info[0]);
+                    var se = SpriteFactory.CreateStaticEntity(theRoom.World,
+                        new Vector2((float) Convert.ToDouble(info[1]), (float) Convert.ToDouble(info[2])), type);
+                    theRoom.Entities.Add(se);
+                }
+
+                string[] enemies = fileLines[fileLines.Length - 1].Split(',');
+                foreach (var s in enemies)
+                {
+                    string[] info = s.Split(';');
+                    var type = (EnemyTypes) Enum.Parse(typeof (EnemyTypes), info[0]);
+                    var se = SpriteFactory.CreateEnemy(theRoom.World,
+                        new Vector2((float) Convert.ToDouble(info[1]), (float) Convert.ToDouble(info[2])), type);
+                    theRoom.Entities.Add(se);
+                }
+            }
         }
 
         // Draws the room
@@ -124,9 +150,9 @@ namespace Dauntlet
             Tile to = CurrentRoom.GetTpDestination(Char.ToLower(from.TeleportId));
             Vector2 newPos = to.Position;
             newPos.X *= TileSize;
-            newPos.X += TileSize/2;
+            newPos.X += TileSize/2f;
             newPos.Y *= TileSize;
-            newPos.Y += TileSize/2;
+            newPos.Y += TileSize/2f;
             Game.Player.ChangeRoom(CurrentRoom.World, ConvertUnits.ToSimUnits(newPos));
         }
     }
@@ -166,6 +192,7 @@ namespace Dauntlet
     public struct Room
     {
         public World World;
+        public List<Entity> Entities; 
         public readonly int Height;
         public readonly int Width;
         private readonly Tile[][] _map;
@@ -181,6 +208,7 @@ namespace Dauntlet
         {
             ConvertUnits.SetDisplayUnitToSimUnitRatio(TileEngine.TileSize);
             World = new World(Vector2.Zero);
+            Entities = new List<Entity>();
             _map = map;
             _tpFroms = tpFroms;
             Height = height;

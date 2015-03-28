@@ -31,5 +31,8 @@ namespace Dauntlet.Entities
 
         public static Texture2D DebugCircleTexture;
         public static Texture2D Shadow;
+
+        public abstract void Update(GameTime gameTime);
+        public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch);
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dauntlet.GameScreens;
+﻿using Dauntlet.GameScreens;
 using FarseerPhysics;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
@@ -47,18 +43,18 @@ namespace Dauntlet.Entities
             CollisionBody.Friction = 0.5f;
         }
 
-        public void SetAnimation(int startPosX, int startPosY, int frameWidth, int frameHeight, int frameCount, float FPS, bool flipped)
+        public void SetAnimation(int startPosX, int startPosY, int frameWidth, int frameHeight, int frameCount, float fps, bool flipped)
         {
-            SpriteTexture.AddAnimation("Animation", startPosX, startPosY, frameWidth, frameHeight, frameCount, FPS, flipped);
+            SpriteTexture.AddAnimation("Animation", startPosX, startPosY, frameWidth, frameHeight, frameCount, fps, flipped);
             SpriteTexture.SetAnimation("Animation");
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             SpriteTexture.StepAnimation(gameTime);
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if (GameplayScreen.DebugCollision)
             {

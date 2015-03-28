@@ -1,5 +1,4 @@
-﻿using System;
-using Dauntlet.Entities;
+﻿using Dauntlet.Entities;
 using FarseerPhysics;
 using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
@@ -13,9 +12,6 @@ namespace Dauntlet.GameScreens
 
         private ContentManager _content;
         public PlayerEntity Player;
-        public EnemyEntity Enemy;
-        public StaticEntity Fountain;
-        public StaticEntity Tree;
         SpriteBatch _spriteBatch;
         private static Matrix _view;
 
@@ -42,18 +38,15 @@ namespace Dauntlet.GameScreens
 
             // Initialize things
             CameraManager.Init(GraphicsDevice);
+            SpriteFactory.Init(_content);
             TileEngine.LoadContent(this, _content);
             ConvertUnits.SetDisplayUnitToSimUnitRatio(TileEngine.TileSize); // 1 meter = 1 tile
 
             World = TileEngine.CurrentRoom.World;
             Entity.DebugCircleTexture = _content.Load<Texture2D>("Textures/Circle");
             Entity.Shadow = _content.Load<Texture2D>("Textures/Shadow");
-            Player = new PlayerEntity(World, DisplayRoomCenter + new Vector2(40, -40), _content.Load<Texture2D>("Textures/Dante"));
-            Enemy = new Guapo(World, DisplayRoomCenter + new Vector2(40, 40), _content.Load<Texture2D>("Textures/Enemies/sprite_enemy_guapo"));
-            Fountain = new StaticEntity(World, DisplayRoomCenter, ConvertUnits.ToSimUnits(new Vector2(128, 39)), _content.Load<Texture2D>("Textures/Fountain"));
-            Fountain.SetAnimation(0, 0, 128, 59, 3, 1 / 12f, false);
-            Tree = new StaticEntity(World, new Vector2(577.5f, 351f), ConvertUnits.ToSimUnits(new Vector2(125, 30)), _content.Load<Texture2D>("Textures/Tree"));
-
+            Player = new PlayerEntity(World, DisplayRoomCenter + new Vector2(40, -40),
+                _content.Load<Texture2D>("Textures/Dante"));
 
             isLoaded = true;
         }
@@ -69,10 +62,10 @@ namespace Dauntlet.GameScreens
         {
             // Update the world
             World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
-            Vector2 lol = Player.SimPosition;
             Player.Update(gameTime);
-            Enemy.Update(gameTime);
-            Fountain.Update(gameTime);
+            foreach (var entity in TileEngine.CurrentRoom.Entities)
+                entity.Update(gameTime);
+            
 
             // Update camera
             _view = CameraManager.MoveCamera(Player.DisplayPosition);
@@ -96,10 +89,7 @@ namespace Dauntlet.GameScreens
             TileEngine.DrawRoom(_spriteBatch, gameTime);
             _spriteBatch.End();
 
-            // Second pass: Draw room objects
-            // TODO
-
-            // Third pass: Draw debug highlights (optional)
+            // Second pass: Draw debug highlights (optional)
             if (DebugCollision)
             {
                 _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _view);
@@ -107,15 +97,12 @@ namespace Dauntlet.GameScreens
                 _spriteBatch.End();
             }
 
-            // Fourth pass: Draw entities
+            // Third pass: Draw entities
             _spriteBatch.Begin(SpriteSortMode.FrontToBack, null, SamplerState.PointClamp, null, null, null, _view);
             Player.Draw(gameTime, _spriteBatch);
-            Fountain.Draw(gameTime, _spriteBatch);
-            Enemy.Draw(gameTime, _spriteBatch);
-            Tree.Draw(gameTime, _spriteBatch);
+            foreach (var entity in TileEngine.CurrentRoom.Entities)
+                entity.Draw(gameTime, _spriteBatch);
             _spriteBatch.End();
-
-            
         }
     }
 }
