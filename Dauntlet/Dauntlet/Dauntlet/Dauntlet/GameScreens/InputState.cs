@@ -90,6 +90,11 @@ namespace Dauntlet.GameScreens
                    CurrentKeyboardState.IsKeyDown(Keys.D) || CurrentGamePadState.ThumbSticks.Right != Vector2.Zero;
         }
 
+        public bool IsRotate()
+        {
+            return CurrentGamePadState.ThumbSticks.Left != Vector2.Zero;
+        }
+
         public bool IsToggleDebug()
         {
             return IsNewKeyPress(Keys.F3);

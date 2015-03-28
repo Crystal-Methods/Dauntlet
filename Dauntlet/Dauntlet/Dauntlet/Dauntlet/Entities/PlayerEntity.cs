@@ -115,6 +115,12 @@ namespace Dauntlet.Entities
                 CollisionBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Right.Y, padState.ThumbSticks.Right.X);
         }
 
+        public void Rotate(GamePadState padState)
+        {
+            if (padState.ThumbSticks.Left.Length() > 0.2)
+                CollisionBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Left.Y, padState.ThumbSticks.Left.X);
+        }
+
         public void ResolveAnimation()
         {
             const float e = (float)Math.PI/8f;
