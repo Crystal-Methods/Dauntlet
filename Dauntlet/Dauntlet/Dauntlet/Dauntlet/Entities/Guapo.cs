@@ -20,5 +20,12 @@ namespace Dauntlet.Entities
             SpriteTexture.AddAnimation("Fly", 0, 0, 32, 32, 5, 1/24f, false);
             SpriteTexture.SetAnimation("Fly");
         }
+
+        // Get player position and other data like this:
+        public void Foo()
+        {
+            Vector2 playerPosition = Player.SimPosition;
+            // Do something...
+        }
     }
 }

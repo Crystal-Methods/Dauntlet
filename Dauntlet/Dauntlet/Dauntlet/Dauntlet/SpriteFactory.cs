@@ -24,9 +24,11 @@ namespace Dauntlet
     public static class SpriteFactory
     {
         private static readonly Dictionary<String, Texture2D> Textures = new Dictionary<string, Texture2D>();
+        private static GraphicsDevice _graphics;
 
-        public static void Init(ContentManager contentManager)
+        public static void Init(ContentManager contentManager, GraphicsDevice graphics)
         {
+            _graphics = graphics;
             string[] files = Directory.GetFiles(@"Content/Textures", "*.xnb");
 
             for (int i = 0; i < files.Length; i++)
@@ -47,6 +49,15 @@ namespace Dauntlet
             Entity.Shadow = Textures["Shadow"];
         }
 
+        public static Texture2D GetRectangleTexture(int height, int width, Color color)
+        {
+            var rect = new Texture2D(_graphics, width, height);
+            var data = new Color[width * height];
+            for (int i = 0; i < data.Length; i++) data[i] = color;
+            rect.SetData(data);
+            return rect;
+        }
+
         public static PlayerEntity CreatePlayer(World world, Vector2 position)
         {
             return new PlayerEntity(world, position, Textures["Dante"]);
@@ -63,14 +74,14 @@ namespace Dauntlet
         {
             if (type == ObjectTypes.Fountain)
             {
-                var se = new StaticEntity(world, position, ConvertUnits.ToSimUnits(new Vector2(128, 39)),
+                var se = new StaticEntity(world, position, new Vector2(128, 39),
                     Textures["Fountain"]);
                 se.SetAnimation(0, 0, 128, 59, 3, 1 / 12f, false);
                 return se;
             }
             if (type == ObjectTypes.Tree)
             {
-                return new StaticEntity(world, new Vector2(577.5f, 351f), ConvertUnits.ToSimUnits(new Vector2(125, 30)), Textures["Tree"]);
+                return new StaticEntity(world, new Vector2(577.5f, 351f), new Vector2(125, 30), Textures["Tree"]);
             }
             throw new ArgumentException("One or more object types do not exist!");
         }

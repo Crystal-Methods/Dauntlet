@@ -29,6 +29,8 @@ namespace Dauntlet.Entities
 
         public float Speed;
         public float Radius;
+        public float Height;
+        public float Width;
 
         public Vector2 SimPosition { get { return CollisionBody.Position; } }
         public Vector2 DisplayPosition { get { return ConvertUnits.ToDisplayUnits(CollisionBody.Position); } }

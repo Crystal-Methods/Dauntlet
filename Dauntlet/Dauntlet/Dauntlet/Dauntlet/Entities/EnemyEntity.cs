@@ -13,6 +13,8 @@ namespace Dauntlet.Entities
         //private int attack;
         //private int speed;
 
+        protected PlayerEntity Player { get { return GameplayScreen.Player; } }
+
         public EnemyEntity(World world, Vector2 roomCenter, Texture2D spriteTexture, float speed, float radius)
         {
             Speed = speed;

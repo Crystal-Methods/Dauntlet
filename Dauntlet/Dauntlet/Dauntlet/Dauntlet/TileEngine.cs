@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Dauntlet.Entities;
 using Dauntlet.GameScreens;
 using FarseerPhysics;
@@ -36,38 +35,14 @@ namespace Dauntlet
             TileSet = content.Load<Texture2D>(@"Textures/tilesheet2");
             Rooms = new Dictionary<string, Room>();
 
-            // Parse Collision Data file
-            string[] theStringArray = File.ReadAllLines("CollisionData2.csv");
-            var collisionData = new bool[theStringArray.Length][][];
-            for (int i = 0; i < theStringArray.Length; i++)
-            {
-                string[] temp = theStringArray[i].Split(',');
-                var temp2 = new bool[temp.Length][];
-                for (int j = 0; j < temp.Length; j++)
-                {
-                    char[] bits = Convert.ToString(Convert.ToInt32(temp[j], 10), 2).PadLeft(4, '0').ToCharArray();
-                    var bools = new bool[4];
-                    for (int k = 0; k < 4; k++)
-                    {
-                        if (bits[k] == '1')
-                            bools[k] = true;
-                        else
-                            bools[k] = false;
-                    }
-                    temp2[j] = bools;
-                }
-                    
-                collisionData[i] = temp2;
-            }
-
             // Parse Room files
-            ParseRooms(collisionData);
+            ParseRooms();
 
             if (CurrentRoomName == null)
                 CurrentRoomName = "testroom";
         }
 
-        private static void ParseRooms(bool[][][] collisionData)
+        private static void ParseRooms()
         {
             foreach (string file in Directory.EnumerateFiles("Rooms", "*.csv"))
             {
@@ -85,7 +60,7 @@ namespace Dauntlet
                         string[] tileId = columns[j].Split(';');
                         int y = Int32.Parse(tileId[0]);
                         int x = Int32.Parse(tileId[1]);
-                        tiles[j] = new Tile(new[] {x, y}, new Vector2(j, i - 1), collisionData[y][x]);
+                        tiles[j] = new Tile(new[] {x, y}, new Vector2(j, i - 1), y == 0);
                     }
                     map[i] = tiles;
                 }
@@ -129,17 +104,21 @@ namespace Dauntlet
 
         public static void DrawDebug(SpriteBatch spriteBatch, GraphicsDevice graphics)
         {
-            var rectRed = new Texture2D(graphics, TileSize/2, TileSize/2);
-            var rectBlue = new Texture2D(graphics, TileSize/2, TileSize/2);
-            var data = new Color[TileSize/2 * TileSize/2];
-            for (int i = 0; i < data.Length; i++) data[i] = new Color(1, 0, 0, 0.1f);
-            rectRed.SetData(data);
-            for (int i = 0; i < data.Length; i++) data[i] = new Color(0, 0, 1, 0.1f);
-            rectBlue.SetData(data);
-            foreach (var body in CurrentRoom.World.BodyList.Where(body => body.IsStatic))
-                spriteBatch.Draw(body.FixtureList[0].CollisionCategories != Category.Cat10 ? rectRed : rectBlue,
-                    ConvertUnits.ToDisplayUnits(body.Position) -
-                    new Vector2(TileSize / 4f, TileSize / 4f), Color.White);
+            var redRect = SpriteFactory.GetRectangleTexture(TileSize, TileSize, new Color(1, 0, 0, 0.1f));
+            var blueRect = SpriteFactory.GetRectangleTexture(TileSize, TileSize, new Color(0, 0, 1, 0.1f));
+
+            foreach (var body in CurrentRoom.World.BodyList)
+                switch (body.FixtureList[0].CollisionCategories)
+                {
+                    case Category.Cat2:
+                        spriteBatch.Draw(redRect, ConvertUnits.ToDisplayUnits(body.Position) -
+                                                  new Vector2(TileSize / 2f, TileSize / 2f), Color.White);
+                        break;
+                    case Category.Cat10:
+                        spriteBatch.Draw(blueRect, ConvertUnits.ToDisplayUnits(body.Position) -
+                                                   new Vector2(TileSize / 2f, TileSize / 2f), Color.White);
+                        break;
+                }
         }
 
         public static void HandleTeleport(Body collidedTpBody)
@@ -164,8 +143,8 @@ namespace Dauntlet
         public char TeleportId;
         public string TeleportTo;
         public bool IsTeleport;
+        public bool IsWall;
         public Vector2 Position;
-        public bool[] CollisionData;
 
         //public Tile(int spriteId, Vector2 position, char tpId, string tpTo)
         //{
@@ -177,14 +156,14 @@ namespace Dauntlet
         //    Position = position;
         //}
 
-        public Tile(int[] spriteId, Vector2 position, bool[] collisionData)
+        public Tile(int[] spriteId, Vector2 position, bool isWall)
         {
             SpriteId = spriteId;
             TeleportId = '\0';
             TeleportTo = null;
             IsTeleport = false;
             Position = position;
-            CollisionData = collisionData;
+            IsWall = isWall;
         }
     }
 
@@ -217,25 +196,11 @@ namespace Dauntlet
             for (int i = 0; i < _map.Length; i++)
                 for (int j = 0; j < _map[i].Length; j++)
                 {
-                    if (_map[i][j].CollisionData[0])
+                    if (_map[i][j].IsWall)
                     {
-                        Body newBody = BodyFactory.CreateRectangle(World, .5f, .5f, 1, new Vector2(j + 0.25f, i + 0.25f));
+                        Body newBody = BodyFactory.CreateRectangle(World, 1f, 1f, 1, new Vector2(j + 0.5f, i + 0.5f));
                         newBody.BodyType = BodyType.Static;
-                    }
-                    if (_map[i][j].CollisionData[1])
-                    {
-                        Body newBody = BodyFactory.CreateRectangle(World, .5f, .5f, 1, new Vector2(j + 0.75f, i + 0.25f));
-                        newBody.BodyType = BodyType.Static;
-                    } 
-                    if (_map[i][j].CollisionData[2])
-                    {
-                        Body newBody = BodyFactory.CreateRectangle(World, .5f, .5f, 1, new Vector2(j + 0.25f, i + 0.75f));
-                        newBody.BodyType = BodyType.Static;
-                    }
-                    if (_map[i][j].CollisionData[3])
-                    {
-                        Body newBody = BodyFactory.CreateRectangle(World, .5f, .5f, 1, new Vector2(j + 0.75f, i + 0.75f));
-                        newBody.BodyType = BodyType.Static;
+                        newBody.CollisionCategories = Category.Cat2;
                     }
 
                     //if (_map[i][j].IsTeleport)

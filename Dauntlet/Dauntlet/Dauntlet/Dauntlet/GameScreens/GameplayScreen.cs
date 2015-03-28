@@ -15,7 +15,7 @@ namespace Dauntlet.GameScreens
 
         // ===================================
 
-        public PlayerEntity Player;
+        public static PlayerEntity Player;
         public World World { get; set; }
         public static bool DebugCollision { get; set; }
         public Vector2 DisplayRoomCenter { get { return new Vector2(TileEngine.CurrentRoom.PixelWidth/2f, TileEngine.CurrentRoom.PixelHeight/2f);} }
@@ -34,7 +34,7 @@ namespace Dauntlet.GameScreens
 
             // Initialize things
             CameraManager.Init(GraphicsDevice);
-            SpriteFactory.Init(_content);
+            SpriteFactory.Init(_content, GraphicsDevice);
             TileEngine.LoadContent(this, _content);
             ConvertUnits.SetDisplayUnitToSimUnitRatio(TileEngine.TileSize); // 1 meter = 1 tile
 

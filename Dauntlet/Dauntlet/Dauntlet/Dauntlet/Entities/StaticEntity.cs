@@ -31,11 +31,13 @@ namespace Dauntlet.Entities
         {
             IsRectangle = true;
             Speed = 0f;
-            Radius = 0f;
+            Height = bounds.Y;
+            Width = bounds.X;
             SpriteTexture = new AnimatedTexture2D(spriteTexture);
 
             // Create body
-            CollisionBody = BodyFactory.CreateRectangle(world, bounds.X, bounds.Y, 1f, ConvertUnits.ToSimUnits(position));
+            CollisionBody = BodyFactory.CreateRectangle(world, ConvertUnits.ToSimUnits(bounds.X), ConvertUnits.ToSimUnits(bounds.Y),
+                1f, ConvertUnits.ToSimUnits(position));
             CollisionBody.BodyType = BodyType.Static;
             CollisionBody.FixedRotation = true;
             CollisionBody.Restitution = 0f;
@@ -59,7 +61,13 @@ namespace Dauntlet.Entities
             {
                 if (IsCircle)
                     spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,
-                        CenterOrigin(DebugCircleTexture), 2*Radius/50f, SpriteEffects.None, LayerDepth - 1/10000f);
+                        CenterOrigin(DebugCircleTexture), 2*Radius/50f, SpriteEffects.None, LayerDepth + 1/100f);
+                else if (IsRectangle)
+                {
+                    spriteBatch.Draw(SpriteFactory.GetRectangleTexture((int)Height, (int)Width, new Color(1, 0, 0, 0.1f)), DisplayPosition,
+                        null, Color.White, 0f,
+                        new Vector2(Width/2f, Height/2f), 1f, SpriteEffects.None, LayerDepth + 1/100f);
+                }
             }
             spriteBatch.Draw(SpriteTexture.Sheet, SpritePosition(), SpriteTexture.CurrentFrame, Color.White, 0f,
                 SpriteOrigin, 1f, SpriteTexture.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, LayerDepth);
