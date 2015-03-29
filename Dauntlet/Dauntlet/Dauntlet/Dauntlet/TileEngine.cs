@@ -132,7 +132,7 @@ namespace Dauntlet
             newPos.X += TileSize/2f;
             newPos.Y *= TileSize;
             newPos.Y += TileSize/2f;
-            Game.Player.ChangeRoom(CurrentRoom.World, ConvertUnits.ToSimUnits(newPos));
+            GameplayScreen.Player.ChangeRoom(CurrentRoom.World, ConvertUnits.ToSimUnits(newPos));
         }
     }
 
