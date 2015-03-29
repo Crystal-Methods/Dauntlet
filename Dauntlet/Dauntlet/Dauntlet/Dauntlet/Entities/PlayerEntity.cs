@@ -13,7 +13,7 @@ namespace Dauntlet.Entities
 {
     public class PlayerEntity : Entity
     {
-        private const float PlayerSpeed = 10f;
+        private const float PlayerSpeed = 5f;
         private const float PlayerRadius = 15f; // Radius of player's bounding circle
         private const float PlayerFloatHeight = 14f; // How far the base of the sprite is from the center of the shadow
         private const float PlayerMass = 1f;
@@ -21,17 +21,23 @@ namespace Dauntlet.Entities
         // ---------------------------------
 
         private bool _isTeleporting;
+        private float _punchTime;
+        private AnimatedTexture2D _gauntletTexture;
+        public bool IsPunching;
+
+        public Body GauntletBody;
 
         // --------------------------------
 
-        public PlayerEntity(World world, Vector2 position, Texture2D spriteTexture)
+        public PlayerEntity(World world, Vector2 position, Texture2D playerTexture, Texture2D gauntletTexture)
         {
             Speed = PlayerSpeed;
             Radius = PlayerRadius;
             OffGroundHeight = PlayerFloatHeight;
             IsBobbing = true;
 
-            SpriteTexture = new AnimatedTexture2D(spriteTexture);
+
+            SpriteTexture = new AnimatedTexture2D(playerTexture);
             SpriteTexture.AddAnimation("LookDown", 0, 0, 23, 33, 6, 1 / 12f, false);
             SpriteTexture.AddAnimation("LookDownLeft", 0, 33, 23, 33, 6, 1 / 12f, false);
             SpriteTexture.AddAnimation("LookLeft", 0, 66, 23, 33, 6, 1 / 12f, false);
@@ -41,6 +47,8 @@ namespace Dauntlet.Entities
             SpriteTexture.AddAnimation("LookRight", 0, 66, 23, 33, 6, 1 / 12f, true);
             SpriteTexture.AddAnimation("LookUpRight", 0, 99, 23, 33, 6, 1 / 12f, true);
             SpriteTexture.SetAnimation("LookRight");
+
+            _gauntletTexture = new AnimatedTexture2D(gauntletTexture);
 
             Vector2 circlePosition = ConvertUnits.ToSimUnits(position) + new Vector2(0, -1f);
 
@@ -53,8 +61,17 @@ namespace Dauntlet.Entities
             CollisionBody.Friction = 0.5f;
             CollisionBody.LinearDamping = 35f;
             CollisionBody.AngularDamping = 100f;
-
             CollisionBody.OnCollision += CollisionBodyOnCollision;
+
+            // Create Gauntlet body
+            float gauntletdensity = PlayerMass / (float)(Math.PI * Math.Pow(ConvertUnits.ToSimUnits(Radius), 2));
+            GauntletBody = BodyFactory.CreateRectangle(world, ConvertUnits.ToSimUnits(32), ConvertUnits.ToSimUnits(24), gauntletdensity,
+                circlePosition + new Vector2(15, 0));
+            GauntletBody.BodyType = BodyType.Kinematic;
+            GauntletBody.CollidesWith = Category.None;
+            GauntletBody.FixedRotation = true;
+            GauntletBody.LinearDamping = 5f;
+            GauntletBody.OnCollision += OnGauntletCollision;
         }
 
         bool CollisionBodyOnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
@@ -65,6 +82,13 @@ namespace Dauntlet.Entities
                 TileEngine.HandleTeleport(fixtureB.Body);
                 _isTeleporting = true;
             }
+            return true;
+        }
+
+        bool OnGauntletCollision(Fixture a, Fixture b, Contact c)
+        {
+            if (a.Body.GetType() == GauntletBody.GetType() & b.CollisionCategories == Category.Cat5 && IsPunching)
+                ((EnemyEntity)b.Body.UserData).InflictDamage(1);
             return true;
         }
 
@@ -105,18 +129,28 @@ namespace Dauntlet.Entities
             }
 
             if (!padState.IsConnected) return;
-            force = padState.ThumbSticks.Right;
+            force = padState.ThumbSticks.Left;
             force.Y *= -1;
             CollisionBody.ApplyLinearImpulse(force * Speed);
 
-            if (padState.ThumbSticks.Right.Length() > 0.2)
-                CollisionBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Right.Y, padState.ThumbSticks.Right.X);
+            if (padState.ThumbSticks.Left.Length() > 0.2)
+                CollisionBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Left.Y, padState.ThumbSticks.Left.X);
+        }
+
+        public void Punch(GameTime gameTime)
+        {
+            IsPunching = true;
+            GauntletBody.BodyType = BodyType.Dynamic;
+            GauntletBody.Mass = PlayerMass;
+            GauntletBody.FixtureList[0].CollidesWith = Category.Cat5;
+            GauntletBody.ApplyLinearImpulse(new Vector2((float)Math.Cos(CollisionBody.Rotation), (float)Math.Sin(CollisionBody.Rotation)) * 20);
+            _punchTime = 0;
         }
 
         public void Rotate(GamePadState padState)
         {
-            if (padState.ThumbSticks.Left.Length() > 0.2)
-                CollisionBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Left.Y, padState.ThumbSticks.Left.X);
+            if (padState.ThumbSticks.Right.Length() > 0.2)
+                CollisionBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Right.Y, padState.ThumbSticks.Right.X);
         }
 
         public void ResolveAnimation()
@@ -134,8 +168,32 @@ namespace Dauntlet.Entities
             else if (r > -7 * e) SpriteTexture.SetAnimation("LookUpLeft");
         }
 
+        public override void Die()
+        {
+            throw new NotImplementedException();
+        }
+
         public override void Update(GameTime gameTime)
         {
+            if (!IsPunching)
+            {
+                GauntletBody.Position = CollisionBody.Position +
+                                        ConvertUnits.ToSimUnits(new Vector2(
+                                            -(float) Math.Sin(CollisionBody.Rotation)*15,
+                                            (float) Math.Cos(CollisionBody.Rotation)*15));
+                GauntletBody.Rotation = CollisionBody.Rotation;
+            }
+            if (IsPunching)
+            {
+                _punchTime += gameTime.ElapsedGameTime.Milliseconds;
+                GauntletBody.LinearDamping = (_punchTime);
+                if (GauntletBody.LinearVelocity == Vector2.Zero)
+                {
+                    GauntletBody.BodyType = BodyType.Kinematic;
+                    GauntletBody.LinearDamping = 0;
+                    IsPunching = false;
+                }
+            }
             ResolveAnimation();
             _isTeleporting = false;
         }
@@ -146,11 +204,17 @@ namespace Dauntlet.Entities
             spriteBatch.Draw(Shadow, DisplayPosition, null, Color.White, 0f,
                 ShadowOrigin, 0.8f, SpriteEffects.None, LayerDepth - 2/10000f);
             if (GameplayScreen.DebugCollision)
+            {
                 spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,
                     CenterOrigin(DebugCircleTexture), 2*Radius/50f, SpriteEffects.None, LayerDepth - 1/10000f);
+                Texture2D rect = SpriteFactory.GetRectangleTexture(24, 32, new Color(1, IsPunching ? 0.5f : 1, IsPunching ? 0.5f : 0, 0.1f));
+                spriteBatch.Draw(rect, ConvertUnits.ToDisplayUnits(GauntletBody.Position), null, Color.White, GauntletBody.Rotation, CenterOrigin(rect), 1f, SpriteEffects.None, 0f);
+            }
             float bobFactor = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 4)*3 + 1;
             spriteBatch.Draw(SpriteTexture.Sheet, IsBobbing ? SpritePosition(bobFactor) : SpritePosition(), SpriteTexture.CurrentFrame, Color.White, 0f,
                 SpriteOrigin, 1f, SpriteTexture.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, LayerDepth);
+            spriteBatch.Draw(_gauntletTexture.Sheet, new Vector2(ConvertUnits.ToDisplayUnits(GauntletBody.Position.X), ConvertUnits.ToDisplayUnits(GauntletBody.Position.Y) - OffGroundHeight), _gauntletTexture.CurrentFrame, Color.White, GauntletBody.Rotation,
+                CenterOrigin(_gauntletTexture.Sheet), 1f, SpriteEffects.FlipHorizontally, LayerDepth);
         }
 
     }

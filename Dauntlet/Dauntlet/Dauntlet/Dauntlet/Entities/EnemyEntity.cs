@@ -1,6 +1,7 @@
 ﻿using Dauntlet.GameScreens;
 using FarseerPhysics;
 using FarseerPhysics.Dynamics;
+using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,19 +10,19 @@ namespace Dauntlet.Entities
 {
     public class EnemyEntity : Entity
     {
-        //private int hitPoints;
+        protected int HitPoints;
         //private int attack;
         //private int speed;
 
         protected PlayerEntity Player { get { return GameplayScreen.Player; } }
 
-        public EnemyEntity(World world, Vector2 roomCenter, Texture2D spriteTexture, float speed, float radius)
+        public EnemyEntity(World world, Vector2 position, Texture2D spriteTexture, float speed, float radius)
         {
             Speed = speed;
             Radius = radius;
             SpriteTexture = new AnimatedTexture2D(spriteTexture);
-            
-            Vector2 circlePosition = ConvertUnits.ToSimUnits(roomCenter) + new Vector2(0, -1f);
+
+            Vector2 circlePosition = ConvertUnits.ToSimUnits(position);
 
             // Create player body
             CollisionBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(Radius), 0.7f, circlePosition);
@@ -31,13 +32,16 @@ namespace Dauntlet.Entities
             CollisionBody.Friction = 0.5f;
             CollisionBody.LinearDamping = 5f;
             CollisionBody.AngularDamping = 100f;
+            CollisionBody.CollisionCategories = Category.Cat5;
+            CollisionBody.UserData = this;
 
-            //CollisionBody.OnCollision += CollisionBodyOnCollision;
+            //CollisionBody.OnCollision += OnCollision;
         }
-
+        
         public override void Update(GameTime gameTime)
         {
-            
+            if (HitPoints <= 0 && !Dying && !Dead)
+                Die();
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -49,6 +53,16 @@ namespace Dauntlet.Entities
                 spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,
                     CenterOrigin(DebugCircleTexture), 2 * Radius / 50f, SpriteEffects.None, LayerDepth - 1/10000f);
             spriteBatch.Draw(SpriteTexture.Sheet, SpritePosition(), SpriteTexture.CurrentFrame, Color.White, 0f, SpriteOrigin, 1f, SpriteEffects.None, LayerDepth);
+        }
+
+        public override void Die()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public virtual void InflictDamage(int damage)
+        {
+            HitPoints -= damage;
         }
 
 

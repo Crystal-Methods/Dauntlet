@@ -86,7 +86,7 @@
     <Compile Include="Entities\StaticEntity.cs" />
     <Compile Include="GameScreens\GameplayScreen.cs" />
     <Compile Include="GameScreens\GameScreen.cs" />
-    <Compile Include="GameScreens\InputState.cs" />
+    <Compile Include="Entities\InputState.cs" />
     <Compile Include="GameScreens\LoadScreen.cs" />
     <Compile Include="GameScreens\MainMenuScreen.cs" />
     <Compile Include="GameScreens\MenuItem.cs" />

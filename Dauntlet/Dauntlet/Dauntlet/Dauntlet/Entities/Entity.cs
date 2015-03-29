@@ -15,6 +15,7 @@ namespace Dauntlet.Entities
         protected AnimatedTexture2D SpriteTexture;
         protected Body CollisionBody;
         protected bool IsBobbing;
+        protected float DeathTimer;
 
         protected float LayerDepth { get { return SimPosition.Y/100f; } }
         protected float OffGroundHeight { get; set; }
@@ -31,6 +32,8 @@ namespace Dauntlet.Entities
         public float Radius;
         public float Height;
         public float Width;
+        public bool Dying;
+        public bool Dead;
 
         public Vector2 SimPosition { get { return CollisionBody.Position; } }
         public Vector2 DisplayPosition { get { return ConvertUnits.ToDisplayUnits(CollisionBody.Position); } }
@@ -44,5 +47,6 @@ namespace Dauntlet.Entities
 
         public abstract void Update(GameTime gameTime);
         public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch);
+        public abstract void Die();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 
 namespace Dauntlet.Entities
 {
@@ -13,9 +14,10 @@ namespace Dauntlet.Entities
 
         // ---------------------------------
 
-        public Guapo(World world, Vector2 roomCenter, Texture2D spriteTexture) : base(world, roomCenter, spriteTexture, GuapoSpeed, GuapoRadius)
+        public Guapo(World world, Vector2 position, Texture2D spriteTexture) : base(world, position, spriteTexture, GuapoSpeed, GuapoRadius)
         {
             OffGroundHeight = GuapoFloatHeight;
+            HitPoints = 3;
 
             SpriteTexture.AddAnimation("Fly", 0, 0, 32, 32, 5, 1/24f, false);
             SpriteTexture.SetAnimation("Fly");
@@ -26,6 +28,33 @@ namespace Dauntlet.Entities
         {
             Vector2 playerPosition = Player.SimPosition;
             // Do something...
+        }
+
+        public override void Die()
+        {
+            Dying = true;
+            SoundManager.Play("GuapoDeath");
+        }
+
+        public override void InflictDamage(int damage)
+        {
+            base.InflictDamage(damage);
+            SoundManager.Play("GuapoHurt");
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (Dying)
+            {
+                DeathTimer += gameTime.ElapsedGameTime.Milliseconds;
+                if (DeathTimer > 500)
+                {
+                    Dying = false;
+                    Dead = true;
+                    CollisionBody.Dispose();
+                }
+            }
+            base.Update(gameTime);
         }
     }
 }

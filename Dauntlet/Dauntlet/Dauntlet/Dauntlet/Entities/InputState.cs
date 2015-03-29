@@ -86,17 +86,17 @@ namespace Dauntlet.GameScreens
         {
             return CurrentKeyboardState.IsKeyDown(Keys.W) || CurrentKeyboardState.IsKeyDown(Keys.A) ||
                    CurrentKeyboardState.IsKeyDown(Keys.S) ||
-                   CurrentKeyboardState.IsKeyDown(Keys.D) || CurrentGamePadState.ThumbSticks.Right != Vector2.Zero;
+                   CurrentKeyboardState.IsKeyDown(Keys.D) || CurrentGamePadState.ThumbSticks.Left != Vector2.Zero;
         }
 
         public bool IsRotate()
         {
-            return CurrentGamePadState.ThumbSticks.Left != Vector2.Zero;
+            return CurrentGamePadState.ThumbSticks.Right != Vector2.Zero;
         }
 
         public bool IsToggleDebug()
         {
-            return IsNewKeyPress(Keys.F3);
+            return IsNewKeyPress(Keys.F3) || IsNewButtonPress(Buttons.RightShoulder);
         }
 
         public bool IsAttack()

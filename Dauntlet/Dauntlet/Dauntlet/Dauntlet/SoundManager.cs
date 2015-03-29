@@ -36,6 +36,12 @@ namespace Dauntlet
             effect = contentManager.Load<SoundEffect>(@"Sounds/SoundFX/Swish_1");
             SfxList.Add("Swish", effect.CreateInstance());
 
+            effect = contentManager.Load<SoundEffect>(@"Sounds/SoundFX/GuapoDeath");
+            SfxList.Add("GuapoDeath", effect.CreateInstance());
+
+            effect = contentManager.Load<SoundEffect>(@"Sounds/SoundFX/GuapoHurt");
+            SfxList.Add("GuapoHurt", effect.CreateInstance());
+
         }
 
         public static SoundEffectInstance GetInstance(string name)

@@ -50,6 +50,11 @@ namespace Dauntlet.Entities
             SpriteTexture.SetAnimation("Animation");
         }
 
+        public override void Die()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public override void Update(GameTime gameTime)
         {
             SpriteTexture.StepAnimation(gameTime);

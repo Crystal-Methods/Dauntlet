@@ -124,8 +124,7 @@ namespace Dauntlet.GameScreens
             Vector2 titleOrigin = font.MeasureString(_menuTitle) / 2;
             var titleColor = new Color(192, 192, 192);
             const float titleScale = 1.25f;
-            SpriteBatch.DrawString(font, _menuTitle, titlePosition, titleColor, 0,
-                                   titleOrigin, titleScale, SpriteEffects.None, 0);
+            SpriteBatch.DrawString(font, _menuTitle, titlePosition, titleColor, 0,  titleOrigin, titleScale, SpriteEffects.None, 0);
 
             SpriteBatch.End();
         }

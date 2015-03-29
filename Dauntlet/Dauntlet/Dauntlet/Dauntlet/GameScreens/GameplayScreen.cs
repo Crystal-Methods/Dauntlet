@@ -1,4 +1,6 @@
-﻿using Dauntlet.Entities;
+﻿using System;
+using System.Linq;
+using Dauntlet.Entities;
 using FarseerPhysics;
 using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
@@ -39,8 +41,7 @@ namespace Dauntlet.GameScreens
             ConvertUnits.SetDisplayUnitToSimUnitRatio(TileEngine.TileSize); // 1 meter = 1 tile
 
             World = TileEngine.CurrentRoom.World;
-            Player = new PlayerEntity(World, DisplayRoomCenter + new Vector2(40, -40),
-                _content.Load<Texture2D>("Textures/Dante"));
+            Player = SpriteFactory.CreatePlayer(World, DisplayRoomCenter + new Vector2(40, -40));
 
             IsScreenLoaded = true;
         }
@@ -56,23 +57,26 @@ namespace Dauntlet.GameScreens
             // Update the world
             World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
             Player.Update(gameTime);
-            foreach (var entity in TileEngine.CurrentRoom.Entities)
+            foreach (var entity in TileEngine.CurrentRoom.Entities.Where(entity => !entity.Dead))
                 entity.Update(gameTime);
             
             // Update camera
             _view = CameraManager.MoveCamera(Player.DisplayPosition);
             
             // Handle input
-            if (MainGame.Input.IsMovement())
+            if (MainGame.Input.IsMovement() && !Player.IsPunching)
                 Player.Move(MainGame.Input.CurrentKeyboardState, MainGame.Input.CurrentGamePadState);
-            if (MainGame.Input.IsRotate())
+            if (MainGame.Input.IsRotate() && !Player.IsPunching)
                 Player.Rotate(MainGame.Input.CurrentGamePadState);
             if (MainGame.Input.IsPauseGame())
                 ((MenuScreen)MainGame.GetScreen(Screen.PauseScreen)).OverlayScreen(this);
             if (MainGame.Input.IsToggleDebug())
                 DebugCollision = !DebugCollision;
-            if (MainGame.Input.IsAttack())
+            if (MainGame.Input.IsAttack() && !Player.IsPunching)
+            {
+                Player.Punch(gameTime);
                 SoundManager.Play("Swish");
+            }
         }
 
         public override void Draw(GameTime gameTime)
@@ -94,8 +98,9 @@ namespace Dauntlet.GameScreens
 
             // Third pass: Draw entities
             _spriteBatch.Begin(SpriteSortMode.FrontToBack, null, SamplerState.PointClamp, null, null, null, _view);
+            //_spriteBatch.DrawString(MainGame.Font, String.Format("X: {0}, Y: {1}", Player.GauntletBody.Position.X, Player.GauntletBody.Position.Y), new Vector2(100, 100), Color.White);
             Player.Draw(gameTime, _spriteBatch);
-            foreach (var entity in TileEngine.CurrentRoom.Entities)
+            foreach (var entity in TileEngine.CurrentRoom.Entities.Where(entity => !entity.Dead))
                 entity.Draw(gameTime, _spriteBatch);
             _spriteBatch.End();
         }
