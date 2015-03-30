@@ -29,7 +29,7 @@ namespace Dauntlet
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            _graphics.PreferredBackBufferWidth = 1024;
+            _graphics.PreferredBackBufferWidth = 1366;
             _graphics.PreferredBackBufferHeight = 768;
             _currentScreenType = Screen.TitleScreen;
             Input = new InputState();

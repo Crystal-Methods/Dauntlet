@@ -38,6 +38,7 @@ namespace Dauntlet.GameScreens
             CameraManager.Init(GraphicsDevice);
             SpriteFactory.Init(_content, GraphicsDevice);
             TileEngine.LoadContent(this, _content);
+            HUD.Init();
             ConvertUnits.SetDisplayUnitToSimUnitRatio(TileEngine.TileSize); // 1 meter = 1 tile
 
             World = TileEngine.CurrentRoom.World;
@@ -102,6 +103,11 @@ namespace Dauntlet.GameScreens
             Player.Draw(gameTime, _spriteBatch);
             foreach (var entity in TileEngine.CurrentRoom.Entities.Where(entity => !entity.Dead))
                 entity.Draw(gameTime, _spriteBatch);
+            _spriteBatch.End();
+
+            // Fourth pass: HUD
+            _spriteBatch.Begin();
+            HUD.Draw(_spriteBatch);
             _spriteBatch.End();
         }
     }

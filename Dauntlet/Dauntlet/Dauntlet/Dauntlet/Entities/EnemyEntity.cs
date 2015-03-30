@@ -42,6 +42,15 @@ namespace Dauntlet.Entities
         {
             if (HitPoints <= 0 && !Dying && !Dead)
                 Die();
+            if (Hurt)
+            {
+                HurtTimer += gameTime.ElapsedGameTime.Milliseconds;
+                if (HurtTimer > 300)
+                {
+                    Hurt = false;
+                    CollisionBody.FixtureList[0].CollisionCategories = Category.Cat5;
+                }
+            }
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -52,7 +61,7 @@ namespace Dauntlet.Entities
             if (GameplayScreen.DebugCollision)
                 spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,
                     CenterOrigin(DebugCircleTexture), 2 * Radius / 50f, SpriteEffects.None, LayerDepth - 1/10000f);
-            spriteBatch.Draw(SpriteTexture.Sheet, SpritePosition(), SpriteTexture.CurrentFrame, Color.White, 0f, SpriteOrigin, 1f, SpriteEffects.None, LayerDepth);
+            spriteBatch.Draw(SpriteTexture.Sheet, SpritePosition(), SpriteTexture.CurrentFrame, Hurt ? new Color(1, 0, 0, 1f) : Color.White, 0f, SpriteOrigin, 1f, SpriteEffects.None, LayerDepth);
         }
 
         public override void Die()
@@ -62,6 +71,9 @@ namespace Dauntlet.Entities
 
         public virtual void InflictDamage(int damage)
         {
+            Hurt = true;
+            CollisionBody.FixtureList[0].CollisionCategories = Category.Cat4;
+            HurtTimer = 0f;
             HitPoints -= damage;
         }
 

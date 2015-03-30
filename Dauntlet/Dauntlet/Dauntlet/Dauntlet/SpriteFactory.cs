@@ -59,6 +59,11 @@ namespace Dauntlet
             return rect;
         }
 
+        public static Texture2D GetTexture(string texName)
+        {
+            return _textures[texName];
+        }
+
         public static PlayerEntity CreatePlayer(World world, Vector2 position)
         {
             return new PlayerEntity(world, position, _textures["Dante"], _textures["Gauntlet"]);

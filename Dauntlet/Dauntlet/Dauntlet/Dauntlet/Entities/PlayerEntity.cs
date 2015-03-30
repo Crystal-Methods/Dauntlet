@@ -24,6 +24,8 @@ namespace Dauntlet.Entities
         private float _punchTime;
         private AnimatedTexture2D _gauntletTexture;
         public bool IsPunching;
+        public int Health;
+        public int Power;
 
         public Body GauntletBody;
 
@@ -88,7 +90,11 @@ namespace Dauntlet.Entities
         bool OnGauntletCollision(Fixture a, Fixture b, Contact c)
         {
             if (a.Body.GetType() == GauntletBody.GetType() & b.CollisionCategories == Category.Cat5 && IsPunching)
-                ((EnemyEntity)b.Body.UserData).InflictDamage(1);
+            {
+                var enemy = (EnemyEntity) b.Body.UserData;
+                enemy.InflictDamage(1);
+                enemy.Hurt = true;
+            }
             return true;
         }
 
@@ -202,19 +208,26 @@ namespace Dauntlet.Entities
         {
             SpriteTexture.StepAnimation(gameTime);
             spriteBatch.Draw(Shadow, DisplayPosition, null, Color.White, 0f,
-                ShadowOrigin, 0.8f, SpriteEffects.None, LayerDepth - 2/10000f);
+                ShadowOrigin, 0.8f, SpriteEffects.None, LayerDepth - 2 / 10000f);
+
             if (GameplayScreen.DebugCollision)
             {
                 spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,
-                    CenterOrigin(DebugCircleTexture), 2*Radius/50f, SpriteEffects.None, LayerDepth - 1/10000f);
+                    CenterOrigin(DebugCircleTexture), 2 * Radius / 50f, SpriteEffects.None, LayerDepth - 1 / 10000f);
+
                 Texture2D rect = SpriteFactory.GetRectangleTexture(24, 32, new Color(1, IsPunching ? 0.5f : 1, IsPunching ? 0.5f : 0, 0.1f));
-                spriteBatch.Draw(rect, ConvertUnits.ToDisplayUnits(GauntletBody.Position), null, Color.White, GauntletBody.Rotation, CenterOrigin(rect), 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(rect, ConvertUnits.ToDisplayUnits(GauntletBody.Position), null, Color.White, GauntletBody.Rotation,
+                    CenterOrigin(rect), 1f, SpriteEffects.None, 0f);
             }
-            float bobFactor = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 4)*3 + 1;
+
+            float bobFactor = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 4) * 3 + 1;
+
             spriteBatch.Draw(SpriteTexture.Sheet, IsBobbing ? SpritePosition(bobFactor) : SpritePosition(), SpriteTexture.CurrentFrame, Color.White, 0f,
                 SpriteOrigin, 1f, SpriteTexture.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, LayerDepth);
-            spriteBatch.Draw(_gauntletTexture.Sheet, new Vector2(ConvertUnits.ToDisplayUnits(GauntletBody.Position.X), ConvertUnits.ToDisplayUnits(GauntletBody.Position.Y) - OffGroundHeight), _gauntletTexture.CurrentFrame, Color.White, GauntletBody.Rotation,
-                CenterOrigin(_gauntletTexture.Sheet), 1f, SpriteEffects.FlipHorizontally, LayerDepth);
+
+            spriteBatch.Draw(_gauntletTexture.Sheet, new Vector2(ConvertUnits.ToDisplayUnits(GauntletBody.Position.X),
+                ConvertUnits.ToDisplayUnits(GauntletBody.Position.Y) - OffGroundHeight), _gauntletTexture.CurrentFrame,
+                Color.White, GauntletBody.Rotation, CenterOrigin(_gauntletTexture.Sheet), 1f, SpriteEffects.FlipHorizontally, GetLayerDepth(GauntletBody));
         }
 
     }

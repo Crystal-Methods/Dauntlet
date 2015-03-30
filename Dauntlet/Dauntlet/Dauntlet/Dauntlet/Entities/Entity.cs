@@ -16,8 +16,10 @@ namespace Dauntlet.Entities
         protected Body CollisionBody;
         protected bool IsBobbing;
         protected float DeathTimer;
+        protected float HurtTimer;
 
         protected float LayerDepth { get { return SimPosition.Y/100f; } }
+        protected float GetLayerDepth(Body b) { return b.Position.Y/100f; }
         protected float OffGroundHeight { get; set; }
         protected Vector2 CenterOrigin(Texture2D texture) { return new Vector2(texture.Width/2f, texture.Height/2f); }
         protected Vector2 ShadowOrigin { get { return new Vector2(Shadow.Width / 2f, Shadow.Height / 2f); } }
@@ -34,6 +36,7 @@ namespace Dauntlet.Entities
         public float Width;
         public bool Dying;
         public bool Dead;
+        public bool Hurt;
 
         public Vector2 SimPosition { get { return CollisionBody.Position; } }
         public Vector2 DisplayPosition { get { return ConvertUnits.ToDisplayUnits(CollisionBody.Position); } }
