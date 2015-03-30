@@ -82,7 +82,7 @@ namespace Dauntlet
             {
                 var se = new StaticEntity(world, position, new Vector2(128, 39),
                     _textures["Fountain"]);
-                se.SetAnimation(0, 0, 128, 59, 3, 1 / 12f, false);
+                se.SetAnimation(0, 0, 128, 59, 3, 1 / 8f, false);
                 return se;
             }
             if (type == ObjectTypes.Tree)

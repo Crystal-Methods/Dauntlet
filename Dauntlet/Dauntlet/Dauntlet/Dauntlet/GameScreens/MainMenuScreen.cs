@@ -11,6 +11,7 @@ namespace Dauntlet.GameScreens
         private SpriteBatch _spriteBatch;
         private Texture2D _bgTex;
         private Texture2D _fistTex;
+        private Texture2D _black;
 
         // ==============================================
 
@@ -27,6 +28,13 @@ namespace Dauntlet.GameScreens
 
             _bgTex = _content.Load<Texture2D>("Textures/Dauntlet");
             _fistTex = _content.Load<Texture2D>("Textures/Fist");
+
+            int width = MainGame.Graphics.Viewport.Width;
+            int height = MainGame.Graphics.Viewport.Height;
+            _black = new Texture2D(MainGame.Graphics, width, height);
+            var data = new Color[width * height];
+            for (int i = 0; i < data.Length; i++) data[i] = Color.Black;
+            _black.SetData(data);
 
             SoundManager.PlaySong("MainTheme");
             SoundManager.VolumeChange(0.4f);
@@ -52,10 +60,12 @@ namespace Dauntlet.GameScreens
 
         public override void Draw(GameTime gametime)
         {
-            float drawScale = (float) MainGame.Graphics.Viewport.Width/_bgTex.Width;
+            float drawScale = (float) MainGame.Graphics.Viewport.Height/_bgTex.Height;
+            var translate = new Vector2((MainGame.Graphics.Viewport.Width - _bgTex.Width*drawScale)/2f, 0);
 
             _spriteBatch.Begin();
-            _spriteBatch.Draw(_bgTex, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, drawScale, SpriteEffects.None, 1f);
+            _spriteBatch.Draw(_black, Vector2.Zero, Color.White);
+            _spriteBatch.Draw(_bgTex, translate, null, Color.White, 0f, Vector2.Zero, drawScale, SpriteEffects.None, 1f);
 
             // Pulsate the size of the selected menu entry.
             double time = gametime.TotalGameTime.TotalSeconds;
@@ -68,7 +78,7 @@ namespace Dauntlet.GameScreens
             var origin = new Vector2(_fistTex.Width/2f, _fistTex.Height/2f);
             var position = new Vector2(331, 573)*drawScale;
 
-            _spriteBatch.Draw(_fistTex, position, null, Color.White, 0f, origin, scale, SpriteEffects.None, 1f);
+            _spriteBatch.Draw(_fistTex, position + translate, null, Color.White, 0f, origin, scale, SpriteEffects.None, 1f);
             _spriteBatch.End();
         }
     }
