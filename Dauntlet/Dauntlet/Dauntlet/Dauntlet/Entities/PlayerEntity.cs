@@ -208,12 +208,12 @@ namespace Dauntlet.Entities
         {
             SpriteTexture.StepAnimation(gameTime);
             spriteBatch.Draw(Shadow, DisplayPosition, null, Color.White, 0f,
-                ShadowOrigin, 0.8f, SpriteEffects.None, LayerDepth - 2 / 10000f);
+                ShadowOrigin, 0.8f, SpriteEffects.None, LayerDepth - 3 / 10000f);
 
             if (GameplayScreen.DebugCollision)
             {
                 spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,
-                    CenterOrigin(DebugCircleTexture), 2 * Radius / 50f, SpriteEffects.None, LayerDepth - 1 / 10000f);
+                    CenterOrigin(DebugCircleTexture), 2 * Radius / 50f, SpriteEffects.None, LayerDepth - 2 / 10000f);
 
                 Texture2D rect = SpriteFactory.GetRectangleTexture(24, 32, new Color(1, IsPunching ? 0.5f : 1, IsPunching ? 0.5f : 0, 0.1f));
                 spriteBatch.Draw(rect, ConvertUnits.ToDisplayUnits(GauntletBody.Position), null, Color.White, GauntletBody.Rotation,
@@ -227,7 +227,7 @@ namespace Dauntlet.Entities
 
             spriteBatch.Draw(_gauntletTexture.Sheet, new Vector2(ConvertUnits.ToDisplayUnits(GauntletBody.Position.X),
                 ConvertUnits.ToDisplayUnits(GauntletBody.Position.Y) - OffGroundHeight), _gauntletTexture.CurrentFrame,
-                Color.White, GauntletBody.Rotation, CenterOrigin(_gauntletTexture.Sheet), 1f, SpriteEffects.FlipHorizontally, GetLayerDepth(GauntletBody));
+                Color.White, GauntletBody.Rotation, CenterOrigin(_gauntletTexture.Sheet), 1f, SpriteEffects.FlipHorizontally, GetLayerDepth(GauntletBody) - 1 / 10000f);
         }
 
     }

@@ -85,7 +85,7 @@ namespace Dauntlet.GameScreens
             GraphicsDevice.Clear(new Color(0, 141, 158));
 
             // First pass: Draw room
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, _view);
+            _spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, _view);
             TileEngine.DrawRoom(_spriteBatch, gameTime);
             _spriteBatch.End();
 
@@ -103,6 +103,7 @@ namespace Dauntlet.GameScreens
             Player.Draw(gameTime, _spriteBatch);
             foreach (var entity in TileEngine.CurrentRoom.Entities.Where(entity => !entity.Dead))
                 entity.Draw(gameTime, _spriteBatch);
+            TileEngine.DrawWallCaps(_spriteBatch);
             _spriteBatch.End();
 
             // Fourth pass: HUD

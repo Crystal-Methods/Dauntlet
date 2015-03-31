@@ -60,7 +60,7 @@ namespace Dauntlet
                         string[] tileId = columns[j].Split(';');
                         int y = Int32.Parse(tileId[0]);
                         int x = Int32.Parse(tileId[1]);
-                        tiles[j] = new Tile(new[] {x, y}, new Vector2(j, i - 1), y == 0);
+                        tiles[j] = new Tile(new[] { x, y }, new Vector2(j, i - 1), (!(x == 0 && y == 0) && y < 2), y == 1, (x == 0 && y == 0));
                     }
                     map[i] = tiles;
                 }
@@ -98,7 +98,36 @@ namespace Dauntlet
                 {
                     var position = new Vector2(j * TileSize, i * TileSize);
                     var sourcerect = new Rectangle(CurrentRoom.Map[i][j].SpriteId[0] * TileSize, CurrentRoom.Map[i][j].SpriteId[1] * TileSize, TileSize, TileSize);
-                    spriteBatch.Draw(TileSet, position, sourcerect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
+                    spriteBatch.Draw(TileSet, position, sourcerect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                }
+        }
+
+        public static void DrawWallCaps(SpriteBatch spriteBatch)
+        {
+            Texture2D capTexture = SpriteFactory.GetRectangleTexture(TileSize / 2, TileSize / 2, new Color(139, 188, 204));
+            
+            for (int i = 0; i < CurrentRoom.WallCaps.Length; i++)
+                for (int j = 0; j < CurrentRoom.WallCaps[i].Length; j++)
+                {
+                    var position = new Vector2(j * TileSize, i * TileSize - TileSize);
+                    int capType = CurrentRoom.WallCaps[i][j];
+                    if (capType == 0) continue;
+                    if (capType == 4 || capType == 6 || capType == 8)
+                        spriteBatch.Draw(capTexture, position, null, Color.White, 0f, Vector2.Zero, 1f,
+                            SpriteEffects.None, ConvertUnits.ToSimUnits(position.Y + TileSize)/100f);
+                    if (capType == 5 || capType == 7 || capType == 8)
+                        spriteBatch.Draw(capTexture, position + new Vector2(TileSize/2f, 0), null, Color.White, 0f,
+                            Vector2.Zero, 1f, SpriteEffects.None,
+                            ConvertUnits.ToSimUnits(position.Y + TileSize)/100f);
+                    if (capType != 2 && capType != 5)
+                        spriteBatch.Draw(capTexture, position + new Vector2(0, TileSize/2f), null, Color.White, 0f,
+                            Vector2.Zero, 1f, SpriteEffects.None,
+                            ConvertUnits.ToSimUnits(position.Y + TileSize)/100f);
+                    if (capType != 1 && capType != 4)
+                        spriteBatch.Draw(capTexture, position + new Vector2(TileSize/2f, TileSize/2f), null,
+                            Color.White,
+                            0f, Vector2.Zero, 1f, SpriteEffects.None,
+                            ConvertUnits.ToSimUnits(position.Y + TileSize)/100f);
                 }
         }
 
@@ -144,6 +173,8 @@ namespace Dauntlet
         public string TeleportTo;
         public bool IsTeleport;
         public bool IsWall;
+        public bool IsCappableWall;
+        public bool IsVoid;
         public Vector2 Position;
 
         //public Tile(int spriteId, Vector2 position, char tpId, string tpTo)
@@ -156,7 +187,7 @@ namespace Dauntlet
         //    Position = position;
         //}
 
-        public Tile(int[] spriteId, Vector2 position, bool isWall)
+        public Tile(int[] spriteId, Vector2 position, bool isWall, bool isCappableWall, bool isVoid)
         {
             SpriteId = spriteId;
             TeleportId = '\0';
@@ -164,6 +195,8 @@ namespace Dauntlet
             IsTeleport = false;
             Position = position;
             IsWall = isWall;
+            IsVoid = isVoid;
+            IsCappableWall = isCappableWall;
         }
     }
 
@@ -175,6 +208,7 @@ namespace Dauntlet
         public readonly int Height;
         public readonly int Width;
         private readonly Tile[][] _map;
+        private readonly int[][] _wallCaps;
         private readonly Dictionary<char, Tile> _tpFroms; 
 
         public int PixelHeight { get { return Height * TileEngine.TileSize; } }
@@ -182,6 +216,7 @@ namespace Dauntlet
         public float MetricHeight { get { return ConvertUnits.ToSimUnits(PixelHeight); } }
         public float MetricWidth { get { return ConvertUnits.ToSimUnits(PixelWidth); } }
         public Tile[][] Map { get { return _map; } }
+        public int[][] WallCaps { get { return _wallCaps; } }
 
         public Room(Tile[][] map, Dictionary<char, Tile> tpFroms,  int height, int width)
         {
@@ -192,8 +227,11 @@ namespace Dauntlet
             _tpFroms = tpFroms;
             Height = height;
             Width = width;
-            
+            _wallCaps = new int[_map.Length + 1][];
+
             for (int i = 0; i < _map.Length; i++)
+            {
+                var temp = new int[_map[i].Length];
                 for (int j = 0; j < _map[i].Length; j++)
                 {
                     if (_map[i][j].IsWall)
@@ -202,6 +240,10 @@ namespace Dauntlet
                         newBody.BodyType = BodyType.Static;
                         newBody.CollisionCategories = Category.Cat2;
                     }
+
+                    int v = GetCapValue(j, i);
+                    if (v > 3) _map[i][j].SpriteId = new[] {0, 0};
+                    temp[j] = v;
 
                     //if (_map[i][j].IsTeleport)
                     //{
@@ -213,9 +255,50 @@ namespace Dauntlet
                     //    newBody.CollisionCategories = Category.Cat10;
                     //}
                 }
+                _wallCaps[i+1] = temp;
+            }
+            _wallCaps[0] = new int[_wallCaps[1].Length];
+            for (int i = 0; i < _wallCaps[0].Length; i++)
+                _wallCaps[0][i] = GetTopRowCapValue(i);
         }
 
         public Tile GetTpDestination(char key) { return _tpFroms[key]; }
+
+        private int GetCapValue(int x, int y)
+        {
+            if (y + 1 >= _map.Length) return 0;
+            if (!_map[y + 1][x].IsCappableWall) return 0;
+            if (!_map[y][x].IsCappableWall && !_map[y][x].IsVoid) return 3;
+            if (_map[y][x].IsVoid)
+            {
+                if (x + 1 >= _map[0].Length) return 1;
+                if (x == 0) return 2;
+                if (_map[y+1][x + 1].IsVoid) return 1;
+                if (_map[y+1][x - 1].IsVoid) return 2;
+                return 3;
+            }
+            if (x + 1 >= _map[0].Length || _map[y][x + 1].IsVoid)
+            {
+                if ((x + 1 >= _map[0].Length || _map[y + 1][x + 1].IsVoid) && (y + 2 >= _map.Length ||_map[y + 2][x].IsCappableWall)) return 4;
+                return 6;
+            }
+            if (x == 0 || _map[y][x - 1].IsVoid)
+            {
+                if ((x == 0 || _map[y + 1][x + 1].IsVoid) && (y + 2 >= _map.Length || _map[y + 2][x].IsCappableWall)) return 5;
+                return 7;
+            }
+            return 8;
+        }
+
+        private int GetTopRowCapValue(int x)
+        {
+            if (!_map[0][x].IsCappableWall) return 0;
+            if (x + 1 >= _map[0].Length) return 1;
+            if (x == 0) return 2;
+            if (_map[0][x + 1].IsVoid) return 1;
+            if (_map[0][x - 1].IsVoid) return 2;
+            return 3;
+        }
     }
 
 }
