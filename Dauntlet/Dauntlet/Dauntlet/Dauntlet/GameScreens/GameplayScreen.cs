@@ -64,6 +64,9 @@ namespace Dauntlet.GameScreens
             // Update camera
             _view = CameraManager.MoveCamera(Player.DisplayPosition);
             
+            // Update HUD
+            HUD.Update(gameTime);
+
             // Handle input
             if (MainGame.Input.IsMovement() && !Player.IsPunching)
                 Player.Move(MainGame.Input.CurrentKeyboardState, MainGame.Input.CurrentGamePadState);
