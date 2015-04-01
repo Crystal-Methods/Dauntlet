@@ -40,6 +40,7 @@ namespace Dauntlet.Entities
         
         public override void Update(GameTime gameTime)
         {
+
             if (HitPoints <= 0 && !Dying && !Dead)
                 Die();
             if (Hurt)
