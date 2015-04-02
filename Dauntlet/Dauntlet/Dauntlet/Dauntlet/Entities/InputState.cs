@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Windows.Forms;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace Dauntlet.GameScreens
 {
@@ -101,7 +103,7 @@ namespace Dauntlet.GameScreens
 
         public bool IsAttack()
         {
-            return IsNewKeyPress(Keys.Space) || IsNewButtonPress(Buttons.A);
+            return IsNewKeyPress(Keys.Space) || IsNewButtonPress(Buttons.RightTrigger);
         }
 
     }
