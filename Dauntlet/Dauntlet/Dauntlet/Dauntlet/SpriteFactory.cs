@@ -74,9 +74,8 @@ namespace Dauntlet
         {
             if (type == EnemyTypes.Guapo)
                 return new Guapo(world, position, _textures["Guapo"]);
-            else if (type == EnemyTypes.Zombie)
+            if (type == EnemyTypes.Zombie)
                 return new Zombie(world, position, _textures["Zombie"]);
-            else
             throw new ArgumentException("One or more enemy types do not exist!");
         }
 

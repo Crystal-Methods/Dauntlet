@@ -33,13 +33,8 @@ namespace Dauntlet
 
         public static Matrix MoveCamera(Vector2 playerPosition)
         {
-            if (TileEngine.CurrentRoom.PixelWidth <= _screenWidth &&
-                TileEngine.CurrentRoom.PixelHeight <= _screenHeight)
-            {
-                //Center room on screen
+            if (TileEngine.CurrentRoom.PixelWidth <= _screenWidth)
                 _camPos.X = (_screenWidth - Room.X) / 2f;
-                _camPos.Y = (_screenHeight - Room.Y) / 2f;
-            }
             else
             {
                 // Get player's displacement relative to the camera
@@ -49,6 +44,14 @@ namespace Dauntlet
                     _camPos.X = Math.Min(_camPos.X + (_screenScrollBuffer.X - displacement.X), Buffer);
                 if (displacement.X > _screenWidth - _screenScrollBuffer.X && _camPos.X > _screenWidth - (Room.X + Buffer))
                     _camPos.X = Math.Max(_camPos.X + (_screenWidth - _screenScrollBuffer.X - displacement.X), _screenWidth - (Room.X + Buffer));
+            }
+            if (TileEngine.CurrentRoom.PixelHeight <= _screenHeight)
+                _camPos.Y = (_screenHeight - Room.Y) / 2f;
+            else
+            {
+                // Get player's displacement relative to the camera
+                Vector2 displacement = playerPosition + _camPos;
+
                 if (displacement.Y < _screenScrollBuffer.Y && _camPos.Y < Buffer)
                     _camPos.Y = Math.Min(_camPos.Y + (_screenScrollBuffer.Y - displacement.Y), Buffer);
                 if (displacement.Y > _screenHeight - _screenScrollBuffer.Y && _camPos.Y > _screenHeight - (Room.Y + Buffer))

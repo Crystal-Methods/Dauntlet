@@ -17,7 +17,7 @@ namespace Dauntlet.Entities
         private const float PlayerRadius = 15f; // Radius of player's bounding circle
         private const float PlayerFloatHeight = 14f; // How far the base of the sprite is from the center of the shadow
         private const float PlayerMass = 1f;
-        
+
         // ---------------------------------
 
         private bool _isTeleporting;
@@ -38,7 +38,6 @@ namespace Dauntlet.Entities
             OffGroundHeight = PlayerFloatHeight;
             IsBobbing = true;
 
-
             SpriteTexture = new AnimatedTexture2D(playerTexture);
             SpriteTexture.AddAnimation("LookDown", 0, 0, 23, 33, 6, 1 / 12f, false);
             SpriteTexture.AddAnimation("LookDownLeft", 0, 33, 23, 33, 6, 1 / 12f, false);
@@ -55,7 +54,7 @@ namespace Dauntlet.Entities
             Vector2 circlePosition = ConvertUnits.ToSimUnits(position) + new Vector2(0, -1f);
 
             // Create player body
-            float density = PlayerMass/(float)(Math.PI*Math.Pow(ConvertUnits.ToSimUnits(Radius), 2));
+            float density = PlayerMass / (float)(Math.PI * Math.Pow(ConvertUnits.ToSimUnits(Radius), 2));
             CollisionBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(Radius), density, circlePosition);
             CollisionBody.BodyType = BodyType.Dynamic;
             CollisionBody.FixedRotation = true;
@@ -81,7 +80,20 @@ namespace Dauntlet.Entities
             // Detects teleportation
             if (fixtureA.Body.GetType() == CollisionBody.GetType() & fixtureB.CollisionCategories == Category.Cat10 && !_isTeleporting)
             {
-                TileEngine.HandleTeleport(fixtureB.Body);
+                // Work out collision direction
+                char direction;
+                Vector2 colNorm = contact.Manifold.LocalNormal;
+                if (Math.Abs(colNorm.X) > Math.Abs(colNorm.Y))
+                {
+                    // X direction is dominant
+                    direction = colNorm.X > 0 ? 'E' : 'W';
+                }
+                else
+                {
+                    // Y direction is dominant
+                    direction = colNorm.Y > 0 ? 'S' : 'N';
+                }
+                TileEngine.HandleTeleport(fixtureB.Body, direction);
                 _isTeleporting = true;
             }
             return true;
@@ -91,7 +103,7 @@ namespace Dauntlet.Entities
         {
             if (a.Body.GetType() == GauntletBody.GetType() & b.CollisionCategories == Category.Cat5 && IsPunching)
             {
-                var enemy = (EnemyEntity) b.Body.UserData;
+                var enemy = (EnemyEntity)b.Body.UserData;
                 enemy.InflictDamage(1);
                 enemy.Hurt = true;
             }
@@ -100,23 +112,32 @@ namespace Dauntlet.Entities
 
         public void ChangeRoom(World world, Vector2 newPos)
         {
-            // Create new body in the new room
-            Body newBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(Radius), 0.7f, newPos);
+            // Create player body
+            float density = PlayerMass / (float)(Math.PI * Math.Pow(ConvertUnits.ToSimUnits(Radius), 2));
+            Body newBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(Radius), density, newPos);
             newBody.BodyType = BodyType.Dynamic;
             newBody.FixedRotation = true;
             newBody.Restitution = CollisionBody.Restitution;
             newBody.Friction = CollisionBody.Friction;
             newBody.LinearDamping = CollisionBody.LinearDamping;
             newBody.AngularDamping = CollisionBody.AngularDamping;
-            newBody.Rotation = CollisionBody.Rotation;
 
-            //Sound Test
-            SoundManager.PlaySong(TileEngine.CurrentRoomName == "testroom1" ? "SkeletonSwing" : "NoCombat");
+            // Create Gauntlet body
+            float gauntletdensity = PlayerMass / (float)(Math.PI * Math.Pow(ConvertUnits.ToSimUnits(Radius), 2));
+            Body newGauntletBody = BodyFactory.CreateRectangle(world, ConvertUnits.ToSimUnits(32), ConvertUnits.ToSimUnits(24), gauntletdensity,
+                newPos + new Vector2(15, 0));
+            newGauntletBody.BodyType = BodyType.Dynamic;
+            newGauntletBody.CollidesWith = Category.None;
+            newGauntletBody.FixedRotation = true;
+            newGauntletBody.LinearDamping = GauntletBody.LinearDamping;
 
             // Kill old body and set new one
             CollisionBody.Dispose();
             CollisionBody = newBody;
             CollisionBody.OnCollision += CollisionBodyOnCollision;
+            GauntletBody.Dispose();
+            GauntletBody = newGauntletBody;
+            GauntletBody.OnCollision += OnGauntletCollision;
         }
 
         public void Move(KeyboardState keyState, GamePadState padState)
@@ -130,7 +151,7 @@ namespace Dauntlet.Entities
             if (force != Vector2.Zero)
             {
                 force.Normalize();
-                CollisionBody.ApplyLinearImpulse(force*Speed);
+                CollisionBody.ApplyLinearImpulse(force * Speed);
                 CollisionBody.Rotation = (float)Math.Atan2(force.Y, force.X);
             }
 
@@ -161,7 +182,7 @@ namespace Dauntlet.Entities
 
         public void ResolveAnimation()
         {
-            const float e = (float)Math.PI/8f;
+            const float e = (float)Math.PI / 8f;
             float r = CollisionBody.Rotation;
 
             if (r > 7 * e || r <= -7 * e) SpriteTexture.SetAnimation("LookLeft");
@@ -185,8 +206,8 @@ namespace Dauntlet.Entities
             {
                 GauntletBody.Position = CollisionBody.Position +
                                         ConvertUnits.ToSimUnits(new Vector2(
-                                            -(float) Math.Sin(CollisionBody.Rotation)*15,
-                                            (float) Math.Cos(CollisionBody.Rotation)*15));
+                                            -(float)Math.Sin(CollisionBody.Rotation) * 15,
+                                            (float)Math.Cos(CollisionBody.Rotation) * 15));
                 GauntletBody.Rotation = CollisionBody.Rotation;
             }
             if (IsPunching)
