@@ -34,7 +34,7 @@ namespace Dauntlet
         public static void LoadContent(GameplayScreen game, ContentManager content)
         {
             Game = game;
-            TileSet = content.Load<Texture2D>(@"Textures/tilesheet2");
+            TileSet = content.Load<Texture2D>(@"Textures/Tiles/tilesheet2");
             Rooms = new Dictionary<string, Room>();
 
             // Parse Room files

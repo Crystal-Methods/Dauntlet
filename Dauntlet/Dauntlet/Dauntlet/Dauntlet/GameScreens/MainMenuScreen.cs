@@ -13,6 +13,8 @@ namespace Dauntlet.GameScreens
         private Texture2D _fistTex;
         private Texture2D _black;
 
+        private float songVolume;
+
         // ==============================================
 
         public override Screen ScreenType { get { return Screen.TitleScreen;} }
@@ -37,7 +39,8 @@ namespace Dauntlet.GameScreens
             _black.SetData(data);
 
             SoundManager.PlaySong("MainTheme");
-            SoundManager.VolumeChange(0.4f);
+            SoundManager.VolumeChange(0.0f);
+            songVolume = 0.0f;
             IsScreenLoaded = true;
         }
 
@@ -49,6 +52,11 @@ namespace Dauntlet.GameScreens
 
         public override void Update(GameTime gameTime)
         {
+            if (songVolume != 2.0f)
+            {
+                songVolume += 0.001f;
+                SoundManager.VolumeChange(songVolume);
+            }
             if (MainGame.Input.IsMenuSelect())
             {
                 MainGame.ChangeScreen(Screen.GameplayScreen);
@@ -76,7 +84,7 @@ namespace Dauntlet.GameScreens
 
             // Draw text, centered on the middle of each line.
             var origin = new Vector2(_fistTex.Width/2f, _fistTex.Height/2f);
-            var position = new Vector2(331, 573)*drawScale;
+            var position = new Vector2(450, 560)*drawScale;
 
             _spriteBatch.Draw(_fistTex, position + translate, null, Color.White, 0f, origin, scale, SpriteEffects.None, 1f);
             _spriteBatch.End();

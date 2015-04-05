@@ -54,7 +54,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\tileset.png">
+    <Compile Include="Textures\Tiles\tileset.png">
       <Name>tileset</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
@@ -150,13 +150,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Dauntlet.jpg">
-      <Name>Dauntlet</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\Fist.png">
       <Name>Fist</Name>
       <Importer>TextureImporter</Importer>
@@ -199,7 +192,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\tilesheet.png">
+    <Compile Include="Textures\Tiles\tilesheet.png">
       <Name>tilesheet</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
@@ -213,7 +206,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\tilesheet2.png">
+    <Compile Include="Textures\Tiles\tilesheet2.png">
       <Name>tilesheet2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
@@ -271,6 +264,13 @@
   <ItemGroup>
     <Compile Include="Textures\Zombie.png">
       <Name>Zombie</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Dauntlet.png">
+      <Name>Dauntlet</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
