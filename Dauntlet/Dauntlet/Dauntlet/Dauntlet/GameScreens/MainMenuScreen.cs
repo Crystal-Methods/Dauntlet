@@ -13,6 +13,8 @@ namespace Dauntlet.GameScreens
         private Texture2D _fistTex;
         private Texture2D _black;
 
+        private int menuSelection;
+
         private float songVolume;
 
         // ==============================================
@@ -38,6 +40,8 @@ namespace Dauntlet.GameScreens
             for (int i = 0; i < data.Length; i++) data[i] = Color.Black;
             _black.SetData(data);
 
+            menuSelection = 0;
+
             SoundManager.PlaySong("MainTheme");
             SoundManager.VolumeChange(0.0f);
             songVolume = 0.0f;
@@ -59,11 +63,35 @@ namespace Dauntlet.GameScreens
             }
             if (MainGame.Input.IsMenuSelect())
             {
-                MainGame.ChangeScreen(Screen.GameplayScreen);
-                SoundManager.PlaySong("NoCombat");
+                if(menuSelection == 0)
+                {
+                    MainGame.ChangeScreen(Screen.GameplayScreen);
+                    SoundManager.PlaySong("NoCombat");
+                }
+                else if(menuSelection == 1)
+                {
+                    MainGame.Exit();
+                }
+                //Additional options to be added here.
             }
             if (MainGame.Input.IsQuitGame())
                 MainGame.Exit();
+            if(MainGame.Input.IsMenuDown())
+            {
+                if(menuSelection < 1)
+                {
+                    menuSelection++;
+                    SoundManager.Play("MenuBlip");
+                }
+            }
+            if (MainGame.Input.IsMenuUp())
+            {
+                if (menuSelection > -1)
+                {
+                    menuSelection--;
+                    SoundManager.Play("MenuBlip");
+                }
+            }
         }
 
         public override void Draw(GameTime gametime)
@@ -82,9 +110,17 @@ namespace Dauntlet.GameScreens
 
             float scale = 1 + pulsate * 0.15f;
 
-            // Draw text, centered on the middle of each line.
-            var origin = new Vector2(_fistTex.Width/2f, _fistTex.Height/2f);
-            var position = new Vector2(450, 560)*drawScale;
+            // Draw fist.
+            var origin = new Vector2(_fistTex.Width / 2f, _fistTex.Height / 2f);
+            var position = new Vector2(450, 560) * drawScale;
+            if (menuSelection == 0)
+            {
+                position = new Vector2(450, 560) * drawScale;
+            }
+            else if(menuSelection == 1)
+            {
+                position = new Vector2(450, 625) * drawScale;
+            }
 
             _spriteBatch.Draw(_fistTex, position + translate, null, Color.White, 0f, origin, scale, SpriteEffects.None, 1f);
             _spriteBatch.End();

@@ -63,13 +63,13 @@ namespace Dauntlet.GameScreens
 
         public bool IsMenuUp()
         {
-            return IsNewKeyPress(Keys.Up) || IsNewButtonPress(Buttons.DPadUp) ||
+            return IsNewKeyPress(Keys.W) || IsNewKeyPress(Keys.Up) || IsNewButtonPress(Buttons.DPadUp) ||
                    IsNewButtonPress(Buttons.LeftThumbstickUp);
         }
 
         public bool IsMenuDown()
         {
-            return IsNewKeyPress(Keys.Down) || IsNewButtonPress(Buttons.DPadDown) ||
+            return IsNewKeyPress(Keys.S) || IsNewKeyPress(Keys.Down) || IsNewButtonPress(Buttons.DPadDown) ||
                    IsNewButtonPress(Buttons.LeftThumbstickDown);
         }
 

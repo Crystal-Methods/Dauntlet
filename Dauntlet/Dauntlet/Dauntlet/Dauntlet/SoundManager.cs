@@ -29,7 +29,7 @@ namespace Dauntlet
             SongList.Add(@"SkeletonSwing", temp);
 
             //Initialize SFX
-
+            //InGame
             var effect = contentManager.Load<SoundEffect>(@"Sounds/SoundFX/Hop");
             SfxList.Add("Hop", effect.CreateInstance());
 
@@ -42,6 +42,8 @@ namespace Dauntlet
             effect = contentManager.Load<SoundEffect>(@"Sounds/SoundFX/GuapoHurt");
             SfxList.Add("GuapoHurt", effect.CreateInstance());
 
+            effect = contentManager.Load<SoundEffect>(@"Sounds/SoundFX/Menu/MenuBlip");
+            SfxList.Add("MenuBlip", effect.CreateInstance());
         }
 
         public static SoundEffectInstance GetInstance(string name)
