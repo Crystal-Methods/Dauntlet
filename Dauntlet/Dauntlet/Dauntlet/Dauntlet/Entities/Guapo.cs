@@ -17,7 +17,7 @@ namespace Dauntlet.Entities
         //AI Stuff
         private float guapoOrientation;
         private Vector2 wanderDirection;
-        private Random random = new Random();
+        private static readonly Random Random = new Random();
         const float turnSpeed = 0.2f;
         const float maxSpeed = .02f;//speed of chasing enemy
         const float chaseDistance = 6.5f;
@@ -164,9 +164,9 @@ namespace Dauntlet.Entities
         {
             //Finds a random direction to go in. The .25 is controles how erratic the wander is.
             wanderDirection.X +=
-                MathHelper.Lerp(-.25f, .25f, (float)random.NextDouble());
+                MathHelper.Lerp(-.25f, .25f, (float)Random.NextDouble());
             wanderDirection.Y +=
-                MathHelper.Lerp(-.25f, .25f, (float)random.NextDouble());
+                MathHelper.Lerp(-.25f, .25f, (float)Random.NextDouble());
 
             wanderDirection.Normalize();
 
