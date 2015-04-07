@@ -1,4 +1,5 @@
-﻿using FarseerPhysics.Dynamics;
+﻿using Dauntlet.GameScreens;
+using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
@@ -17,7 +18,7 @@ namespace Dauntlet.Entities
         {
             OffGroundHeight = ZombieFloatHeight;
             HitPoints = 4;
-            SpriteTexture.AddAnimation("Walk", 0, 0, 32, 32, 4, 1/4f, false);
+            SpriteTexture.AddAnimation("Walk", 0, 0, 64, 64, 8, 1/4f, false);
             SpriteTexture.SetAnimation("Walk");
             
         }
@@ -54,6 +55,17 @@ namespace Dauntlet.Entities
                 }
             }
             base.Update(gameTime);
+        }
+
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            SpriteTexture.StepAnimation(gameTime);
+            spriteBatch.Draw(Shadow, DisplayPosition, null, Color.White, 0f,
+                ShadowOrigin, 0.8f, SpriteEffects.None, LayerDepth - 2 / 10000f);
+            if (GameplayScreen.DebugCollision)
+                spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,
+                    CenterOrigin(DebugCircleTexture), 2 * Radius / 50f, SpriteEffects.None, LayerDepth - 1 / 10000f);
+            spriteBatch.Draw(SpriteTexture.Sheet, SpritePosition(), SpriteTexture.CurrentFrame, Hurt ? new Color(1, 0, 0, 1f) : Color.White, 0f, SpriteOrigin, 1f, SpriteEffects.None, LayerDepth);
         }
     }
 }
