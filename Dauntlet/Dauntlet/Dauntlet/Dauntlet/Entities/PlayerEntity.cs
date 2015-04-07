@@ -13,7 +13,7 @@ namespace Dauntlet.Entities
 {
     public class PlayerEntity : Entity
     {
-        private const float PlayerSpeed = 5f;
+        private const float PlayerSpeed = 15f;
         private const float PlayerRadius = 15f; // Radius of player's bounding circle
         private const float PlayerFloatHeight = 14f; // How far the base of the sprite is from the center of the shadow
         private const float PlayerMass = 1f;
