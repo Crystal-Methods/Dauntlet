@@ -162,7 +162,7 @@ namespace Dauntlet.Entities
         public void Wander(Vector2 position, ref Vector2 wanderDirection,
             ref float orientation, float turnSpeed)
         {
-            //Finds a random direction to go in. The .25 is controles how erratic the wander is.
+            //Finds a random direction to go in. The .25 is how erratic the wander is.
             wanderDirection.X +=
                 MathHelper.Lerp(-.25f, .25f, (float)Random.NextDouble());
             wanderDirection.Y +=
