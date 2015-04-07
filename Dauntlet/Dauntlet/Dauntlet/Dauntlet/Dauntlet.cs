@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Dauntlet.GameScreens;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Dauntlet
@@ -25,6 +26,10 @@ namespace Dauntlet
         public SpriteFont Font { get; set; }
         public InputState Input;
 
+        public static AudioEngine AudioEngine;
+        public static WaveBank WaveBank;
+        public static SoundBank SoundBank;
+
         public Dauntlet()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -38,8 +43,10 @@ namespace Dauntlet
         protected override void LoadContent()
         {
             Font = Content.Load<SpriteFont>("loadingFont");
+            AudioEngine = new AudioEngine("Content\\DauntletAudio.xgs");
+            WaveBank = new WaveBank(AudioEngine, "Content\\Wave Bank.xwb");
+            SoundBank = new SoundBank(AudioEngine, "Content\\Sound Bank.xsb");
 
-            SoundManager.LoadContent(Content);
             //_screens.Add(Screen.SplashScreen, new SplashScreen(this));
             _screens.Add(Screen.GameplayScreen, new GameplayScreen(this));
             _screens.Add(Screen.TitleScreen, new MainMenuScreen(this));

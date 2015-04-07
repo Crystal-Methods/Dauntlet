@@ -35,6 +35,7 @@ namespace Dauntlet.GameScreens
             if (input.IsMenuUp())
             {
                 _selectedEntry--;
+                Dauntlet.SoundBank.PlayCue("MenuBlip");
 
                 if (_selectedEntry < 0)
                     _selectedEntry = _menuEntries.Count - 1;
@@ -43,6 +44,7 @@ namespace Dauntlet.GameScreens
             if (input.IsMenuDown())
             {
                 _selectedEntry++;
+                Dauntlet.SoundBank.PlayCue("MenuBlip");
 
                 if (_selectedEntry >= _menuEntries.Count)
                     _selectedEntry = 0;

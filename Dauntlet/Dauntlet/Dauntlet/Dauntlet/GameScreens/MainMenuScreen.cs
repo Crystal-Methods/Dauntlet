@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -13,9 +14,9 @@ namespace Dauntlet.GameScreens
         private Texture2D _fistTex;
         private Texture2D _black;
 
-        private int menuSelection;
+        private int _menuSelection;
 
-        private float songVolume;
+        private Cue _menuTheme;
 
         // ==============================================
 
@@ -40,11 +41,14 @@ namespace Dauntlet.GameScreens
             for (int i = 0; i < data.Length; i++) data[i] = Color.Black;
             _black.SetData(data);
 
-            menuSelection = 0;
+            _menuSelection = 0;
 
-            SoundManager.PlaySong("MainTheme");
-            SoundManager.VolumeChange(0.0f);
-            songVolume = 0.0f;
+            //SoundManager.PlaySong("MainTheme");
+            //SoundManager.VolumeChange(0.0f);
+            //songVolume = 0.0f;
+
+            _menuTheme = Dauntlet.SoundBank.GetCue("DauntletMainTheme");
+            _menuTheme.Play();
             IsScreenLoaded = true;
         }
 
@@ -56,19 +60,15 @@ namespace Dauntlet.GameScreens
 
         public override void Update(GameTime gameTime)
         {
-            if (songVolume != 2.0f)
-            {
-                songVolume += 0.001f;
-                SoundManager.VolumeChange(songVolume);
-            }
             if (MainGame.Input.IsMenuSelect())
             {
-                if(menuSelection == 0)
+                if(_menuSelection == 0)
                 {
                     MainGame.ChangeScreen(Screen.GameplayScreen);
-                    SoundManager.PlaySong("NoCombat");
+                    _menuTheme.Stop(AudioStopOptions.Immediate);
+                    //SoundManager.PlaySong("NoCombat");
                 }
-                else if(menuSelection == 1)
+                else if(_menuSelection == 1)
                 {
                     MainGame.Exit();
                 }
@@ -78,18 +78,20 @@ namespace Dauntlet.GameScreens
                 MainGame.Exit();
             if(MainGame.Input.IsMenuDown())
             {
-                if(menuSelection < 1)
+                if(_menuSelection < 1)
                 {
-                    menuSelection++;
-                    SoundManager.Play("MenuBlip");
+                    _menuSelection++;
+                    //SoundManager.Play("MenuBlip");
+                    Dauntlet.SoundBank.PlayCue("MenuBlip");
                 }
             }
             if (MainGame.Input.IsMenuUp())
             {
-                if (menuSelection > -1)
+                if (_menuSelection > -1)
                 {
-                    menuSelection--;
-                    SoundManager.Play("MenuBlip");
+                    _menuSelection--;
+                    //SoundManager.Play("MenuBlip");
+                    Dauntlet.SoundBank.PlayCue("MenuBlip");
                 }
             }
         }
@@ -113,11 +115,11 @@ namespace Dauntlet.GameScreens
             // Draw fist.
             var origin = new Vector2(_fistTex.Width / 2f, _fistTex.Height / 2f);
             var position = new Vector2(450, 560) * drawScale;
-            if (menuSelection == 0)
+            if (_menuSelection == 0)
             {
                 position = new Vector2(450, 560) * drawScale;
             }
-            else if(menuSelection == 1)
+            else if(_menuSelection == 1)
             {
                 position = new Vector2(450, 625) * drawScale;
             }

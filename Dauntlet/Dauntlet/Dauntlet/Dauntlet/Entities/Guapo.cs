@@ -199,13 +199,15 @@ namespace Dauntlet.Entities
         public override void Die()
         {
             Dying = true;
-            SoundManager.Play("GuapoDeath");
+            Dauntlet.SoundBank.PlayCue("GuapoDeath");
+            //SoundManager.Play("GuapoDeath");
         }
 
         public override void InflictDamage(int damage)
         {
             base.InflictDamage(damage);
-            SoundManager.Play("GuapoHurt");
+            Dauntlet.SoundBank.PlayCue("GuapoHurt");
+            //SoundManager.Play("GuapoHurt");
         }
 
         public override void Update(GameTime gameTime)

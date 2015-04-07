@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Dauntlet.GameScreens
 {
@@ -26,6 +27,7 @@ namespace Dauntlet.GameScreens
 
         void QuitGameMenuEntrySelected(object sender, EventArgs eventArgs)
         {
+            ((GameplayScreen)LowerScreen).BgMusic.Stop(AudioStopOptions.Immediate);
             MainGame.ChangeScreen(Screen.TitleScreen);
         }
 

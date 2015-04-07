@@ -4,6 +4,7 @@ using Dauntlet.Entities;
 using FarseerPhysics;
 using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -18,6 +19,7 @@ namespace Dauntlet.GameScreens
         // ===================================
 
         public static PlayerEntity Player;
+        public Cue BgMusic;
         public World World { get; set; }
         public static bool DebugCollision { get; set; }
         public Vector2 DisplayRoomCenter { get { return new Vector2(TileEngine.CurrentRoom.PixelWidth/2f, TileEngine.CurrentRoom.PixelHeight/2f);} }
@@ -43,6 +45,9 @@ namespace Dauntlet.GameScreens
 
             World = TileEngine.CurrentRoom.World;
             Player = SpriteFactory.CreatePlayer(World, DisplayRoomCenter + new Vector2(40, -40));
+
+            BgMusic = Dauntlet.SoundBank.GetCue("DauntletNoCombat");
+            BgMusic.Play();
 
             IsScreenLoaded = true;
         }
@@ -79,7 +84,8 @@ namespace Dauntlet.GameScreens
             if (MainGame.Input.IsAttack() && !Player.IsPunching)
             {
                 Player.Punch(gameTime);
-                SoundManager.Play("Swish");
+                Dauntlet.SoundBank.PlayCue("Swish_1");
+                //SoundManager.Play("Swish");
             }
         }
 
