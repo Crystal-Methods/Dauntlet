@@ -205,8 +205,11 @@ namespace Dauntlet.Entities
 
         public override void InflictDamage(int damage)
         {
-            base.InflictDamage(damage);
-            Dauntlet.SoundBank.PlayCue("GuapoHurt");
+            if(!Dying)
+            {
+                base.InflictDamage(damage);
+                Dauntlet.SoundBank.PlayCue("GuapoHurt");
+            }
             //SoundManager.Play("GuapoHurt");
         }
 
