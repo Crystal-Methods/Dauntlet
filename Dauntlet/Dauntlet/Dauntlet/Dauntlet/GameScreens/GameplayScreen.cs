@@ -108,7 +108,6 @@ namespace Dauntlet.GameScreens
 
             // Third pass: Draw entities
             _spriteBatch.Begin(SpriteSortMode.FrontToBack, null, SamplerState.PointClamp, null, null, null, _view);
-            //_spriteBatch.DrawString(MainGame.Font, String.Format("X: {0}, Y: {1}", Player.GauntletBody.Position.X, Player.GauntletBody.Position.Y), new Vector2(100, 100), Color.White);
             Player.Draw(gameTime, _spriteBatch);
             foreach (var entity in TileEngine.CurrentRoom.Entities.Where(entity => !entity.Dead))
                 entity.Draw(gameTime, _spriteBatch);
@@ -116,7 +115,14 @@ namespace Dauntlet.GameScreens
             _spriteBatch.End();
 
             // Fourth pass: HUD
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null);
+            if (DebugCollision)
+            {
+                _spriteBatch.DrawString(MainGame.Font, String.Format("X: {0}", Player.SimPosition.X.ToString("0.00")),
+                    new Vector2(GraphicsDevice.Viewport.Width - 100, 100), Color.White);
+                _spriteBatch.DrawString(MainGame.Font, String.Format("Y: {0}", Player.SimPosition.Y.ToString("0.00")),
+                    new Vector2(GraphicsDevice.Viewport.Width - 100, 150), Color.White);
+            }
             HUD.Draw(_spriteBatch);
             _spriteBatch.End();
         }

@@ -17,6 +17,7 @@ namespace Dauntlet.Entities
         private const float PlayerRadius = 15f; // Radius of player's bounding circle
         private const float PlayerFloatHeight = 14f; // How far the base of the sprite is from the center of the shadow
         private const float PlayerMass = 1f;
+        private const int BaseHealth = 3;
 
         // ---------------------------------
 
@@ -37,6 +38,7 @@ namespace Dauntlet.Entities
             Radius = PlayerRadius;
             OffGroundHeight = PlayerFloatHeight;
             IsBobbing = true;
+            Health = BaseHealth;
 
             SpriteTexture = new AnimatedTexture2D(playerTexture);
             SpriteTexture.AddAnimation("LookDown", 0, 0, 23, 33, 6, 1 / 12f, false);
