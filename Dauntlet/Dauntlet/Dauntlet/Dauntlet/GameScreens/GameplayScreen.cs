@@ -16,6 +16,8 @@ namespace Dauntlet.GameScreens
         private SpriteBatch _spriteBatch;
         private static Matrix _view;
 
+        private float _stepTime;
+
         // ===================================
 
         public static PlayerEntity Player;
@@ -60,8 +62,9 @@ namespace Dauntlet.GameScreens
 
         public override void Update(GameTime gameTime)
         {
+            _stepTime = gameTime.ElapsedGameTime.Milliseconds;
             // Update the world
-            World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
+            World.Step(_stepTime/1000f);
             Player.Update(gameTime);
             foreach (var entity in TileEngine.CurrentRoom.Entities.Where(entity => !entity.Dead))
                 entity.Update(gameTime);
@@ -118,6 +121,8 @@ namespace Dauntlet.GameScreens
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null);
             if (DebugCollision)
             {
+                _spriteBatch.DrawString(MainGame.Font, String.Format("MS: {0}", _stepTime.ToString("##0.00")),
+                    new Vector2(GraphicsDevice.Viewport.Width - 100, 50), Color.White);
                 _spriteBatch.DrawString(MainGame.Font, String.Format("X: {0}", Player.SimPosition.X.ToString("0.00")),
                     new Vector2(GraphicsDevice.Viewport.Width - 100, 100), Color.White);
                 _spriteBatch.DrawString(MainGame.Font, String.Format("Y: {0}", Player.SimPosition.Y.ToString("0.00")),
