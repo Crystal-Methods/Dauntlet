@@ -17,10 +17,10 @@ namespace Dauntlet
         {
             _lifebar = SpriteFactory.GetTexture("Lifebar");
             _flame = new AnimatedTexture2D(SpriteFactory.GetTexture("DauntletFire"));
-            _flame.AddAnimation("Flicker1", 0, 0, 256, 256, 7, 1/10f, false);
+            _flame.AddAnimation("Flicker1", 0, 0, 256, 256, 7, 1/10f, false, false);
             _flame.SetAnimation("Flicker1");
             _healthStock = new AnimatedTexture2D(SpriteFactory.GetTexture("HealthStock"));
-            _healthStock.AddAnimation("healthStock",0,0,64,64,10,1/17f,false);
+            _healthStock.AddAnimation("healthStock",0,0,64,64,10,1/17f,false, false);
             _healthStock.SetAnimation("healthStock");
 
             _hsa = new Vector2(-(float) Math.Cos(22.38), (float) Math.Sin(22.38));

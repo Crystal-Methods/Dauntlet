@@ -42,14 +42,14 @@ namespace Dauntlet.Entities
             Health = BaseHealth;
 
             SpriteTexture = new AnimatedTexture2D(playerTexture);
-            SpriteTexture.AddAnimation("LookDown", 0, 0, 23, 33, 6, 1 / 12f, false);
-            SpriteTexture.AddAnimation("LookDownLeft", 0, 33, 23, 33, 6, 1 / 12f, false);
-            SpriteTexture.AddAnimation("LookLeft", 0, 66, 23, 33, 6, 1 / 12f, false);
-            SpriteTexture.AddAnimation("LookUpLeft", 0, 99, 23, 33, 6, 1 / 12f, false);
-            SpriteTexture.AddAnimation("LookUp", 0, 132, 23, 33, 6, 1 / 12f, false);
-            SpriteTexture.AddAnimation("LookDownRight", 0, 33, 23, 33, 6, 1 / 12f, true);
-            SpriteTexture.AddAnimation("LookRight", 0, 66, 23, 33, 6, 1 / 12f, true);
-            SpriteTexture.AddAnimation("LookUpRight", 0, 99, 23, 33, 6, 1 / 12f, true);
+            SpriteTexture.AddAnimation("LookDown", 0, 0, 23, 33, 6, 1 / 12f, false, false);
+            SpriteTexture.AddAnimation("LookDownLeft", 0, 33, 23, 33, 6, 1 / 12f, false, false);
+            SpriteTexture.AddAnimation("LookLeft", 0, 66, 23, 33, 6, 1 / 12f, false, false);
+            SpriteTexture.AddAnimation("LookUpLeft", 0, 99, 23, 33, 6, 1 / 12f, false, false);
+            SpriteTexture.AddAnimation("LookUp", 0, 132, 23, 33, 6, 1 / 12f, false, false);
+            SpriteTexture.AddAnimation("LookDownRight", 0, 33, 23, 33, 6, 1 / 12f, true, false);
+            SpriteTexture.AddAnimation("LookRight", 0, 66, 23, 33, 6, 1 / 12f, true, false);
+            SpriteTexture.AddAnimation("LookUpRight", 0, 99, 23, 33, 6, 1 / 12f, true, false);
             SpriteTexture.SetAnimation("LookRight");
 
             _gauntletTexture = new AnimatedTexture2D(gauntletTexture);
@@ -60,6 +60,7 @@ namespace Dauntlet.Entities
             float density = PlayerMass / (float)(Math.PI * Math.Pow(ConvertUnits.ToSimUnits(Radius), 2));
             CollisionBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(Radius), density, circlePosition);
             CollisionBody.BodyType = BodyType.Dynamic;
+            CollisionBody.CollisionCategories = Category.Cat2;
             CollisionBody.FixedRotation = true;
             CollisionBody.Restitution = 0;
             CollisionBody.Friction = 0.5f;
@@ -72,7 +73,7 @@ namespace Dauntlet.Entities
             GauntletBody = BodyFactory.CreateRectangle(world, ConvertUnits.ToSimUnits(32), ConvertUnits.ToSimUnits(24), gauntletdensity,
                 circlePosition + new Vector2(15, 0));
             GauntletBody.BodyType = BodyType.Kinematic;
-            GauntletBody.CollidesWith = Category.Cat5;
+            GauntletBody.CollidesWith = Category.Cat10;
             GauntletBody.FixedRotation = true;
             GauntletBody.LinearDamping = 5f;
             GauntletBody.OnCollision += OnGauntletCollision;
@@ -81,7 +82,7 @@ namespace Dauntlet.Entities
         bool CollisionBodyOnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
         {
             // Detects teleportation
-            if (fixtureA.Body.GetType() == CollisionBody.GetType() && fixtureB.CollisionCategories == Category.Cat10 && !_isTeleporting)
+            if (fixtureA.Body.GetType() == CollisionBody.GetType() && fixtureB.CollisionCategories == Category.Cat29 && !_isTeleporting)
             {
                 // Work out collision direction
                 char direction;
@@ -104,8 +105,8 @@ namespace Dauntlet.Entities
 
         bool OnGauntletCollision(Fixture a, Fixture b, Contact c)
         {
-            if (a.Body.GetType() == GauntletBody.GetType() && a.Body.FixtureList[0].CollisionCategories == Category.Cat4
-                && b.CollisionCategories == Category.Cat5)
+            if (a.Body.GetType() == GauntletBody.GetType() && a.Body.FixtureList[0].CollisionCategories == Category.Cat3
+                && b.CollisionCategories == Category.Cat10)
             {
                 var enemy = (EnemyEntity)b.Body.UserData;
                 enemy.InflictDamage(1);
@@ -120,6 +121,7 @@ namespace Dauntlet.Entities
             float density = PlayerMass / (float)(Math.PI * Math.Pow(ConvertUnits.ToSimUnits(Radius), 2));
             Body newBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(Radius), density, newPos);
             newBody.BodyType = BodyType.Dynamic;
+            newBody.CollisionCategories = Category.Cat2;
             newBody.FixedRotation = true;
             newBody.Restitution = CollisionBody.Restitution;
             newBody.Friction = CollisionBody.Friction;
@@ -131,7 +133,7 @@ namespace Dauntlet.Entities
             Body newGauntletBody = BodyFactory.CreateRectangle(world, ConvertUnits.ToSimUnits(32), ConvertUnits.ToSimUnits(24), gauntletdensity,
                 newPos + new Vector2(15, 0));
             newGauntletBody.BodyType = BodyType.Kinematic;
-            newGauntletBody.CollidesWith = Category.Cat5;
+            newGauntletBody.CollidesWith = Category.Cat10;
             newGauntletBody.FixedRotation = true;
             newGauntletBody.LinearDamping = GauntletBody.LinearDamping;
 
@@ -171,7 +173,7 @@ namespace Dauntlet.Entities
         public void Punch(GameTime gameTime)
         {
             IsPunching = true;
-            GauntletBody.CollisionCategories = Category.Cat4;
+            GauntletBody.CollisionCategories = Category.Cat3;
             _punchVector = Vector2.Normalize(new Vector2((float)Math.Cos(CollisionBody.Rotation),
                 (float)Math.Sin(CollisionBody.Rotation)));
             _punchTime = 0;
@@ -247,8 +249,8 @@ namespace Dauntlet.Entities
                     CenterOrigin(DebugCircleTexture), 2 * Radius / 50f, SpriteEffects.None, LayerDepth - 2 / 10000f);
 
                 Texture2D rect = SpriteFactory.GetRectangleTexture(24, 32,
-                    new Color(1, GauntletBody.FixtureList[0].CollisionCategories == Category.Cat4 ? 0.5f : 1,
-                        GauntletBody.FixtureList[0].CollisionCategories == Category.Cat4 ? 0.5f : 0, 0.1f));
+                    new Color(1, GauntletBody.FixtureList[0].CollisionCategories == Category.Cat3 ? 0.5f : 1,
+                        GauntletBody.FixtureList[0].CollisionCategories == Category.Cat3 ? 0.5f : 0, 0.1f));
                 spriteBatch.Draw(rect, ConvertUnits.ToDisplayUnits(GauntletBody.Position), null, Color.White, GauntletBody.Rotation,
                     CenterOrigin(rect), 1f, SpriteEffects.None, 0f);
             }

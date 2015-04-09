@@ -85,7 +85,7 @@ namespace Dauntlet
             {
                 var se = new StaticEntity(world, position, new Vector2(128, 39),
                     _textures["Fountain"]);
-                se.SetAnimation(0, 0, 128, 59, 3, 1 / 8f, false);
+                se.SetAnimation(0, 0, 128, 59, 3, 1 / 8f, false, false);
                 return se;
             }
             if (type == ObjectTypes.Tree)
@@ -94,5 +94,6 @@ namespace Dauntlet
             }
             throw new ArgumentException("One or more object types do not exist!");
         }
+
     }
 }

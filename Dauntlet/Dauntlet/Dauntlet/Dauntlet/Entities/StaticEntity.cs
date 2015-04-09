@@ -44,9 +44,9 @@ namespace Dauntlet.Entities
             CollisionBody.Friction = 0.5f;
         }
 
-        public void SetAnimation(int startPosX, int startPosY, int frameWidth, int frameHeight, int frameCount, float fps, bool flipped)
+        public void SetAnimation(int startPosX, int startPosY, int frameWidth, int frameHeight, int frameCount, float fps, bool flipped, bool isOneTime)
         {
-            SpriteTexture.AddAnimation("Animation", startPosX, startPosY, frameWidth, frameHeight, frameCount, fps, flipped);
+            SpriteTexture.AddAnimation("Animation", startPosX, startPosY, frameWidth, frameHeight, frameCount, fps, flipped, isOneTime);
             SpriteTexture.SetAnimation("Animation");
         }
 

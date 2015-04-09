@@ -38,7 +38,7 @@ namespace Dauntlet.Entities
         {
             OffGroundHeight = ZombieFloatHeight;
             HitPoints = 4;
-            SpriteTexture.AddAnimation("Walk", 0, 0, 64, 64, 8, 1/4f, false);
+            SpriteTexture.AddAnimation("Walk", 0, 0, 64, 64, 8, 1/4f, false, false);
             SpriteTexture.SetAnimation("Walk");
             
         }

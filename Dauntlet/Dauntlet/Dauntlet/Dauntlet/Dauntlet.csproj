@@ -87,6 +87,7 @@
     <Compile Include="Entities\EnemyEntity.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\Guapo.cs" />
+    <Compile Include="Entities\Poof.cs" />
     <Compile Include="Entities\StaticEntity.cs" />
     <Compile Include="Entities\Zombie.cs" />
     <Compile Include="GameScreens\GameplayScreen.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="TileEngine.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CollisionCategories.txt" />
     <Content Include="Game.ico" />
     <Content Include="GameThumbnail.png">
       <XnaPlatformSpecific>true</XnaPlatformSpecific>

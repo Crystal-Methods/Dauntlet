@@ -62,7 +62,7 @@ namespace Dauntlet
             Timer = 0;
         }
 
-        public void AddAnimation(string name, int startPosX, int startPosY, int frameWidth, int frameHeight, int frameCount, float fps, bool flipped)
+        public void AddAnimation(string name, int startPosX, int startPosY, int frameWidth, int frameHeight, int frameCount, float fps, bool flipped, bool isOneTime)
         {
             var newAni = new AnimationCycle
             {
@@ -73,7 +73,8 @@ namespace Dauntlet
                 FrameCount = frameCount,
                 CurrentFrame = 0,
                 FramesPerSecond = fps,
-                Flipped = flipped
+                Flipped = flipped,
+                IsOneTime = isOneTime
             };
             _animations.Add(name, newAni);
         }
@@ -87,6 +88,14 @@ namespace Dauntlet
             Timer = 0;
         }
 
+        public enum AniCycleState
+        {
+            Loop,
+            PlayOnce,
+            Stopped,
+
+        }
+
         // private struct for storing animation cyles
         private struct AnimationCycle
         {
@@ -98,6 +107,7 @@ namespace Dauntlet
             public int CurrentFrame { get; set; } // The current frame this animation displays
             public float FramesPerSecond { get; set; } // The FPS at which to animate this cycle
             public bool Flipped { get; set; } // If this sprite is to be flipped horizontally on render
+            public bool IsOneTime { get; set; } // If this is a one-time animation
         }
 
     }

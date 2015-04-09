@@ -90,7 +90,7 @@ namespace Dauntlet
                         CollisionBody = BodyFactory.CreateRectangle(theRoom.World, ConvertUnits.ToSimUnits(w), ConvertUnits.ToSimUnits(h), 1f,
                             new Vector2(pos.X + ConvertUnits.ToSimUnits(w / 2f), pos.Y + ConvertUnits.ToSimUnits(h / 2f)), stuff)
                     };
-                    tp.CollisionBody.CollisionCategories = Category.Cat10;
+                    tp.CollisionBody.CollisionCategories = Category.Cat29;
                     theRoom.Teleports.Add(tp.Id, tp);
                 }
 
@@ -165,11 +165,11 @@ namespace Dauntlet
             foreach (var body in CurrentRoom.World.BodyList)
                 switch (body.FixtureList[0].CollisionCategories)
                 {
-                    case Category.Cat2:
+                    case Category.Cat30:
                         spriteBatch.Draw(redRect, ConvertUnits.ToDisplayUnits(body.Position) -
                                                   new Vector2(TileSize / 2f, TileSize / 2f), Color.White);
                         break;
-                    case Category.Cat10:
+                    case Category.Cat29:
                         var w = (int)((List<Object>) body.UserData)[2];
                         var h = (int)((List<Object>)body.UserData)[3];
                         var blueRect = SpriteFactory.GetRectangleTexture(h, w, new Color(0, 0, 1, 0.1f));
@@ -297,7 +297,7 @@ namespace Dauntlet
                     {
                         Body newBody = BodyFactory.CreateRectangle(World, 1f, 1f, 1, new Vector2(j + 0.5f, i + 0.5f));
                         newBody.BodyType = BodyType.Static;
-                        newBody.CollisionCategories = Category.Cat2;
+                        newBody.CollisionCategories = Category.Cat30;
                     }
 
                     int v = GetCapValue(j, i);
@@ -311,7 +311,7 @@ namespace Dauntlet
                     //        new Vector2(ConvertUnits.ToSimUnits(j * TileEngine.TileSize + TileEngine.TileSize / 2f),
                     //            ConvertUnits.ToSimUnits(i * TileEngine.TileSize + TileEngine.TileSize / 2f)));
                     //    newBody.BodyType = BodyType.Static;
-                    //    newBody.CollisionCategories = Category.Cat10;
+                    //    newBody.CollisionCategories = Category.Cat29;
                     //}
                 }
                 _wallCaps[i + 1] = temp;

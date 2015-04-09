@@ -32,7 +32,7 @@ namespace Dauntlet.Entities
             CollisionBody.Friction = 0.5f;
             CollisionBody.LinearDamping = 5f;
             CollisionBody.AngularDamping = 100f;
-            CollisionBody.CollisionCategories = Category.Cat5;
+            CollisionBody.CollisionCategories = Category.Cat10;
             CollisionBody.UserData = this;
 
             //CollisionBody.OnCollision += OnCollision;
@@ -49,7 +49,7 @@ namespace Dauntlet.Entities
                 if (HurtTimer > 300)
                 {
                     Hurt = false;
-                    CollisionBody.FixtureList[0].CollisionCategories = Category.Cat5;
+                    CollisionBody.FixtureList[0].CollisionCategories = Category.Cat10;
                 }
             }
         }
@@ -73,7 +73,7 @@ namespace Dauntlet.Entities
         public virtual void InflictDamage(int damage)
         {
             Hurt = true;
-            CollisionBody.FixtureList[0].CollisionCategories = Category.Cat4;
+            CollisionBody.FixtureList[0].CollisionCategories = Category.Cat25;
             HurtTimer = 0f;
             HitPoints -= damage;
         }

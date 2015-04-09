@@ -1,0 +1,46 @@
+﻿
+
+This is a list of all Farseer Collision Categories used in the code and which entity bodies belong in which category.
+
+GROUPS:
+Cat1     - Default
+Cat2-9   - Player
+Cat10-24 - Enemies
+Cat25-30 - Misc
+
+========================
+
+Cat1  - Default category for all bodies
+------------------
+Cat2  - Player
+Cat3  - Attacking Gauntlet
+Cat4  - N/A
+Cat5  - N/A
+Cat6  - N/A
+Cat7  - N/A
+Cat8  - N/A
+Cat9  - N/A
+------------------
+Cat10 - Enemies
+Cat11 - High-flying Guapo
+Cat12 - N/A
+Cat13 - N/A
+Cat14 - N/A
+Cat15 - N/A
+Cat16 - N/A
+Cat17 - N/A
+Cat18 - N/A
+Cat19 - N/A
+Cat11 - N/A
+Cat20 - N/A
+Cat21 - N/A
+Cat22 - N/A
+Cat23 - N/A
+Cat24 - N/A
+------------------
+Cat25 - Damage Invulnerable
+Cat26 - N/A
+Cat27 - N/A
+Cat28 - N/A
+Cat29 - Teleport
+Cat30 - Unwalkable tile (wall)
