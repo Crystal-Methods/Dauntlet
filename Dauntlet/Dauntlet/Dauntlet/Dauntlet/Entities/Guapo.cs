@@ -8,7 +8,7 @@ namespace Dauntlet.Entities
 {
     public class Guapo : EnemyEntity
     {
-
+        private const float EvadeSpeed       =  4f;
         private const float ChaseSpeed       =  0.02f;
         private const float WanderSpeed      =  0.01f;
         private const float ChaseDistance    =  3f;
@@ -73,7 +73,7 @@ namespace Dauntlet.Entities
                 
             //Third, move
             if (_guapoState == GuapoState.Chasing)
-                Chase();
+                Evade();
             else if (_guapoState == GuapoState.Wander)
                 Wander();
         }
@@ -119,6 +119,18 @@ namespace Dauntlet.Entities
         {
             CollisionBody.Rotation = TurnToFace(SimPosition, Player.SimPosition, CollisionBody.Rotation, TurnSpeed);
             var heading = new Vector2((float)Math.Cos(CollisionBody.Rotation), (float)Math.Sin(CollisionBody.Rotation));
+            heading.Normalize();
+            CollisionBody.ApplyLinearImpulse(heading * EvadeSpeed);
+        }
+
+        public void Evade()
+        {
+            Vector2 seekPosition = 2 * SimPosition - Player.SimPosition;
+
+            CollisionBody.Rotation = TurnToFace(SimPosition, seekPosition,
+                CollisionBody.Rotation, TurnSpeed);
+
+            var heading = new Vector2((float)Math.Cos(CollisionBody.Rotation),(float)Math.Sin(CollisionBody.Rotation));
             heading.Normalize();
             CollisionBody.ApplyLinearImpulse(heading * Speed);
         }
