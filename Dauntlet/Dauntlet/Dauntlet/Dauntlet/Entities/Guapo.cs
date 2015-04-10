@@ -16,7 +16,7 @@ namespace Dauntlet.Entities
         private const float TurnSpeed        =  0.2f;
         private const float GuapoRadius      = 14f;
         private const float GuapoFloatHeight = 15f;
-        private const int MaxHP              = 3;
+        private const int MaxHp              = 3;
 
         // -----------------------------------------------------
 
@@ -37,7 +37,7 @@ namespace Dauntlet.Entities
         public Guapo(World world, Vector2 position, Texture2D spriteTexture) : base(world, position, spriteTexture, ChaseSpeed, GuapoRadius)
         {
             OffGroundHeight = GuapoFloatHeight;
-            HitPoints = MaxHP;
+            HitPoints = MaxHp;
 
             SpriteTexture.AddAnimation("Fly", 0, 0, 32, 32, 5, 1/24f, false, false);
             SpriteTexture.SetAnimation("Fly");
@@ -143,6 +143,7 @@ namespace Dauntlet.Entities
                 {
                     Dying = false;
                     Dead = true;
+                    Poof.SummonPoof(DisplayPosition);
                     CollisionBody.Dispose();
                 }
             }

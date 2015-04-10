@@ -10,7 +10,7 @@ namespace Dauntlet.Entities
 {
     public class EnemyEntity : Entity
     {
-        protected int HitPoints;
+        //protected int HitPoints;
         //private int attack;
         //private int speed;
 
@@ -70,13 +70,7 @@ namespace Dauntlet.Entities
             throw new System.NotImplementedException();
         }
 
-        public virtual void InflictDamage(int damage)
-        {
-            Hurt = true;
-            CollisionBody.FixtureList[0].CollisionCategories = Category.Cat25;
-            HurtTimer = 0f;
-            HitPoints -= damage;
-        }
+        
 
 
     }

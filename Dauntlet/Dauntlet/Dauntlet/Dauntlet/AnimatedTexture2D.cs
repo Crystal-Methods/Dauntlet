@@ -21,7 +21,12 @@ namespace Dauntlet
         public int Frame
         {
             get { return _currentAnimation.CurrentFrame; }
-            set { _currentAnimation.CurrentFrame = value % _currentAnimation.FrameCount; }
+            set
+            {
+                _currentAnimation.CurrentFrame = (_currentAnimation.IsOneTime &&
+                    _currentAnimation.CurrentFrame + 1 == _currentAnimation.FrameCount) ?
+                    _currentAnimation.CurrentFrame : value % _currentAnimation.FrameCount;
+            }
         }
         public Rectangle CurrentFrame
         {
@@ -54,12 +59,15 @@ namespace Dauntlet
             Timer = 0;
         }
 
-        public void StepAnimation(GameTime gameTime)
+        public bool StepAnimation(GameTime gameTime)
         {
+            if (_currentAnimation.IsOneTime && _currentAnimation.FrameCount == _currentAnimation.CurrentFrame + 1)
+                return true;
             Timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (!(Timer > _currentAnimation.FramesPerSecond * 1000)) return;
+            if (!(Timer > _currentAnimation.FramesPerSecond * 1000)) return false;
             Frame++;
             Timer = 0;
+            return false;
         }
 
         public void AddAnimation(string name, int startPosX, int startPosY, int frameWidth, int frameHeight, int frameCount, float fps, bool flipped, bool isOneTime)

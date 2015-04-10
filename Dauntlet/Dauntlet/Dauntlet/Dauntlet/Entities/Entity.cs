@@ -34,6 +34,7 @@ namespace Dauntlet.Entities
         public float Radius;
         public float Height;
         public float Width;
+        public int HitPoints;
         public bool Dying;
         public bool Dead;
         public bool Hurt;
@@ -51,5 +52,15 @@ namespace Dauntlet.Entities
         public abstract void Update(GameTime gameTime);
         public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch);
         public abstract void Die();
+
+        // ==============================================
+
+        public virtual void InflictDamage(int damage)
+        {
+            Hurt = true;
+            CollisionBody.FixtureList[0].CollisionCategories = Category.Cat25;
+            HurtTimer = 0f;
+            HitPoints -= damage;
+        }
     }
 }

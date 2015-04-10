@@ -6,6 +6,7 @@ using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -26,7 +27,6 @@ namespace Dauntlet.Entities
         private Vector2 _punchVector;
         private AnimatedTexture2D _gauntletTexture;
         public bool IsPunching;
-        public int Health;
         public int Power;
 
         public Body GauntletBody;
@@ -39,7 +39,7 @@ namespace Dauntlet.Entities
             Radius = PlayerRadius;
             OffGroundHeight = PlayerFloatHeight;
             IsBobbing = true;
-            Health = BaseHealth;
+            HitPoints = BaseHealth;
 
             SpriteTexture = new AnimatedTexture2D(playerTexture);
             SpriteTexture.AddAnimation("LookDown", 0, 0, 23, 33, 6, 1 / 12f, false, false);
@@ -99,6 +99,13 @@ namespace Dauntlet.Entities
                 }
                 TileEngine.HandleTeleport(fixtureB.Body, direction);
                 _isTeleporting = true;
+            }
+            if (fixtureA.Body.GetType() == CollisionBody.GetType() && fixtureB.CollisionCategories == Category.Cat10 && !Hurt)
+            {
+                Hurt = true;
+                HurtTimer = 0;
+                InflictDamage(1);
+                Dauntlet.SoundBank.PlayCue("Hurt");
             }
             return true;
         }
@@ -235,6 +242,15 @@ namespace Dauntlet.Entities
             
             ResolveAnimation();
             _isTeleporting = false;
+
+            //if (HitPoints <= 0 && !Dying && !Dead)
+                //Die();
+            if (Hurt)
+            {
+                HurtTimer += gameTime.ElapsedGameTime.Milliseconds;
+                if (HurtTimer > 2000)
+                    Hurt = false;
+            }
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -257,7 +273,8 @@ namespace Dauntlet.Entities
 
             float bobFactor = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 4) * 3 + 1;
 
-            spriteBatch.Draw(SpriteTexture.Sheet, IsBobbing ? SpritePosition(bobFactor) : SpritePosition(), SpriteTexture.CurrentFrame, Color.White, 0f,
+            spriteBatch.Draw(SpriteTexture.Sheet, IsBobbing ? SpritePosition(bobFactor) : SpritePosition(), SpriteTexture.CurrentFrame,
+                Hurt ? new Color(1, 0, 0, 1f) : Color.White, 0f,
                 SpriteOrigin, 1f, SpriteTexture.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, LayerDepth);
 
             spriteBatch.Draw(_gauntletTexture.Sheet, new Vector2(ConvertUnits.ToDisplayUnits(GauntletBody.Position.X),

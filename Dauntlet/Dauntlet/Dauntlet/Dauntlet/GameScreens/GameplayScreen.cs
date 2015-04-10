@@ -68,6 +68,10 @@ namespace Dauntlet.GameScreens
             Player.Update(gameTime);
             foreach (var entity in TileEngine.CurrentRoom.Entities.Where(entity => !entity.Dead))
                 entity.Update(gameTime);
+            TileEngine.CurrentRoom.Entities.AddRange(TileEngine.CurrentRoom.AddQueue);
+            TileEngine.CurrentRoom.AddQueue.Clear();
+            foreach (Entity e in TileEngine.CurrentRoom.RemoveQueue) TileEngine.CurrentRoom.Entities.Remove(e);
+            TileEngine.CurrentRoom.RemoveQueue.Clear();
             
             // Update camera
             _view = CameraManager.MoveCamera(Player.DisplayPosition);

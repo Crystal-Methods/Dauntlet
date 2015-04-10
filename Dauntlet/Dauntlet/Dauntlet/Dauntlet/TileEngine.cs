@@ -263,6 +263,8 @@ namespace Dauntlet
     {
         public World World;
         public List<Entity> Entities;
+        public List<Entity> AddQueue;
+        public List<Entity> RemoveQueue; 
         public readonly int Height;
         public readonly int Width;
         private readonly Tile[][] _map;
@@ -281,6 +283,8 @@ namespace Dauntlet
             ConvertUnits.SetDisplayUnitToSimUnitRatio(TileEngine.TileSize);
             World = new World(Vector2.Zero);
             Entities = new List<Entity>();
+            AddQueue = new List<Entity>();
+            RemoveQueue = new List<Entity>();
             Teleports = new Dictionary<char, Teleport>();
 
             _map = map;
