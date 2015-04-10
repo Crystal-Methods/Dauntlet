@@ -36,7 +36,7 @@ Cat20 - N/A
 Cat21 - N/A
 Cat22 - N/A
 Cat23 - N/A
-Cat24 - N/A
+Cat24 - Experience Orbs
 ------------------
 Cat25 - Damage Invulnerable
 Cat26 - N/A

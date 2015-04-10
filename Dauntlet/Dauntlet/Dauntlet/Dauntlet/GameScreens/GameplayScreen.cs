@@ -131,6 +131,8 @@ namespace Dauntlet.GameScreens
                     new Vector2(GraphicsDevice.Viewport.Width - 100, 100), Color.White);
                 _spriteBatch.DrawString(MainGame.Font, String.Format("Y: {0}", Player.SimPosition.Y.ToString("0.00")),
                     new Vector2(GraphicsDevice.Viewport.Width - 100, 150), Color.White);
+                _spriteBatch.DrawString(MainGame.Font, String.Format("EXP: {0}", Player.Exp),
+                    new Vector2(GraphicsDevice.Viewport.Width - 100, 200), Color.White);
             }
             HUD.Draw(_spriteBatch);
             _spriteBatch.End();

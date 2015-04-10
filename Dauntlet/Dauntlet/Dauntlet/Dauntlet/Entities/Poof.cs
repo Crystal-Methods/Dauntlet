@@ -33,7 +33,7 @@ namespace Dauntlet.Entities
         {
             float layerDepth = ConvertUnits.ToSimUnits(_position.Y)/100f;
             spriteBatch.Draw(SpriteTexture.Sheet, _position, SpriteTexture.CurrentFrame, Color.White,
-                0f, new Vector2(16, 16), 1f, SpriteEffects.None, layerDepth);
+                0f, new Vector2(16, 16), 2f, SpriteEffects.None, layerDepth);
         }
 
         public override void Die()

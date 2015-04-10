@@ -1,4 +1,5 @@
-﻿using FarseerPhysics.Dynamics;
+﻿using System.Runtime.InteropServices;
+using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -143,7 +144,8 @@ namespace Dauntlet.Entities
                 {
                     Dying = false;
                     Dead = true;
-                    Poof.SummonPoof(DisplayPosition);
+                    Poof.SummonPoof(new Vector2(DisplayPosition.X, DisplayPosition.Y - OffGroundHeight));
+                    ExpOrb.SpawnExp(3, SimPosition);
                     CollisionBody.Dispose();
                 }
             }

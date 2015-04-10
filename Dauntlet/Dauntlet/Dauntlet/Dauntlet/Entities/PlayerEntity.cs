@@ -28,6 +28,7 @@ namespace Dauntlet.Entities
         private AnimatedTexture2D _gauntletTexture;
         public bool IsPunching;
         public int Power;
+        public int Exp;
 
         public Body GauntletBody;
 
@@ -40,6 +41,7 @@ namespace Dauntlet.Entities
             OffGroundHeight = PlayerFloatHeight;
             IsBobbing = true;
             HitPoints = BaseHealth;
+            Exp = 0;
 
             SpriteTexture = new AnimatedTexture2D(playerTexture);
             SpriteTexture.AddAnimation("LookDown", 0, 0, 23, 33, 6, 1 / 12f, false, false);
@@ -106,6 +108,11 @@ namespace Dauntlet.Entities
                 HurtTimer = 0;
                 InflictDamage(1);
                 Dauntlet.SoundBank.PlayCue("Hurt");
+            }
+            if (fixtureA.Body.GetType() == CollisionBody.GetType() && fixtureB.CollisionCategories == Category.Cat24)
+            {
+                ((ExpOrb)fixtureB.Body.UserData).Die();
+                Exp++;
             }
             return true;
         }
