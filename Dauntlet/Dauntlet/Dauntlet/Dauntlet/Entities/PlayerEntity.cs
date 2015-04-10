@@ -29,6 +29,8 @@ namespace Dauntlet.Entities
         public bool IsPunching;
         public int Power;
         public int Exp;
+        public int Level;
+        public int ExpToNextLevel { get { return (int) ((4f/5f) * (Level + 1) * (Level + 1)); } }
 
         public Body GauntletBody;
 
@@ -41,6 +43,7 @@ namespace Dauntlet.Entities
             OffGroundHeight = PlayerFloatHeight;
             IsBobbing = true;
             HitPoints = BaseHealth;
+            Level = 1;
             Exp = 0;
 
             SpriteTexture = new AnimatedTexture2D(playerTexture);
@@ -257,6 +260,11 @@ namespace Dauntlet.Entities
                 HurtTimer += gameTime.ElapsedGameTime.Milliseconds;
                 if (HurtTimer > 2000)
                     Hurt = false;
+            }
+            if (Exp >= ExpToNextLevel)
+            {
+                Exp = Exp%ExpToNextLevel;
+                Level++;
             }
         }
 

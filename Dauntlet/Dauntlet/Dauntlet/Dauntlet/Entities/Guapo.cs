@@ -8,7 +8,7 @@ namespace Dauntlet.Entities
 {
     public class Guapo : EnemyEntity
     {
-        private const float EvadeSpeed       =  4f;
+        private const float EvadeSpeed       =  0.02f;
         private const float ChaseSpeed       =  0.02f;
         private const float WanderSpeed      =  0.01f;
         private const float ChaseDistance    =  3f;
@@ -29,6 +29,7 @@ namespace Dauntlet.Entities
         enum GuapoState
         {
             Chasing,
+            Fleeing,
             Caught,
             Wander
         }
@@ -62,20 +63,28 @@ namespace Dauntlet.Entities
                 case GuapoState.Caught:
                     caughtThreshold += Hysteresis/2;
                     break;
+                case GuapoState.Fleeing:
+                    caughtThreshold = 0;
+                    chaseThreshold += Hysteresis/2;
+                    break;
             }
 
             //Second, decide state
             float distanceFromPlayer = Vector2.Distance(Player.SimPosition, SimPosition);
             
-            if (distanceFromPlayer > chaseThreshold) _guapoState = GuapoState.Wander;
-            else if (distanceFromPlayer > caughtThreshold) _guapoState = GuapoState.Chasing;
-            else _guapoState = GuapoState.Caught;
+            if (distanceFromPlayer > chaseThreshold)
+                _guapoState = GuapoState.Wander;
+            else if (distanceFromPlayer > caughtThreshold && HitPoints == 1)
+                _guapoState = GuapoState.Fleeing;
+            else if (distanceFromPlayer > caughtThreshold && HitPoints > 1)
+                _guapoState = GuapoState.Chasing;
+            else
+                _guapoState = GuapoState.Caught;
                 
             //Third, move
-            if (_guapoState == GuapoState.Chasing)
-                Evade();
-            else if (_guapoState == GuapoState.Wander)
-                Wander();
+            if (_guapoState == GuapoState.Chasing) Chase();
+            else if (_guapoState == GuapoState.Fleeing) Evade();
+            else if (_guapoState == GuapoState.Wander) Wander();
         }
 
         private static float TurnToFace(Vector2 position, Vector2 faceThis, float currentAngle, float turnSpeed)
@@ -120,7 +129,7 @@ namespace Dauntlet.Entities
             CollisionBody.Rotation = TurnToFace(SimPosition, Player.SimPosition, CollisionBody.Rotation, TurnSpeed);
             var heading = new Vector2((float)Math.Cos(CollisionBody.Rotation), (float)Math.Sin(CollisionBody.Rotation));
             heading.Normalize();
-            CollisionBody.ApplyLinearImpulse(heading * EvadeSpeed);
+            CollisionBody.ApplyLinearImpulse(heading * ChaseSpeed);
         }
 
         public void Evade()
@@ -132,7 +141,7 @@ namespace Dauntlet.Entities
 
             var heading = new Vector2((float)Math.Cos(CollisionBody.Rotation),(float)Math.Sin(CollisionBody.Rotation));
             heading.Normalize();
-            CollisionBody.ApplyLinearImpulse(heading * Speed);
+            CollisionBody.ApplyLinearImpulse(heading * EvadeSpeed);
         }
 
         public override void Die()

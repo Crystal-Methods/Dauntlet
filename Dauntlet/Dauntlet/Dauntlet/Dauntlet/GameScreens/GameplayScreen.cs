@@ -131,8 +131,12 @@ namespace Dauntlet.GameScreens
                     new Vector2(GraphicsDevice.Viewport.Width - 100, 100), Color.White);
                 _spriteBatch.DrawString(MainGame.Font, String.Format("Y: {0}", Player.SimPosition.Y.ToString("0.00")),
                     new Vector2(GraphicsDevice.Viewport.Width - 100, 150), Color.White);
-                _spriteBatch.DrawString(MainGame.Font, String.Format("EXP: {0}", Player.Exp),
+                _spriteBatch.DrawString(MainGame.Font, String.Format("Lvl: {0}", Player.Level),
                     new Vector2(GraphicsDevice.Viewport.Width - 100, 200), Color.White);
+                _spriteBatch.DrawString(MainGame.Font, String.Format("EXP: {0}", Player.Exp),
+                    new Vector2(GraphicsDevice.Viewport.Width - 100, 250), Color.White);
+                _spriteBatch.DrawString(MainGame.Font, String.Format("2Nxt: {0}", Player.ExpToNextLevel),
+                    new Vector2(GraphicsDevice.Viewport.Width - 100, 300), Color.White);
             }
             HUD.Draw(_spriteBatch);
             _spriteBatch.End();

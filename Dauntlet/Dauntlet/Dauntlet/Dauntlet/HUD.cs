@@ -8,6 +8,7 @@ namespace Dauntlet
     public static class HUD
     {
         private static Texture2D _lifebar;
+        private static Texture2D _expbar;
         private static AnimatedTexture2D _flame;
         private static AnimatedTexture2D _healthStock;
         private static int Health { get { return GameplayScreen.Player.HitPoints; } }
@@ -16,6 +17,7 @@ namespace Dauntlet
         public static void Init()
         {
             _lifebar = SpriteFactory.GetTexture("Lifebar");
+            _expbar = SpriteFactory.GetTexture("EXPbar");
             _flame = new AnimatedTexture2D(SpriteFactory.GetTexture("DauntletFire"));
             _flame.AddAnimation("Flicker1", 0, 0, 256, 256, 7, 1/10f, false, false);
             _flame.SetAnimation("Flicker1");
@@ -36,6 +38,10 @@ namespace Dauntlet
 
         public static void Draw(SpriteBatch spriteBatch)
         {
+            var expBarLength = (int)Math.Round(_expbar.Width* (float)GameplayScreen.Player.Exp/GameplayScreen.Player.ExpToNextLevel);
+            var sourceRect = new Rectangle(0, 0, expBarLength, _expbar.Height);
+            spriteBatch.Draw(_expbar, new Vector2(133, 61), Color.Black);
+            spriteBatch.Draw(_expbar, new Vector2(133, 61), sourceRect, Color.White);
             spriteBatch.Draw(_lifebar, new Vector2(30, 40), Color.White);
             spriteBatch.Draw(_flame.Sheet, new Vector2(83, 151), _flame.CurrentFrame, Color.White, 0f, new Vector2(132, 194), 1f, SpriteEffects.None, 0f);
             for (int i = 0; i < GameplayScreen.Player.HitPoints; i++)
