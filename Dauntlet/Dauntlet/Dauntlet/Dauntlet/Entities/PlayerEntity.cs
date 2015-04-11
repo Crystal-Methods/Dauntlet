@@ -29,6 +29,7 @@ namespace Dauntlet.Entities
         public bool IsPunching;
         public int Power;
         public int Exp;
+        public float SmoothExp;
         public int Level;
         public int ExpToNextLevel { get { return (int) ((4f/5f) * (Level + 1) * (Level + 1)); } }
 
@@ -261,9 +262,11 @@ namespace Dauntlet.Entities
                 if (HurtTimer > 2000)
                     Hurt = false;
             }
-            if (Exp >= ExpToNextLevel)
+            if (SmoothExp < Exp) SmoothExp += 0.2f;
+            if (SmoothExp >= ExpToNextLevel)
             {
                 Exp = Exp%ExpToNextLevel;
+                SmoothExp = 0;
                 Level++;
             }
         }

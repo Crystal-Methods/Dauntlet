@@ -38,7 +38,7 @@ namespace Dauntlet
 
         public static void Draw(SpriteBatch spriteBatch)
         {
-            var expBarLength = (int)Math.Round(_expbar.Width* (float)GameplayScreen.Player.Exp/GameplayScreen.Player.ExpToNextLevel);
+            var expBarLength = (int)Math.Round(_expbar.Width* (float)GameplayScreen.Player.SmoothExp/GameplayScreen.Player.ExpToNextLevel);
             var sourceRect = new Rectangle(0, 0, expBarLength, _expbar.Height);
             spriteBatch.Draw(_expbar, new Vector2(133, 61), Color.Black);
             spriteBatch.Draw(_expbar, new Vector2(133, 61), sourceRect, Color.White);
