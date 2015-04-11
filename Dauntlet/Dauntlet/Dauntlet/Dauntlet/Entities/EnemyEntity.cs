@@ -12,6 +12,14 @@ namespace Dauntlet.Entities
         // Reference to the player
         protected PlayerEntity Player { get { return GameplayScreen.Player; } }
 
+        /// <summary>
+        /// Creates a new Enemy entity
+        /// </summary>
+        /// <param name="world">Farseer world in which to put the Enemy</param>
+        /// <param name="position">initial position of the Enemy, in sim units</param>
+        /// <param name="spriteTexture">texture for the Enemy</param>
+        /// <param name="speed">top speed of the Enemy</param>
+        /// <param name="radius">radius of the Enemy's collision body, in sim units</param>
         protected EnemyEntity(World world, Vector2 position, AnimatedTexture2D spriteTexture, float speed, float radius)
         {
             Speed = speed;

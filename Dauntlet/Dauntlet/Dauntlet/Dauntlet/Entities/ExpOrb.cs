@@ -12,7 +12,7 @@ namespace Dauntlet.Entities
     {
 
         private const float TopSpeed       =  4f; // Max movement speed
-        private const float ExpRadius      = 10f; // Radius of the collision body, in pixels
+        private const float ExpRadius      =  8f; // Radius of the collision body, in pixels
         private const float ExpFloatHeight = 15f; // Vertical offset between shadow and sprite (for "floating" effect), in pixels
         private const float ExpMass        =  1f; // Mass of the body
         private const int   BaseHealth     =  1;  // Initial health
