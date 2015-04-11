@@ -6,7 +6,6 @@ using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -108,6 +107,9 @@ namespace Dauntlet.Entities
             }
             if (fixtureA.Body.GetType() == CollisionBody.GetType() && fixtureB.CollisionCategories == Category.Cat10 && !Hurt)
             {
+                Vector2 collisionNormal = Vector2.Normalize(SimPosition - fixtureB.Body.Position);
+                CollisionBody.LinearDamping = 10f;
+                CollisionBody.ApplyLinearImpulse(collisionNormal * 20f);
                 Hurt = true;
                 HurtTimer = 0;
                 InflictDamage(1);
@@ -166,6 +168,7 @@ namespace Dauntlet.Entities
 
         public void Move(KeyboardState keyState, GamePadState padState)
         {
+            if (Hurt && HurtTimer < 500) return;
             Vector2 force = Vector2.Zero;
 
             if (keyState.IsKeyDown(Keys.W)) force.Y--;
@@ -259,6 +262,7 @@ namespace Dauntlet.Entities
             if (Hurt)
             {
                 HurtTimer += gameTime.ElapsedGameTime.Milliseconds;
+                if (HurtTimer >= 500) CollisionBody.LinearDamping = 35;
                 if (HurtTimer > 2000)
                     Hurt = false;
             }
