@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Dauntlet.Entities;
+using FarseerPhysics;
 using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -26,6 +27,11 @@ namespace Dauntlet
         private static Dictionary<String, Texture2D> _textures = new Dictionary<string, Texture2D>();
         private static GraphicsDevice _graphics;
 
+        /// <summary>
+        /// Initializes the Sprite Factory
+        /// </summary>
+        /// <param name="contentManager">the game's ContentManager object</param>
+        /// <param name="graphics">the game's GraphicDevice object</param>
         public static void Init(ContentManager contentManager, GraphicsDevice graphics)
         {
             if (_textures.Count > 0)
@@ -51,6 +57,13 @@ namespace Dauntlet
             Entity.Shadow = _textures["Shadow"];
         }
 
+        /// <summary>
+        /// Creates a rectangular texture of a solid color
+        /// </summary>
+        /// <param name="height">the height of the texture</param>
+        /// <param name="width">the width of the texture</param>
+        /// <param name="color">the color of the texture</param>
+        /// <returns>a texture of the specified height, width, and color</returns>
         public static Texture2D GetRectangleTexture(int height, int width, Color color)
         {
             var rect = new Texture2D(_graphics, width, height);
@@ -60,39 +73,92 @@ namespace Dauntlet
             return rect;
         }
 
+        /// <summary>
+        /// Fetches the texture with the specified file name
+        /// </summary>
+        /// <param name="texName">the name of the texture to retrieve</param>
+        /// <returns>the specified texture</returns>
         public static Texture2D GetTexture(string texName)
         {
             return _textures[texName];
         }
 
+        /// <summary>
+        /// Creates a new Player entity and adds it to the given world
+        /// </summary>
+        /// <param name="world">world in which to add the new Player</param>
+        /// <param name="position">initial position for the Player, in display units</param>
+        /// <returns>the new Player</returns>
         public static PlayerEntity CreatePlayer(World world, Vector2 position)
         {
-            return new PlayerEntity(world, position, _textures["Dante"], _textures["Gauntlet"]);
+            var playerTexture = new AnimatedTexture2D(_textures["Dante"]);
+            playerTexture.AddAnimation("LookDown", 0, 0, 23, 33, 6, 1 / 12f, false, false);
+            playerTexture.AddAnimation("LookDownLeft", 0, 33, 23, 33, 6, 1 / 12f, false, false);
+            playerTexture.AddAnimation("LookLeft", 0, 66, 23, 33, 6, 1 / 12f, false, false);
+            playerTexture.AddAnimation("LookUpLeft", 0, 99, 23, 33, 6, 1 / 12f, false, false);
+            playerTexture.AddAnimation("LookUp", 0, 132, 23, 33, 6, 1 / 12f, false, false);
+            playerTexture.AddAnimation("LookDownRight", 0, 33, 23, 33, 6, 1 / 12f, true, false);
+            playerTexture.AddAnimation("LookRight", 0, 66, 23, 33, 6, 1 / 12f, true, false);
+            playerTexture.AddAnimation("LookUpRight", 0, 99, 23, 33, 6, 1 / 12f, true, false);
+            playerTexture.SetAnimation("LookRight");
+
+            var gauntletTexture = new AnimatedTexture2D(_textures["Gauntlet"]);
+
+            return new PlayerEntity(world, ConvertUnits.ToSimUnits(position), playerTexture, gauntletTexture);
         }
 
+        /// <summary>
+        /// Creates a new Enemy entity of the specified type and adds it to the given world
+        /// </summary>
+        /// <param name="world">world in which to add the new Enemy</param>
+        /// <param name="position">initial position for the Enemy, in display units</param>
+        /// <param name="type">the type of enemy to create</param>
+        /// <returns>the new Enemy</returns>
         public static EnemyEntity CreateEnemy(World world, Vector2 position, EnemyTypes type)
         {
-            if (type == EnemyTypes.Guapo)
-                return new Guapo(world, position, _textures["Guapo"]);
-            if (type == EnemyTypes.Zombie)
-                return new Zombie(world, position, _textures["Zombie"]);
-            throw new ArgumentException("One or more enemy types do not exist!");
+            switch (type)
+            {
+                case EnemyTypes.Guapo:
+                    var gaupoTexture = new AnimatedTexture2D(_textures["Guapo"]);
+                    gaupoTexture.AddAnimation("Fly", 0, 0, 32, 32, 5, 1/24f, false, false);
+                    gaupoTexture.SetAnimation("Fly");
+                    return new Guapo(world, ConvertUnits.ToSimUnits(position), gaupoTexture);
+
+                case EnemyTypes.Zombie:
+                    var zombieTexture = new AnimatedTexture2D(_textures["Zombie"]);
+                    zombieTexture.AddAnimation("Walk", 0, 0, 64, 64, 8, 1/4f, false, false);
+                    zombieTexture.SetAnimation("Walk");
+                    return new Zombie(world, ConvertUnits.ToSimUnits(position), zombieTexture);
+
+                default:
+                    throw new ArgumentException("One or more enemy types do not exist!");
+            }
         }
 
+        /// <summary>
+        /// Creates a new Static entity of the specified type and adds it to the given world
+        /// </summary>
+        /// <param name="world">world in which to add the new entity</param>
+        /// <param name="position">initial position for the entity, in display units</param>
+        /// <param name="type">the type of Static entity to create</param>
+        /// <returns>the new entity</returns>
         public static StaticEntity CreateStaticEntity(World world, Vector2 position, ObjectTypes type)
         {
-            if (type == ObjectTypes.Fountain)
+            switch (type)
             {
-                var se = new StaticEntity(world, position, new Vector2(128, 39),
-                    _textures["Fountain"]);
-                se.SetAnimation(0, 0, 128, 59, 3, 1 / 8f, false, false);
-                return se;
+                case ObjectTypes.Fountain:
+                    var fountainTexture = new AnimatedTexture2D(_textures["Fountain"]);
+                    fountainTexture.AddAnimation("Flow", 0, 0, 128, 59, 3, 1/8f, false, false);
+                    fountainTexture.SetAnimation("Flow");
+                    return new StaticEntity(world, ConvertUnits.ToSimUnits(position), ConvertUnits.ToSimUnits(new Vector2(128, 39)), fountainTexture);
+
+                case ObjectTypes.Tree:
+                    var treeTexture = new AnimatedTexture2D(_textures["Tree"]);
+                    return new StaticEntity(world, ConvertUnits.ToSimUnits(position), ConvertUnits.ToSimUnits(new Vector2(125, 30)), treeTexture);
+
+                default:
+                    throw new ArgumentException("One or more object types do not exist!");
             }
-            if (type == ObjectTypes.Tree)
-            {
-                return new StaticEntity(world, new Vector2(577.5f, 351f), new Vector2(125, 30), _textures["Tree"]);
-            }
-            throw new ArgumentException("One or more object types do not exist!");
         }
 
     }

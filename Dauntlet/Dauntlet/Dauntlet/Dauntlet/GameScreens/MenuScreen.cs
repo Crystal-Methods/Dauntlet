@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Dauntlet.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 

@@ -1,5 +1,4 @@
 ﻿using Dauntlet.GameScreens;
-using FarseerPhysics;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
@@ -12,36 +11,45 @@ namespace Dauntlet.Entities
         public bool IsCircle;
         public bool IsRectangle;
 
-        public StaticEntity(World world, Vector2 position, float radius, Texture2D spriteTexture)
+        /// <summary>
+        /// Creates a circular Static entity
+        /// </summary>
+        /// <param name="world">the Farseer World in which to put this entity</param>
+        /// <param name="position">initial position of this entity, in sim units</param>
+        /// <param name="radius">radius of the collision body, in sim units</param>
+        /// <param name="spriteTexture">this entity's texture</param>
+        public StaticEntity(World world, Vector2 position, float radius, AnimatedTexture2D spriteTexture)
         {
             IsCircle = true;
             Speed = 0f;
             Radius = radius;
-            SpriteTexture = new AnimatedTexture2D(spriteTexture);
+            Mass = 1;
+            SpriteTexture = spriteTexture;
 
              // Create body
-            CollisionBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(Radius), 0.7f, ConvertUnits.ToSimUnits(position));
-            CollisionBody.BodyType = BodyType.Static;
-            CollisionBody.FixedRotation = true;
-            CollisionBody.Restitution = 0f;
-            CollisionBody.Friction = 0.5f;
+            CollisionBody = BodyFactory.CreateCircle(world, Radius, this.Density(), position);
+            CollisionBody.InitBody(BodyType.Static, Category.Cat1, Category.All, true, 0f, 0.5f, 0f, 0f);
         }
 
-        public StaticEntity(World world, Vector2 position, Vector2 bounds, Texture2D spriteTexture)
+        /// <summary>
+        /// Creates a rectangular Static entity
+        /// </summary>
+        /// <param name="world">the Farseer World in which to put this entity</param>
+        /// <param name="position">initial position of this entity, in sim units</param>
+        /// <param name="bounds">a set of floats that represent the collision body's width (x) and height (y), in sim units</param>
+        /// <param name="spriteTexture">this entity's texture</param>
+        public StaticEntity(World world, Vector2 position, Vector2 bounds, AnimatedTexture2D spriteTexture)
         {
             IsRectangle = true;
             Speed = 0f;
             Height = bounds.Y;
             Width = bounds.X;
-            SpriteTexture = new AnimatedTexture2D(spriteTexture);
+            Mass = 1;
+            SpriteTexture = spriteTexture;
 
             // Create body
-            CollisionBody = BodyFactory.CreateRectangle(world, ConvertUnits.ToSimUnits(bounds.X), ConvertUnits.ToSimUnits(bounds.Y),
-                1f, ConvertUnits.ToSimUnits(position));
-            CollisionBody.BodyType = BodyType.Static;
-            CollisionBody.FixedRotation = true;
-            CollisionBody.Restitution = 0f;
-            CollisionBody.Friction = 0.5f;
+            CollisionBody = BodyFactory.CreateRectangle(world, Width, Height, this.Density(), position);
+            CollisionBody.InitBody(BodyType.Static, Category.Cat1, Category.All, true, 0f, 0.5f, 0f, 0f);
         }
 
         public void SetAnimation(int startPosX, int startPosY, int frameWidth, int frameHeight, int frameCount, float fps, bool flipped, bool isOneTime)
@@ -62,18 +70,21 @@ namespace Dauntlet.Entities
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            // Draw debug
             if (GameplayScreen.DebugCollision)
             {
                 if (IsCircle)
                     spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,
-                        CenterOrigin(DebugCircleTexture), 2*Radius/50f, SpriteEffects.None, LayerDepth + 1/100f);
+                        CenterOrigin(DebugCircleTexture), 2*DisplayRadius/50f, SpriteEffects.None, LayerDepth + 1/100f);
                 else if (IsRectangle)
                 {
-                    spriteBatch.Draw(SpriteFactory.GetRectangleTexture((int)Height, (int)Width, new Color(1, 0, 0, 0.1f)), DisplayPosition,
-                        null, Color.White, 0f,
-                        new Vector2(Width/2f, Height/2f), 1f, SpriteEffects.None, LayerDepth + 1/100f);
+                    spriteBatch.Draw(SpriteFactory.GetRectangleTexture((int)DisplayHeight,
+                        (int)DisplayWidth, new Color(1, 0, 0, 0.1f)), DisplayPosition, null, Color.White, 0f,
+                        new Vector2(DisplayWidth/2f, DisplayHeight/2f), 1f, SpriteEffects.None, LayerDepth + 1/100f);
                 }
             }
+
+            // Draw entity
             spriteBatch.Draw(SpriteTexture.Sheet, SpritePosition(), SpriteTexture.CurrentFrame, Color.White, 0f,
                 SpriteOrigin, 1f, SpriteTexture.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, LayerDepth);
         }

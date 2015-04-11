@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dauntlet.GameScreens;
 using FarseerPhysics;
-using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -12,16 +7,29 @@ namespace Dauntlet.Entities
 {
     public class Poof : Entity
     {
-        private readonly Vector2 _position;
+        // As we do not make use of the Body, we must define our own position variable
+        private readonly Vector2 _position; // position in display units
 
-        public Poof(Vector2 displayPosition)
+        /// <summary>
+        /// Creates a new Poof entity
+        /// </summary>
+        /// <param name="origin">origin of the poof, in display units</param>
+        public Poof(Vector2 origin)
         {
-            _position = displayPosition;
+            _position = origin;
             SpriteTexture = new AnimatedTexture2D(SpriteFactory.GetTexture("Splode"));
             SpriteTexture.AddAnimation("Asplode", 0, 0, 32, 32, 6, 1/24f, false, true);
             SpriteTexture.SetAnimation("Asplode");
         }
 
+        /// <summary>
+        /// Summons a puff of smoke at the specified position
+        /// </summary>
+        /// <param name="displayPosition">the position to summon, in display units</param>
+        public static void SummonPoof(Vector2 displayPosition)
+        {
+            TileEngine.CurrentRoom.AddQueue.Add(new Poof(displayPosition));
+        }
 
         public override void Update(GameTime gameTime)
         {
@@ -41,10 +49,5 @@ namespace Dauntlet.Entities
             throw new NotImplementedException();
         }
 
-        public static void SummonPoof(Vector2 displayPosition)
-        {
-            var p = new Poof(displayPosition);
-            TileEngine.CurrentRoom.AddQueue.Add(p);
-        }
     }
 }

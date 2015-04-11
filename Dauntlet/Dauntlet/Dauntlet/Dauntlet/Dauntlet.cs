@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Dauntlet.Entities;
 using Dauntlet.GameScreens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;

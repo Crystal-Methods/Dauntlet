@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Permissions;
-using System.Windows.Forms;
 using Dauntlet.Entities;
 using Dauntlet.GameScreens;
 using FarseerPhysics;
@@ -196,27 +194,28 @@ namespace Dauntlet
             CurrentRoomName = (String)((List<Object>)tpFrom.CollisionBody.UserData)[4];
             Game.World = CurrentRoom.World;
             Teleport tpTo = CurrentRoom.Teleports[tpFrom.Id];
-            Vector2 pos = GameplayScreen.Player.SimPosition;
+            Vector2 pos = GameplayScreen.Player.Position;
             float relativeX = pos.X - (float)Math.Truncate(pos.X);
             float relativeY = pos.Y - (float)Math.Truncate(pos.Y);
+            float radius = GameplayScreen.Player.DisplayRadius;
             if (direction == 'W')
             {
-                pos.X = tpTo.Position.X + ConvertUnits.ToSimUnits(tpTo.Width + GameplayScreen.Player.Radius + 1);
+                pos.X = tpTo.Position.X + ConvertUnits.ToSimUnits(tpTo.Width + radius + 1);
                 pos.Y = tpTo.Position.Y + relativeY;
             }
             else if (direction == 'E')
             {
-                pos.X = tpTo.Position.X - ConvertUnits.ToSimUnits(GameplayScreen.Player.Radius + 1);
+                pos.X = tpTo.Position.X - ConvertUnits.ToSimUnits(radius + 1);
                 pos.Y = tpTo.Position.Y + relativeY;
             }
             else if (direction == 'S')
             {
-                pos.Y = tpTo.Position.Y + ConvertUnits.ToSimUnits(tpTo.Height + GameplayScreen.Player.Radius + 1);
+                pos.Y = tpTo.Position.Y + ConvertUnits.ToSimUnits(tpTo.Height + radius + 1);
                 pos.X = tpTo.Position.X + relativeX;
             }
             else
             {
-                pos.Y = tpTo.Position.Y - ConvertUnits.ToSimUnits(GameplayScreen.Player.Radius + 1);
+                pos.Y = tpTo.Position.Y - ConvertUnits.ToSimUnits(radius + 1);
                 pos.X = tpTo.Position.X + relativeX;
             }
             GameplayScreen.Player.ChangeRoom(CurrentRoom.World, pos);

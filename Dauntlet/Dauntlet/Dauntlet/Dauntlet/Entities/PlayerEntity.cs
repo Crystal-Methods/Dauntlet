@@ -1,5 +1,4 @@
-﻿//used for testing
-using System;
+﻿using System;
 using Dauntlet.GameScreens;
 using FarseerPhysics;
 using FarseerPhysics.Dynamics;
@@ -13,103 +12,83 @@ namespace Dauntlet.Entities
 {
     public class PlayerEntity : Entity
     {
-        private const float PlayerSpeed = 5f;
-        private const float PlayerRadius = 15f; // Radius of player's bounding circle
-        private const float PlayerFloatHeight = 14f; // How far the base of the sprite is from the center of the shadow
-        private const float PlayerMass = 1f;
-        private const int BaseHealth = 5;
+        private const float PlayerSpeed       =  5f; // Max movement speed
+        private const float PlayerRadius      = 15f; // Radius of the collision body, in pixels
+        private const float PlayerFloatHeight = 14f; // Vertical offset between shadow and sprite (for "floating" effect), in pixels
+        private const float PlayerMass        =  1f; // Mass of the body
+        private const int   BaseHealth        =  5;  // Initial health
 
         // ---------------------------------
 
-        private bool _isTeleporting;
-        private float _punchTime;
-        private Vector2 _punchVector;
-        private AnimatedTexture2D _gauntletTexture;
-        public bool IsPunching;
-        public int Power;
-        public int Exp;
-        public float SmoothExp;
-        public int Level;
-        public int ExpToNextLevel { get { return (int) ((4f/5f) * (Level + 1) * (Level + 1)); } }
+        private bool              _isTeleporting;   // True if the player must teleport next update
+        private float             _punchTime;       // Elapsed time of current punch
+        private Vector2           _punchVector;     // Direction in which a punch is being thrown
+        private AnimatedTexture2D _gauntletTexture; // Texture for the gauntlet
 
-        public Body GauntletBody;
+        public bool  IsPunching = false; // True if the player is in the middle of a punch
+        public int   Power      = 1;     // Base damage dealt from a basic attack
+        public int   Exp        = 0;     // Player's experience
+        public float SmoothExp  = 0;     // Used for filling the EXP bar on the HUD
+        public int   Level      = 1;     // Player's level
+        public Body  GauntletBody;       // Collision body for the gauntlet
+
+        // How much EXP is needed to reach the next level
+        public int ExpToNextLevel { get { return (int) ((4f/5f) * (Level + 1) * (Level + 1)); } }
 
         // --------------------------------
 
-        public PlayerEntity(World world, Vector2 position, Texture2D playerTexture, Texture2D gauntletTexture)
+        /// <summary>
+        /// Create a new Player entity
+        /// </summary>
+        /// <param name="world">the Farseer World in which to add this entity</param>
+        /// <param name="position">initial position of the entity, in Sim units</param>
+        /// <param name="playerTexture">texture for the player</param>
+        /// <param name="gauntletTexture">texture for the gauntlet</param>
+        public PlayerEntity(World world, Vector2 position, AnimatedTexture2D playerTexture, AnimatedTexture2D gauntletTexture)
         {
             Speed = PlayerSpeed;
-            Radius = PlayerRadius;
+            Mass = PlayerMass;
+            Radius = ConvertUnits.ToSimUnits(PlayerRadius);
             OffGroundHeight = PlayerFloatHeight;
             IsBobbing = true;
             HitPoints = BaseHealth;
-            Level = 1;
-            Exp = 0;
-
-            SpriteTexture = new AnimatedTexture2D(playerTexture);
-            SpriteTexture.AddAnimation("LookDown", 0, 0, 23, 33, 6, 1 / 12f, false, false);
-            SpriteTexture.AddAnimation("LookDownLeft", 0, 33, 23, 33, 6, 1 / 12f, false, false);
-            SpriteTexture.AddAnimation("LookLeft", 0, 66, 23, 33, 6, 1 / 12f, false, false);
-            SpriteTexture.AddAnimation("LookUpLeft", 0, 99, 23, 33, 6, 1 / 12f, false, false);
-            SpriteTexture.AddAnimation("LookUp", 0, 132, 23, 33, 6, 1 / 12f, false, false);
-            SpriteTexture.AddAnimation("LookDownRight", 0, 33, 23, 33, 6, 1 / 12f, true, false);
-            SpriteTexture.AddAnimation("LookRight", 0, 66, 23, 33, 6, 1 / 12f, true, false);
-            SpriteTexture.AddAnimation("LookUpRight", 0, 99, 23, 33, 6, 1 / 12f, true, false);
-            SpriteTexture.SetAnimation("LookRight");
-
-            _gauntletTexture = new AnimatedTexture2D(gauntletTexture);
-
-            Vector2 circlePosition = ConvertUnits.ToSimUnits(position) + new Vector2(0, -1f);
+            SpriteTexture = playerTexture;
+            _gauntletTexture = gauntletTexture;
 
             // Create player body
-            float density = PlayerMass / (float)(Math.PI * Math.Pow(ConvertUnits.ToSimUnits(Radius), 2));
-            CollisionBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(Radius), density, circlePosition);
-            CollisionBody.BodyType = BodyType.Dynamic;
-            CollisionBody.CollisionCategories = Category.Cat2;
-            CollisionBody.FixedRotation = true;
-            CollisionBody.Restitution = 0;
-            CollisionBody.Friction = 0.5f;
-            CollisionBody.LinearDamping = 35f;
-            CollisionBody.AngularDamping = 100f;
-            CollisionBody.OnCollision += CollisionBodyOnCollision;
+            CollisionBody = BodyFactory.CreateCircle(world, Radius, this.Density(), position);
+            CollisionBody.InitBody(BodyType.Dynamic, Category.Cat2, Category.All, true, 0f, 0.5f, 35f, 100f);
+            CollisionBody.OnCollision += OnPlayerCollision;
 
             // Create Gauntlet body
-            float gauntletdensity = PlayerMass / (float)(Math.PI * Math.Pow(ConvertUnits.ToSimUnits(Radius), 2));
-            GauntletBody = BodyFactory.CreateRectangle(world, ConvertUnits.ToSimUnits(32), ConvertUnits.ToSimUnits(24), gauntletdensity,
-                circlePosition + new Vector2(15, 0));
-            GauntletBody.BodyType = BodyType.Kinematic;
-            GauntletBody.CollidesWith = Category.Cat10;
-            GauntletBody.FixedRotation = true;
-            GauntletBody.LinearDamping = 5f;
+           GauntletBody = BodyFactory.CreateRectangle(world, ConvertUnits.ToSimUnits(32), ConvertUnits.ToSimUnits(24),
+               this.Density(), position + new Vector2(15, 0));
+            GauntletBody.InitBody(BodyType.Kinematic, Category.Cat1, Category.Cat10, true, 0f, 0.5f, 5f, 100f);
             GauntletBody.OnCollision += OnGauntletCollision;
             GauntletBody.OnSeparation += OnGauntletSeparation;
         }
 
-        bool CollisionBodyOnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
+        bool OnPlayerCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
         {
             // Detects teleportation
             if (fixtureA.Body.GetType() == CollisionBody.GetType() && fixtureB.CollisionCategories == Category.Cat29 && !_isTeleporting)
             {
-                // Work out collision direction
                 char direction;
                 Vector2 colNorm = contact.Manifold.LocalNormal;
-                if (Math.Abs(colNorm.X) > Math.Abs(colNorm.Y))
-                {
-                    // X direction is dominant
-                    direction = colNorm.X > 0 ? 'E' : 'W';
-                }
-                else
-                {
-                    // Y direction is dominant
-                    direction = colNorm.Y > 0 ? 'S' : 'N';
-                }
+
+                // Work out collision direction
+                if (Math.Abs(colNorm.X) > Math.Abs(colNorm.Y)) direction = colNorm.X > 0 ? 'E' : 'W';
+                else direction = colNorm.Y > 0 ? 'S' : 'N';
+
                 TileEngine.HandleTeleport(fixtureB.Body, direction);
                 _isTeleporting = true;
             }
+
+            // Detects damage from enemy
             if (fixtureA.Body.GetType() == CollisionBody.GetType() && fixtureB.CollisionCategories == Category.Cat10 && !Hurt
                 && !((EnemyEntity)fixtureB.Body.UserData).Dying)
             {
-                Vector2 collisionNormal = Vector2.Normalize(SimPosition - fixtureB.Body.Position);
+                Vector2 collisionNormal = Vector2.Normalize(Position - fixtureB.Body.Position);
                 CollisionBody.LinearDamping = 10f;
                 CollisionBody.ApplyLinearImpulse(collisionNormal * 20f);
                 Hurt = true;
@@ -117,16 +96,20 @@ namespace Dauntlet.Entities
                 InflictDamage(1);
                 Dauntlet.SoundBank.PlayCue("Hurt");
             }
+
+            // Detects collection of EXP orb
             if (fixtureA.Body.GetType() == CollisionBody.GetType() && fixtureB.CollisionCategories == Category.Cat24)
             {
                 ((ExpOrb)fixtureB.Body.UserData).Die();
                 Exp++;
             }
+
             return true;
         }
 
         bool OnGauntletCollision(Fixture a, Fixture b, Contact c)
         {
+            // Detects collision with harmable enemy
             if (a.Body.GetType() == GauntletBody.GetType() && a.Body.FixtureList[0].CollisionCategories == Category.Cat3
                 && b.CollisionCategories == Category.Cat10 && !((EnemyEntity)b.Body.UserData).Hurt)
             {
@@ -134,6 +117,7 @@ namespace Dauntlet.Entities
                 enemy.InflictDamage(1);
                 enemy.Hurt = true;
             }
+
             return true;
         }
 
@@ -148,37 +132,38 @@ namespace Dauntlet.Entities
             }
         }
 
+        /// <summary>
+        /// Move the player to a new room
+        /// </summary>
+        /// <param name="world">next room's Farseer World</param>
+        /// <param name="newPos">player's future position in the new room, in sim units</param>
         public void ChangeRoom(World world, Vector2 newPos)
         {
             // Create player body
-            float density = PlayerMass / (float)(Math.PI * Math.Pow(ConvertUnits.ToSimUnits(Radius), 2));
-            Body newBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(Radius), density, newPos);
-            newBody.BodyType = BodyType.Dynamic;
-            newBody.CollisionCategories = Category.Cat2;
-            newBody.FixedRotation = true;
-            newBody.Restitution = CollisionBody.Restitution;
-            newBody.Friction = CollisionBody.Friction;
-            newBody.LinearDamping = CollisionBody.LinearDamping;
-            newBody.AngularDamping = CollisionBody.AngularDamping;
+            Body newBody = BodyFactory.CreateCircle(world, Radius, this.Density(), newPos);
+            newBody.InitBody(BodyType.Dynamic, Category.Cat2, Category.All, true, 0f, 0.5f, 35f, 100f);
 
             // Create Gauntlet body
-            float gauntletdensity = PlayerMass / (float)(Math.PI * Math.Pow(ConvertUnits.ToSimUnits(Radius), 2));
-            Body newGauntletBody = BodyFactory.CreateRectangle(world, ConvertUnits.ToSimUnits(32), ConvertUnits.ToSimUnits(24), gauntletdensity,
-                newPos + new Vector2(15, 0));
-            newGauntletBody.BodyType = BodyType.Kinematic;
-            newGauntletBody.CollidesWith = Category.Cat10;
-            newGauntletBody.FixedRotation = true;
-            newGauntletBody.LinearDamping = GauntletBody.LinearDamping;
+            Body newGauntletBody = BodyFactory.CreateRectangle(world, ConvertUnits.ToSimUnits(32), ConvertUnits.ToSimUnits(24),
+                this.Density(), newPos + new Vector2(15, 0));
+            newGauntletBody.InitBody(BodyType.Kinematic, Category.Cat1, Category.Cat10, true, 0f, 0.5f, 5f, 100f);
 
-            // Kill old body and set new one
+            // Kill old bodies and set new ones
             CollisionBody.Dispose();
             CollisionBody = newBody;
-            CollisionBody.OnCollision += CollisionBodyOnCollision;
+            CollisionBody.OnCollision += OnPlayerCollision;
+
             GauntletBody.Dispose();
             GauntletBody = newGauntletBody;
             GauntletBody.OnCollision += OnGauntletCollision;
+            GauntletBody.OnSeparation += OnGauntletSeparation;
         }
 
+        /// <summary>
+        /// Move the player
+        /// </summary>
+        /// <param name="keyState">current keyboard state</param>
+        /// <param name="padState">current gamepad state</param>
         public void Move(KeyboardState keyState, GamePadState padState)
         {
             if (Hurt && HurtTimer < 500) return;
@@ -204,21 +189,31 @@ namespace Dauntlet.Entities
                 CollisionBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Left.Y, padState.ThumbSticks.Left.X);
         }
 
+        /// <summary>
+        /// Throw a punch
+        /// </summary>
+        /// <param name="gameTime">the game's GameTime object</param>
         public void Punch(GameTime gameTime)
         {
             IsPunching = true;
             GauntletBody.CollisionCategories = Category.Cat3;
-            _punchVector = Vector2.Normalize(new Vector2((float)Math.Cos(CollisionBody.Rotation),
-                (float)Math.Sin(CollisionBody.Rotation)));
+            _punchVector = Vector2.Normalize(new Vector2((float)Math.Cos(Rotation), (float)Math.Sin(Rotation)));
             _punchTime = 0;
         }
 
+        /// <summary>
+        /// Rotate the player
+        /// </summary>
+        /// <param name="padState">current gamepad state</param>
         public void Rotate(GamePadState padState)
         {
             if (padState.ThumbSticks.Right.Length() > 0.2)
                 CollisionBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Right.Y, padState.ThumbSticks.Right.X);
         }
 
+        /// <summary>
+        /// Decide which direction to face the animation based on rotation
+        /// </summary>
         public void ResolveAnimation()
         {
             const float e = (float)Math.PI / 8f;
@@ -241,48 +236,40 @@ namespace Dauntlet.Entities
 
         public override void Update(GameTime gameTime)
         {
+            ResolveAnimation();
+            _isTeleporting = false;
+
             if (IsPunching) {
                 _punchTime += gameTime.ElapsedGameTime.Milliseconds;
                 float x = _punchTime/64;
                 var v = (float) (30f * Math.Exp(-Math.Pow(x, 2)) * (1f - 2f * Math.Pow(x, 2)));
+                GauntletBody.LinearVelocity = _punchVector * v;
+
                 if (v < 0) GauntletBody.CollisionCategories = Category.Cat1;
-                GauntletBody.LinearVelocity = _punchVector*v;
-                if (_punchTime > 100)
-                {
+
+                if (_punchTime > 100) {
                     IsPunching = false;
                     GauntletBody.LinearVelocity = Vector2.Zero;
-                    GauntletBody.Position = CollisionBody.Position +
-                                        ConvertUnits.ToSimUnits(new Vector2(
-                                            -(float)Math.Sin(CollisionBody.Rotation) * 15,
-                                            (float)Math.Cos(CollisionBody.Rotation) * 15));
-                    GauntletBody.Rotation = CollisionBody.Rotation;
+                    GauntletBody.Position = Position +
+                        new Vector2(-(float)Math.Sin(Rotation) * Radius, (float)Math.Cos(Rotation) * Radius);
+                    GauntletBody.Rotation = Rotation;
                 }
-            }
-            else
-            {
-                GauntletBody.Position = CollisionBody.Position +
-                                        ConvertUnits.ToSimUnits(new Vector2(
-                                            -(float)Math.Sin(CollisionBody.Rotation) * 15,
-                                            (float)Math.Cos(CollisionBody.Rotation) * 15));
-                GauntletBody.Rotation = CollisionBody.Rotation;
+            } else {
+                GauntletBody.Position = Position +
+                    new Vector2(-(float)Math.Sin(Rotation) * Radius, (float)Math.Cos(Rotation) * Radius);
+                GauntletBody.Rotation = Rotation;
             }
             
-            ResolveAnimation();
-            _isTeleporting = false;
-
-            //if (HitPoints <= 0 && !Dying && !Dead)
-                //Die();
-            if (Hurt)
-            {
+            if (Hurt) {
                 HurtTimer += gameTime.ElapsedGameTime.Milliseconds;
                 if (HurtTimer >= 500) CollisionBody.LinearDamping = 35;
-                if (HurtTimer > 2000)
-                    Hurt = false;
+                if (HurtTimer > 2000) Hurt = false;
             }
+
             if (SmoothExp < Exp) SmoothExp += 0.2f;
-            if (SmoothExp >= ExpToNextLevel)
-            {
-                Exp = Exp%ExpToNextLevel;
+
+            if (SmoothExp >= ExpToNextLevel) {
+                Exp = Exp % ExpToNextLevel;
                 SmoothExp = 0;
                 Level++;
             }
@@ -291,13 +278,16 @@ namespace Dauntlet.Entities
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             SpriteTexture.StepAnimation(gameTime);
+            
+            // Draw shadow
             spriteBatch.Draw(Shadow, DisplayPosition, null, Color.White, 0f,
                 ShadowOrigin, 0.8f, SpriteEffects.None, LayerDepth - 3 / 10000f);
 
+            // Draw debug
             if (GameplayScreen.DebugCollision)
             {
-                spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,
-                    CenterOrigin(DebugCircleTexture), 2 * Radius / 50f, SpriteEffects.None, LayerDepth - 2 / 10000f);
+                spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, Rotation,
+                    CenterOrigin(DebugCircleTexture), 2 * DisplayRadius / 50f, SpriteEffects.None, LayerDepth - 2 / 10000f);
 
                 Texture2D rect = SpriteFactory.GetRectangleTexture(24, 32,
                     new Color(1, GauntletBody.FixtureList[0].CollisionCategories == Category.Cat3 ? 0.5f : 1,
@@ -306,15 +296,17 @@ namespace Dauntlet.Entities
                     CenterOrigin(rect), 1f, SpriteEffects.None, 0f);
             }
 
+            // Draw player
             float bobFactor = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 4) * 3 + 1;
-
             spriteBatch.Draw(SpriteTexture.Sheet, IsBobbing ? SpritePosition(bobFactor) : SpritePosition(), SpriteTexture.CurrentFrame,
-                Hurt ? new Color(1, 0, 0, 1f) : Color.White, 0f,
-                SpriteOrigin, 1f, SpriteTexture.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, LayerDepth);
+                Hurt ? new Color(1, 0, 0, 1f) : Color.White, 0f, SpriteOrigin, 1f,
+                SpriteTexture.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, LayerDepth);
 
+            // Draw gauntlet
             spriteBatch.Draw(_gauntletTexture.Sheet, new Vector2(ConvertUnits.ToDisplayUnits(GauntletBody.Position.X),
                 ConvertUnits.ToDisplayUnits(GauntletBody.Position.Y) - OffGroundHeight), _gauntletTexture.CurrentFrame,
-                Color.White, GauntletBody.Rotation, CenterOrigin(_gauntletTexture.Sheet), 1f, SpriteEffects.FlipHorizontally, GetLayerDepth(GauntletBody) - 1 / 10000f);
+                Color.White, GauntletBody.Rotation, CenterOrigin(_gauntletTexture.Sheet), 1f, SpriteEffects.FlipHorizontally,
+                GetLayerDepth(GauntletBody) - 1 / 10000f);
         }
 
     }

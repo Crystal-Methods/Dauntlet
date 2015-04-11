@@ -11,70 +11,60 @@ namespace Dauntlet.Entities
     public class ExpOrb : Entity
     {
 
+        private const float TopSpeed       =  4f; // Max movement speed
+        private const float ExpRadius      = 10f; // Radius of the collision body, in pixels
+        private const float ExpFloatHeight = 15f; // Vertical offset between shadow and sprite (for "floating" effect), in pixels
+        private const float ExpMass        =  1f; // Mass of the body
+        private const int   BaseHealth     =  1;  // Initial health
+
+        // -----------------------------------------
+
         public static Random Rand = new Random();
+
+        // Reference to the player
         protected PlayerEntity Player { get { return GameplayScreen.Player; } }
 
+        // -----------------------------------------
+
+        /// <summary>
+        /// Creates a new EXP Orb entity
+        /// </summary>
+        /// <param name="world">the Farseer World in which to put this entity</param>
+        /// <param name="position">initial position of this entity, in sim units</param>
         public ExpOrb(World world, Vector2 position)
         {
-            OffGroundHeight = 15f;
-            Speed = 1f;
-            Radius = 10f;
+            OffGroundHeight = ExpFloatHeight;
+            Speed = TopSpeed;
+            Radius = ConvertUnits.ToSimUnits(ExpRadius);
+            Mass = ExpMass;
+            HitPoints = BaseHealth;
+
             SpriteTexture = new AnimatedTexture2D(SpriteFactory.GetTexture("ExpOrb"));
             SpriteTexture.AddAnimation("Pulsate", 0, 0, 32, 32, 16, 1/12f, false, false);
             SpriteTexture.SetAnimation("Pulsate");
 
-            Vector2 circlePosition = position;
-
             // Create player body
-            CollisionBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(Radius), 0.7f, circlePosition);
-            CollisionBody.BodyType = BodyType.Dynamic;
-            CollisionBody.FixedRotation = true;
-            CollisionBody.Restitution = 0.3f;
-            CollisionBody.Friction = 0.5f;
-            CollisionBody.LinearDamping = 5f;
-            CollisionBody.AngularDamping = 100f;
-            CollisionBody.CollisionCategories = Category.Cat24;
-            foreach (Fixture f in CollisionBody.FixtureList)
-                f.CollidesWith = Category.All & ~Category.Cat24;
+            CollisionBody = BodyFactory.CreateCircle(world, Radius, 0.7f, position);
+            CollisionBody.InitBody(BodyType.Dynamic, Category.Cat24, Category.All & ~Category.Cat24, true, 0.3f, 0.5f, 5f, 100f);
             CollisionBody.UserData = this;
         }
 
+        /// <summary>
+        /// Creates a new EXP Orb entity
+        /// </summary>
+        /// <param name="world">the Farseer World in which to put this entity</param>
+        /// <param name="position">initial position of this entity, in sim units</param>
+        /// <param name="linearVelocity">initial linear velocity of this entity, in sim units</param>
         public ExpOrb(World world, Vector2 position, Vector2 linearVelocity) : this(world, position)
         {
             CollisionBody.LinearVelocity = linearVelocity;
         }
 
-        public void DrawToPlayer()
-        {
-            float distanceFromPlayer = Vector2.Distance(Player.SimPosition, SimPosition);
-            float speed = distanceFromPlayer < 3 ? -(float) Math.Log10(distanceFromPlayer/3)/20f : 0;
-            speed = Math.Min(speed, 4);
-            Vector2 direction = Vector2.Normalize(Player.SimPosition - SimPosition);
-            CollisionBody.ApplyLinearImpulse(direction * speed);
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            SpriteTexture.StepAnimation(gameTime);
-            DrawToPlayer();
-        }
-
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
-        {
-            if (GameplayScreen.DebugCollision)
-                spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,
-                    CenterOrigin(DebugCircleTexture), 2 * Radius / 50f, SpriteEffects.None, LayerDepth - 1 / 10000f);
-            spriteBatch.Draw(SpriteTexture.Sheet, new Vector2(DisplayPosition.X, DisplayPosition.Y - OffGroundHeight), SpriteTexture.CurrentFrame,
-                Color.White, 0f, new Vector2(16, 16), 0.5f, SpriteEffects.None, LayerDepth);
-        }
-
-        public override void Die()
-        {
-            Dead = true;
-            CollisionBody.Dispose();
-            TileEngine.CurrentRoom.RemoveQueue.Add(this);
-        }
-
+        /// <summary>
+        /// Spawn a small explosion of EXP orbs at a given position
+        /// </summary>
+        /// <param name="count">number of orbs to spawn</param>
+        /// <param name="origin">origin of the orb explosion, in sim units</param>
         public static void SpawnExp(int count, Vector2 origin)
         {
             World w = TileEngine.CurrentRoom.World;
@@ -89,5 +79,43 @@ namespace Dauntlet.Entities
                 TileEngine.CurrentRoom.AddQueue.Add(ex);
             }
         }
+
+        /// <summary>
+        /// Draws this EXP Orb to the player, if in range
+        /// </summary>
+        private void DrawToPlayer()
+        {
+            float distanceFromPlayer = Vector2.Distance(Player.Position, Position);
+            float speed = distanceFromPlayer < 3 ? -(float) Math.Log10(distanceFromPlayer/3)/20f : 0;
+            speed = Math.Min(speed, Speed);
+            Vector2 direction = Vector2.Normalize(Player.Position - Position);
+            CollisionBody.ApplyLinearImpulse(direction * speed);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            SpriteTexture.StepAnimation(gameTime);
+            DrawToPlayer();
+        }
+
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            // Draw debug
+            if (GameplayScreen.DebugCollision)
+                spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,
+                    CenterOrigin(DebugCircleTexture), 2 * DisplayRadius / 50f, SpriteEffects.None, LayerDepth - 1 / 10000f);
+
+            // Draw orb
+            spriteBatch.Draw(SpriteTexture.Sheet, new Vector2(DisplayPosition.X, DisplayPosition.Y - OffGroundHeight), SpriteTexture.CurrentFrame,
+                Color.White, 0f, new Vector2(16, 16), 0.5f, SpriteEffects.None, LayerDepth);
+        }
+
+        public override void Die()
+        {
+            Dead = true;
+            CollisionBody.Dispose();
+            TileEngine.CurrentRoom.RemoveQueue.Add(this);
+        }
+
     }
 }

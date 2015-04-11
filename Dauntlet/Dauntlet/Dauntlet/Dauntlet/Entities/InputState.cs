@@ -1,9 +1,8 @@
-﻿using System.Windows.Forms;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
-namespace Dauntlet.GameScreens
+namespace Dauntlet.Entities
 {
     public class InputState
     {

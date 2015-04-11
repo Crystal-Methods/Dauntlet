@@ -127,9 +127,9 @@ namespace Dauntlet.GameScreens
             {
                 _spriteBatch.DrawString(MainGame.Font, String.Format("MS: {0}", _stepTime.ToString("##0.00")),
                     new Vector2(GraphicsDevice.Viewport.Width - 100, 50), Color.White);
-                _spriteBatch.DrawString(MainGame.Font, String.Format("X: {0}", Player.SimPosition.X.ToString("0.00")),
+                _spriteBatch.DrawString(MainGame.Font, String.Format("X: {0}", Player.Position.X.ToString("0.00")),
                     new Vector2(GraphicsDevice.Viewport.Width - 100, 100), Color.White);
-                _spriteBatch.DrawString(MainGame.Font, String.Format("Y: {0}", Player.SimPosition.Y.ToString("0.00")),
+                _spriteBatch.DrawString(MainGame.Font, String.Format("Y: {0}", Player.Position.Y.ToString("0.00")),
                     new Vector2(GraphicsDevice.Viewport.Width - 100, 150), Color.White);
                 _spriteBatch.DrawString(MainGame.Font, String.Format("Lvl: {0}", Player.Level),
                     new Vector2(GraphicsDevice.Viewport.Width - 100, 200), Color.White);

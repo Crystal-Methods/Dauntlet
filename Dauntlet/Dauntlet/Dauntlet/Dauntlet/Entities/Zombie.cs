@@ -1,31 +1,27 @@
-﻿using Dauntlet.GameScreens;
-using FarseerPhysics.Dynamics;
+﻿using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Media;
 using System;
 
 namespace Dauntlet.Entities
 {
     public class Zombie : EnemyEntity
     {
-        private const float ZombieSpeed = 30f; // Speed of the player; CHANGES DEPENDING ON RADIUS!!
-        private const float ZombieRadius = 14f; // Radius of player's bounding circle
-        private const float ZombieFloatHeight = 14f; //How far the base of the zombie is from the shadow
+        private const float TopSpeed          =  0.02f; // Top speed of Guapo
+        private const float WanderSpeed       =  0.01f; // Wandering speed of Guapo
+        private const int   MaxHp             =  3;     // Max health of Guapo
+        private const float ChaseDistance     =  3f;    // How far Guapo will look to chase a player, in sim units
+        private const float CaughtDistance    =  1f;    // How close Guapo will get to the player before stopping, in sim units
+        private const float Hysteresis        =  0.5f;  // Variance in Caught and Chase thresholds based on current state, in sim units
+        private const float TurnSpeed         =  0.2f;  // How quickly Guapo can turn
+        private const float ZombieRadius      = 14f;    // Radius of the collision body, in pixels
+        private const float ZombieFloatHeight =  0f;    // Vertical offset between shadow and sprite (for "floating" effect), in pixels
 
-        // ---------------------------------
+        // -----------------------------------------------------
 
-        private float zombieOrientation;
-        private Vector2 wanderDirection;
+        //AI Stuff
+        private Vector2 _wanderDirection;
         private static readonly Random Random = new Random();
-        const float turnSpeed = 0.2f;
-        const float maxSpeed = .009f;//speed of chasing enemy
-        const float chaseDistance = 6.5f;
-        const float caughtDistance = 1f;
-        const float hysteresis = 7.0f;//space in which it does nothing
-        private Vector2 playerPosition;
-
-        ZombieState guapoState = ZombieState.Wander;
+        ZombieState _guapoState = ZombieState.Wander;
 
         enum ZombieState
         {
@@ -34,174 +30,82 @@ namespace Dauntlet.Entities
             Wander
         }
 
-        public Zombie(World world, Vector2 position, Texture2D spriteTexture) : base(world, position, spriteTexture, ZombieSpeed, ZombieRadius)
+        public Zombie(World world, Vector2 position, AnimatedTexture2D spriteTexture) : base(world, position, spriteTexture, TopSpeed, ZombieRadius)
         {
             OffGroundHeight = ZombieFloatHeight;
-            HitPoints = 4;
-            SpriteTexture.AddAnimation("Walk", 0, 0, 64, 64, 8, 1/4f, false, false);
-            SpriteTexture.SetAnimation("Walk");
-            
-        }
-
-        public void UpdateZombie(Vector2 zombiePos)
-        {
-            playerPosition = Player.SimPosition;
-
-
-
-            //First, Set Thresholds
-            float chaseThreshold = chaseDistance;
-            float caughtThreshold = caughtDistance;
-
-            //Make him less likely to attack when idle
-            if (guapoState == ZombieState.Wander)
-            {
-                chaseThreshold -= hysteresis / 2;
-            }
-            //More likely to be active when active
-            else if (guapoState == ZombieState.Chasing)
-            {
-                chaseThreshold += hysteresis / 2;
-                caughtThreshold -= hysteresis / 2;
-            }
-            //More likely to be caught when caught
-            else if (guapoState == ZombieState.Caught)
-            {
-                caughtThreshold += hysteresis / 2;
-            }
-
-            //Second, decide state
-            float distanceFromPlayer = Vector2.Distance(playerPosition, zombiePos);
-
-
-            //Check for wander
-            if (distanceFromPlayer > chaseThreshold)
-            {
-                guapoState = ZombieState.Wander;
-            }
-            //Check for chase
-            else if (distanceFromPlayer > caughtThreshold)
-            {
-                guapoState = ZombieState.Chasing;
-            }
-            //Check for caught
-            else
-                guapoState = ZombieState.Caught;
-
-
-
-            //Third, move
-            float currentSpeed;
-
-            if (guapoState == ZombieState.Chasing)
-            {
-                zombieOrientation = TurnToFace(zombiePos, playerPosition, zombieOrientation, turnSpeed);
-                currentSpeed = maxSpeed;
-            }
-            else if (guapoState == ZombieState.Wander)
-            {
-                Wander(zombiePos, ref wanderDirection, ref zombieOrientation,
-                   turnSpeed);
-
-                currentSpeed = .05f * maxSpeed;
-            }
-            else
-                currentSpeed = 0.0f;
-
-
-
-            Vector2 heading = new Vector2((float)Math.Cos(zombieOrientation), (float)Math.Sin(zombieOrientation));
-            heading.Normalize();
-
-            CollisionBody.ApplyLinearImpulse(heading * currentSpeed);
-
-        }
-
-
-        private static float TurnToFace(Vector2 position, Vector2 faceThis,
-            float currentAngle, float turnSpeed)
-        {
-
-            float x = faceThis.X - position.X;
-            float y = faceThis.Y - position.Y;
-
-            float desiredAngle = (float)Math.Atan2(y, x);
-
-
-            float difference = WrapAngle(desiredAngle - currentAngle);
-
-
-            difference = MathHelper.Clamp(difference, -turnSpeed, turnSpeed);
-
-            return WrapAngle(currentAngle + difference);
-        }
-
-        /// <summary>
-        /// Returns the angle expressed in radians between -Pi and Pi.
-        /// <param name="radians">the angle to wrap, in radians.</param>
-        /// <returns>the input value expressed in radians from -Pi to Pi.</returns>
-        /// </summary>
-        private static float WrapAngle(float radians)
-        {
-            while (radians < -MathHelper.Pi)
-            {
-                radians += MathHelper.TwoPi;
-            }
-            while (radians > MathHelper.Pi)
-            {
-                radians -= MathHelper.TwoPi;
-            }
-            return radians;
-        }
-
-
-
-        public void Wander(Vector2 position, ref Vector2 wanderDirection,
-            ref float orientation, float turnSpeed)
-        {
-            //Finds a random direction to go in. The .25 is how erratic the wander is.
-            wanderDirection.X +=
-                MathHelper.Lerp(-.25f, .25f, (float)Random.NextDouble());
-            wanderDirection.Y +=
-                MathHelper.Lerp(-.25f, .25f, (float)Random.NextDouble());
-
-            wanderDirection.Normalize();
-
-            orientation = TurnToFace(position, position + wanderDirection, orientation, .15f * turnSpeed);
-
-            //find center of screen
-            Vector2 screenCenter = Vector2.Zero;
-            screenCenter.X = 1366 / 2;
-            screenCenter.Y = 768 / 2;
-            //turn the enemy
-            float distanceFromScreenCenter = Vector2.Distance(screenCenter, position);
-            float MaxDistanceFromScreenCenter =
-                Math.Min(screenCenter.Y, screenCenter.X);
-
-            float normalizedDistance =
-                distanceFromScreenCenter / MaxDistanceFromScreenCenter;
-
-            float turnToCenterSpeed = .3f * normalizedDistance * normalizedDistance *
-                turnSpeed;
-
-            orientation = TurnToFace(position, screenCenter, orientation,
-                turnToCenterSpeed);
-
-            CollisionBody.ApplyLinearImpulse(wanderDirection * orientation * .01f);
-
-        }
-        
-
-        public override void Die()
-        {
-            Dying = true;
-            //SoundManager.Play("ZombieDeath");
+            HitPoints = MaxHp;
         }
 
         public override void InflictDamage(int damage)
         {
-            base.InflictDamage(damage);
-            //SoundManager.Play("ZombieHurt");
+            if (!Dying) base.InflictDamage(damage);
+            //if (HitPoints > 0) Dauntlet.SoundBank.PlayCue("ZombieHurt");
+        }
+
+        protected override void UpdateAi(GameTime gameTime)
+        {
+            //First, Set Thresholds
+            float chaseThreshold = ChaseDistance;
+            float caughtThreshold = CaughtDistance;
+
+            switch (_guapoState)
+            {
+                case ZombieState.Wander:
+                    chaseThreshold -= Hysteresis / 2;
+                    break;
+                case ZombieState.Chasing:
+                    chaseThreshold += Hysteresis / 2;
+                    caughtThreshold -= Hysteresis / 2;
+                    break;
+                case ZombieState.Caught:
+                    caughtThreshold += Hysteresis / 2;
+                    break;
+            }
+
+            //Second, decide state
+            float distanceFromPlayer = Vector2.Distance(Player.Position, Position);
+
+            if (distanceFromPlayer > chaseThreshold)
+                _guapoState = ZombieState.Wander;
+            else if (distanceFromPlayer > caughtThreshold)
+                _guapoState = ZombieState.Chasing;
+            else
+                _guapoState = ZombieState.Caught;
+
+            //Third, move
+            if (_guapoState == ZombieState.Chasing) Chase();
+            else if (_guapoState == ZombieState.Wander) Wander();
+        }
+
+        /// <summary>
+        /// Use Wander AI
+        /// </summary>
+        private void Wander()
+        {
+            //Finds a random direction to go in. The .25 is how erratic the wander is.
+            _wanderDirection.X += MathHelper.Lerp(-.25f, .25f, (float)Random.NextDouble());
+            _wanderDirection.Y += MathHelper.Lerp(-.25f, .25f, (float)Random.NextDouble());
+            _wanderDirection.Normalize();
+
+            CollisionBody.Rotation = EntityHelpers.WrapAngle((float)Math.Atan2(_wanderDirection.Y, _wanderDirection.X));
+            CollisionBody.ApplyLinearImpulse(_wanderDirection * WanderSpeed);
+        }
+
+        /// <summary>
+        /// Use Chase AI
+        /// </summary>
+        private void Chase()
+        {
+            CollisionBody.Rotation = EntityHelpers.TurnToFace(Position, Player.Position, Rotation, TurnSpeed);
+            var heading = new Vector2((float)Math.Cos(Rotation), (float)Math.Sin(Rotation));
+            heading.Normalize();
+            CollisionBody.ApplyLinearImpulse(heading * Speed);
+        }
+
+        public override void Die()
+        {
+            Dying = true;
+            //Dauntlet.SoundBank.PlayCue("ZombieDeath");
         }
 
         public override void Update(GameTime gameTime)
@@ -213,22 +117,14 @@ namespace Dauntlet.Entities
                 {
                     Dying = false;
                     Dead = true;
+                    Poof.SummonPoof(new Vector2(DisplayPosition.X, DisplayPosition.Y - OffGroundHeight));
+                    ExpOrb.SpawnExp(5, Position);
                     CollisionBody.Dispose();
                 }
             }
-            UpdateZombie(this.SimPosition);
+
             base.Update(gameTime);
         }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
-        {
-            SpriteTexture.StepAnimation(gameTime);
-            spriteBatch.Draw(Shadow, DisplayPosition, null, Color.White, 0f,
-                ShadowOrigin, 0.8f, SpriteEffects.None, LayerDepth - 2 / 10000f);
-            if (GameplayScreen.DebugCollision)
-                spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,
-                    CenterOrigin(DebugCircleTexture), 2 * Radius / 50f, SpriteEffects.None, LayerDepth - 1 / 10000f);
-            spriteBatch.Draw(SpriteTexture.Sheet, SpritePosition(), SpriteTexture.CurrentFrame, Hurt ? new Color(1, 0, 0, 1f) : Color.White, 0f, SpriteOrigin, 1f, SpriteEffects.None, LayerDepth);
-        }
     }
 }
