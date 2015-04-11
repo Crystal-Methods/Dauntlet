@@ -82,6 +82,7 @@ namespace Dauntlet.Entities
             GauntletBody.FixedRotation = true;
             GauntletBody.LinearDamping = 5f;
             GauntletBody.OnCollision += OnGauntletCollision;
+            GauntletBody.OnSeparation += OnGauntletSeparation;
         }
 
         bool CollisionBodyOnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
@@ -105,7 +106,8 @@ namespace Dauntlet.Entities
                 TileEngine.HandleTeleport(fixtureB.Body, direction);
                 _isTeleporting = true;
             }
-            if (fixtureA.Body.GetType() == CollisionBody.GetType() && fixtureB.CollisionCategories == Category.Cat10 && !Hurt)
+            if (fixtureA.Body.GetType() == CollisionBody.GetType() && fixtureB.CollisionCategories == Category.Cat10 && !Hurt
+                && !((EnemyEntity)fixtureB.Body.UserData).Dying)
             {
                 Vector2 collisionNormal = Vector2.Normalize(SimPosition - fixtureB.Body.Position);
                 CollisionBody.LinearDamping = 10f;
@@ -126,13 +128,24 @@ namespace Dauntlet.Entities
         bool OnGauntletCollision(Fixture a, Fixture b, Contact c)
         {
             if (a.Body.GetType() == GauntletBody.GetType() && a.Body.FixtureList[0].CollisionCategories == Category.Cat3
-                && b.CollisionCategories == Category.Cat10)
+                && b.CollisionCategories == Category.Cat10 && !((EnemyEntity)b.Body.UserData).Hurt)
             {
                 var enemy = (EnemyEntity)b.Body.UserData;
                 enemy.InflictDamage(1);
                 enemy.Hurt = true;
             }
             return true;
+        }
+
+        void OnGauntletSeparation(Fixture a, Fixture b)
+        {
+            if (a.Body.GetType() == GauntletBody.GetType() && a.Body.FixtureList[0].CollisionCategories == Category.Cat3
+                && b.CollisionCategories == Category.Cat10 && !((EnemyEntity)b.Body.UserData).Hurt)
+            {
+                var enemy = (EnemyEntity)b.Body.UserData;
+                enemy.InflictDamage(1);
+                enemy.Hurt = true;
+            }
         }
 
         public void ChangeRoom(World world, Vector2 newPos)
