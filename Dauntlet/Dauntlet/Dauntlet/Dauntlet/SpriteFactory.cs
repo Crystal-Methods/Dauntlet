@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using Dauntlet.Entities;
-using FarseerPhysics;
 using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -34,11 +33,11 @@ namespace Dauntlet
         /// <param name="graphics">the game's GraphicDevice object</param>
         public static void Init(ContentManager contentManager, GraphicsDevice graphics)
         {
-            if (_textures.Count > 0)
-                _textures = new Dictionary<string, Texture2D>();
+            _textures = new Dictionary<string, Texture2D>();
             _graphics = graphics;
             string[] files = Directory.GetFiles(@"Content/Textures", "*.xnb");
 
+            // Extract filenames
             for (int i = 0; i < files.Length; i++)
             {
                 String s = files[i].Substring(files[i].LastIndexOf('\\') + 1);
@@ -46,13 +45,11 @@ namespace Dauntlet
                 files[i] = s;
             }
 
+            // Load textures into list
             foreach (string s in files)
-            {
-                var texture = contentManager.Load<Texture2D>(@"Textures/" + s);
-                _textures.Add(s, texture);
-            }
+                _textures.Add(s, contentManager.Load<Texture2D>(@"Textures/" + s));
 
-            // Load these general-purpose textures
+            // Load these general-purpose textures in Entity class
             Entity.DebugCircleTexture = _textures["Circle"];
             Entity.Shadow = _textures["Shadow"];
         }
@@ -104,7 +101,7 @@ namespace Dauntlet
 
             var gauntletTexture = new AnimatedTexture2D(_textures["Gauntlet"]);
 
-            return new PlayerEntity(world, ConvertUnits.ToSimUnits(position), playerTexture, gauntletTexture);
+            return new PlayerEntity(world, position.Sim(), playerTexture, gauntletTexture);
         }
 
         /// <summary>
@@ -122,13 +119,13 @@ namespace Dauntlet
                     var gaupoTexture = new AnimatedTexture2D(_textures["Guapo"]);
                     gaupoTexture.AddAnimation("Fly", 0, 0, 32, 32, 5, 1/24f, false, false);
                     gaupoTexture.SetAnimation("Fly");
-                    return new Guapo(world, ConvertUnits.ToSimUnits(position), gaupoTexture);
+                    return new Guapo(world, position.Sim(), gaupoTexture);
 
                 case EnemyTypes.Zombie:
                     var zombieTexture = new AnimatedTexture2D(_textures["Zombie"]);
                     zombieTexture.AddAnimation("Walk", 0, 0, 64, 64, 8, 1/4f, false, false);
                     zombieTexture.SetAnimation("Walk");
-                    return new Zombie(world, ConvertUnits.ToSimUnits(position), zombieTexture);
+                    return new Zombie(world, position.Sim(), zombieTexture);
 
                 default:
                     throw new ArgumentException("One or more enemy types do not exist!");
@@ -150,11 +147,11 @@ namespace Dauntlet
                     var fountainTexture = new AnimatedTexture2D(_textures["Fountain"]);
                     fountainTexture.AddAnimation("Flow", 0, 0, 128, 59, 3, 1/8f, false, false);
                     fountainTexture.SetAnimation("Flow");
-                    return new StaticEntity(world, ConvertUnits.ToSimUnits(position), ConvertUnits.ToSimUnits(new Vector2(128, 39)), fountainTexture);
+                    return new StaticEntity(world, position.Sim(), Units.SimVector(128, 39), fountainTexture);
 
                 case ObjectTypes.Tree:
                     var treeTexture = new AnimatedTexture2D(_textures["Tree"]);
-                    return new StaticEntity(world, ConvertUnits.ToSimUnits(position), ConvertUnits.ToSimUnits(new Vector2(125, 30)), treeTexture);
+                    return new StaticEntity(world, position.Sim(), Units.SimVector(125, 30), treeTexture);
 
                 default:
                     throw new ArgumentException("One or more object types do not exist!");

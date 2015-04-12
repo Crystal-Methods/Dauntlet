@@ -28,13 +28,13 @@ namespace Dauntlet.Entities
         /// <param name="displayPosition">the position to summon, in display units</param>
         public static void SummonPoof(Vector2 displayPosition)
         {
-            TileEngine.CurrentRoom.AddQueue.Add(new Poof(displayPosition));
+            TileEngine.TileEngine.CurrentRoom.AddQueue.Add(new Poof(displayPosition));
         }
 
         public override void Update(GameTime gameTime)
         {
             if (SpriteTexture.StepAnimation(gameTime))
-                TileEngine.CurrentRoom.RemoveQueue.Add(this);
+                TileEngine.TileEngine.CurrentRoom.RemoveQueue.Add(this);
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

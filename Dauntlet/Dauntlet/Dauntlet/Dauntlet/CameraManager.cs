@@ -16,9 +16,9 @@ namespace Dauntlet
         private static Vector2 _camPos;
         private static Vector2 _screenCenter;
         private static Vector2 _screenScrollBuffer;
-        private static int Tile { get { return TileEngine.TileSize; } }
+        private static int Tile { get { return TileEngine.TileEngine.TileSize; } }
         private static int Buffer { get { return Tile*BlackBuffer; } }
-        private static Vector2 Room { get { return new Vector2(TileEngine.CurrentRoom.PixelWidth, TileEngine.CurrentRoom.PixelHeight);} }
+        private static Vector2 Room { get { return new Vector2(TileEngine.TileEngine.CurrentRoom.DisplayWidth, TileEngine.TileEngine.CurrentRoom.DisplayHeight);} }
 
         // ---------------------------
 
@@ -33,7 +33,7 @@ namespace Dauntlet
 
         public static Matrix MoveCamera(Vector2 playerPosition)
         {
-            if (TileEngine.CurrentRoom.PixelWidth <= _screenWidth)
+            if (TileEngine.TileEngine.CurrentRoom.DisplayWidth <= _screenWidth)
                 _camPos.X = (_screenWidth - Room.X) / 2f;
             else
             {
@@ -45,7 +45,7 @@ namespace Dauntlet
                 if (displacement.X > _screenWidth - _screenScrollBuffer.X && _camPos.X > _screenWidth - (Room.X + Buffer))
                     _camPos.X = Math.Max(_camPos.X + (_screenWidth - _screenScrollBuffer.X - displacement.X), _screenWidth - (Room.X + Buffer));
             }
-            if (TileEngine.CurrentRoom.PixelHeight <= _screenHeight)
+            if (TileEngine.TileEngine.CurrentRoom.DisplayHeight <= _screenHeight)
                 _camPos.Y = (_screenHeight - Room.Y) / 2f;
             else
             {

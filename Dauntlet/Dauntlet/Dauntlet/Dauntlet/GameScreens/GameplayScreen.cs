@@ -24,7 +24,8 @@ namespace Dauntlet.GameScreens
         public Cue BgMusic;
         public World World { get; set; }
         public static bool DebugCollision { get; set; }
-        public Vector2 DisplayRoomCenter { get { return new Vector2(TileEngine.CurrentRoom.PixelWidth/2f, TileEngine.CurrentRoom.PixelHeight/2f);} }
+        public Vector2 DisplayRoomCenter { get { return new Vector2(TileEngine.TileEngine.CurrentRoom.DisplayWidth/2f,
+            TileEngine.TileEngine.CurrentRoom.DisplayHeight/2f);} }
         public Vector2 SimRoomCenter { get { return ConvertUnits.ToSimUnits(DisplayRoomCenter); } }
         public override Screen ScreenType { get { return Screen.GameplayScreen;} }
 
@@ -41,11 +42,11 @@ namespace Dauntlet.GameScreens
             // Initialize things
             CameraManager.Init(GraphicsDevice);
             SpriteFactory.Init(_content, GraphicsDevice);
-            TileEngine.LoadContent(this, _content);
+            TileEngine.TileEngine.LoadContent(this, _content);
             HUD.Init();
-            ConvertUnits.SetDisplayUnitToSimUnitRatio(TileEngine.TileSize); // 1 meter = 1 tile
+            ConvertUnits.SetDisplayUnitToSimUnitRatio(TileEngine.TileEngine.TileSize); // 1 meter = 1 tile
 
-            World = TileEngine.CurrentRoom.World;
+            World = TileEngine.TileEngine.CurrentRoom.World;
             Player = SpriteFactory.CreatePlayer(World, DisplayRoomCenter + new Vector2(40, -40));
 
             BgMusic = Dauntlet.SoundBank.GetCue("DauntletNoCombat");
@@ -66,12 +67,12 @@ namespace Dauntlet.GameScreens
             // Update the world
             World.Step(_stepTime/1000f);
             Player.Update(gameTime);
-            foreach (var entity in TileEngine.CurrentRoom.Entities.Where(entity => !entity.Dead))
+            foreach (var entity in TileEngine.TileEngine.CurrentRoom.Entities.Where(entity => !entity.Dead))
                 entity.Update(gameTime);
-            TileEngine.CurrentRoom.Entities.AddRange(TileEngine.CurrentRoom.AddQueue);
-            TileEngine.CurrentRoom.AddQueue.Clear();
-            foreach (Entity e in TileEngine.CurrentRoom.RemoveQueue) TileEngine.CurrentRoom.Entities.Remove(e);
-            TileEngine.CurrentRoom.RemoveQueue.Clear();
+            TileEngine.TileEngine.CurrentRoom.Entities.AddRange(TileEngine.TileEngine.CurrentRoom.AddQueue);
+            TileEngine.TileEngine.CurrentRoom.AddQueue.Clear();
+            foreach (Entity e in TileEngine.TileEngine.CurrentRoom.RemoveQueue) TileEngine.TileEngine.CurrentRoom.Entities.Remove(e);
+            TileEngine.TileEngine.CurrentRoom.RemoveQueue.Clear();
             
             // Update camera
             _view = CameraManager.MoveCamera(Player.DisplayPosition);
@@ -102,23 +103,19 @@ namespace Dauntlet.GameScreens
 
             // First pass: Draw room
             _spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, _view);
-            TileEngine.DrawRoom(_spriteBatch, gameTime);
-            _spriteBatch.End();
 
-            // Second pass: Draw debug highlights (optional)
+            TileEngine.TileEngine.DrawRoom(_spriteBatch, gameTime);
+
             if (DebugCollision)
-            {
-                _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _view);
-                TileEngine.DrawDebug(_spriteBatch, GraphicsDevice);
-                _spriteBatch.End();
-            }
+                TileEngine.TileEngine.DrawDebug(_spriteBatch, GraphicsDevice);
 
-            // Third pass: Draw entities
-            _spriteBatch.Begin(SpriteSortMode.FrontToBack, null, SamplerState.PointClamp, null, null, null, _view);
             Player.Draw(gameTime, _spriteBatch);
-            foreach (var entity in TileEngine.CurrentRoom.Entities.Where(entity => !entity.Dead))
+
+            foreach (var entity in TileEngine.TileEngine.CurrentRoom.Entities.Where(entity => !entity.Dead))
                 entity.Draw(gameTime, _spriteBatch);
-            TileEngine.DrawWallCaps(_spriteBatch);
+
+            TileEngine.TileEngine.DrawWallCaps(_spriteBatch);
+
             _spriteBatch.End();
 
             // Fourth pass: HUD

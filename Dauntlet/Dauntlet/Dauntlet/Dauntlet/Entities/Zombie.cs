@@ -6,13 +6,14 @@ namespace Dauntlet.Entities
 {
     public class Zombie : EnemyEntity
     {
-        private const float TopSpeed          =  0.02f; // Top speed of Guapo
-        private const float WanderSpeed       =  0.01f; // Wandering speed of Guapo
-        private const int   MaxHp             =  3;     // Max health of Guapo
-        private const float ChaseDistance     =  3f;    // How far Guapo will look to chase a player, in sim units
-        private const float CaughtDistance    =  1f;    // How close Guapo will get to the player before stopping, in sim units
+        private const float TopSpeed          =  0.02f; // Top speed of Zombie
+        private const float WanderSpeed       =  0.01f; // Wandering speed of Zombie
+        private const int   MaxHp             =  3;     // Max health of Zombie
+        private const int   ExpValue          =  5;     // How much experience Zombie is worth when killed
+        private const float ChaseDistance     =  3f;    // How far Zombie will look to chase a player, in sim units
+        private const float CaughtDistance    =  1f;    // How close Zombie will get to the player before stopping, in sim units
         private const float Hysteresis        =  0.5f;  // Variance in Caught and Chase thresholds based on current state, in sim units
-        private const float TurnSpeed         =  0.2f;  // How quickly Guapo can turn
+        private const float TurnSpeed         =  0.2f;  // How quickly Zombie can turn
         private const float ZombieRadius      = 14f;    // Radius of the collision body, in pixels
         private const float ZombieFloatHeight =  0f;    // Vertical offset between shadow and sprite (for "floating" effect), in pixels
 
@@ -21,7 +22,7 @@ namespace Dauntlet.Entities
         //AI Stuff
         private Vector2 _wanderDirection;
         private static readonly Random Random = new Random();
-        ZombieState _guapoState = ZombieState.Wander;
+        ZombieState _zombieState = ZombieState.Wander;
 
         enum ZombieState
         {
@@ -34,6 +35,7 @@ namespace Dauntlet.Entities
         {
             OffGroundHeight = ZombieFloatHeight;
             HitPoints = MaxHp;
+            ExpDrop = ExpValue;
         }
 
         public override void InflictDamage(int damage)
@@ -48,7 +50,7 @@ namespace Dauntlet.Entities
             float chaseThreshold = ChaseDistance;
             float caughtThreshold = CaughtDistance;
 
-            switch (_guapoState)
+            switch (_zombieState)
             {
                 case ZombieState.Wander:
                     chaseThreshold -= Hysteresis / 2;
@@ -66,15 +68,15 @@ namespace Dauntlet.Entities
             float distanceFromPlayer = Vector2.Distance(Player.Position, Position);
 
             if (distanceFromPlayer > chaseThreshold)
-                _guapoState = ZombieState.Wander;
+                _zombieState = ZombieState.Wander;
             else if (distanceFromPlayer > caughtThreshold)
-                _guapoState = ZombieState.Chasing;
+                _zombieState = ZombieState.Chasing;
             else
-                _guapoState = ZombieState.Caught;
+                _zombieState = ZombieState.Caught;
 
             //Third, move
-            if (_guapoState == ZombieState.Chasing) Chase();
-            else if (_guapoState == ZombieState.Wander) Wander();
+            if (_zombieState == ZombieState.Chasing) Chase();
+            else if (_zombieState == ZombieState.Wander) Wander();
         }
 
         /// <summary>
@@ -106,24 +108,6 @@ namespace Dauntlet.Entities
         {
             Dying = true;
             //Dauntlet.SoundBank.PlayCue("ZombieDeath");
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            if (Dying)
-            {
-                DeathTimer += gameTime.ElapsedGameTime.Milliseconds;
-                if (DeathTimer > 500)
-                {
-                    Dying = false;
-                    Dead = true;
-                    Poof.SummonPoof(new Vector2(DisplayPosition.X, DisplayPosition.Y - OffGroundHeight));
-                    ExpOrb.SpawnExp(5, Position);
-                    CollisionBody.Dispose();
-                }
-            }
-
-            base.Update(gameTime);
         }
 
     }

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Dauntlet.GameScreens;
+using Dauntlet.TileEngine;
 using FarseerPhysics;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
@@ -48,7 +50,7 @@ namespace Dauntlet.Entities
         {
             Speed = PlayerSpeed;
             Mass = PlayerMass;
-            Radius = ConvertUnits.ToSimUnits(PlayerRadius);
+            Radius = PlayerRadius.Sim();
             OffGroundHeight = PlayerFloatHeight;
             IsBobbing = true;
             HitPoints = BaseHealth;
@@ -61,8 +63,7 @@ namespace Dauntlet.Entities
             CollisionBody.OnCollision += OnPlayerCollision;
 
             // Create Gauntlet body
-           GauntletBody = BodyFactory.CreateRectangle(world, ConvertUnits.ToSimUnits(32), ConvertUnits.ToSimUnits(24),
-               this.Density(), position + new Vector2(15, 0));
+           GauntletBody = BodyFactory.CreateRectangle(world, 32.Sim(), 24.Sim(), this.Density(), position + new Vector2(15, 0));
             GauntletBody.InitBody(BodyType.Kinematic, Category.Cat1, Category.Cat10, true, 0f, 0.5f, 5f, 100f);
             GauntletBody.OnCollision += OnGauntletCollision;
             GauntletBody.OnSeparation += OnGauntletSeparation;
@@ -70,25 +71,28 @@ namespace Dauntlet.Entities
 
         bool OnPlayerCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
         {
+            Body playerBody = fixtureA.Body;
+            Body otherBody = fixtureB.Body;
+
             // Detects teleportation
-            if (fixtureA.Body.GetType() == CollisionBody.GetType() && fixtureB.CollisionCategories == Category.Cat29 && !_isTeleporting)
+            if (playerBody.GetType() == CollisionBody.GetType() && fixtureB.CollisionCategories == Category.Cat29 && !_isTeleporting)
             {
-                char direction;
+                Dir direction;
                 Vector2 colNorm = contact.Manifold.LocalNormal;
 
                 // Work out collision direction
-                if (Math.Abs(colNorm.X) > Math.Abs(colNorm.Y)) direction = colNorm.X > 0 ? 'E' : 'W';
-                else direction = colNorm.Y > 0 ? 'S' : 'N';
+                if (Math.Abs(colNorm.X) > Math.Abs(colNorm.Y)) direction = colNorm.X > 0 ? Dir.E : Dir.W;
+                else direction = colNorm.Y > 0 ? Dir.S : Dir.N;
 
-                TileEngine.HandleTeleport(fixtureB.Body, direction);
+                TileEngine.TileEngine.HandleTeleport((char)((List<Object>)otherBody.UserData)[0], direction);
                 _isTeleporting = true;
             }
 
             // Detects damage from enemy
-            if (fixtureA.Body.GetType() == CollisionBody.GetType() && fixtureB.CollisionCategories == Category.Cat10 && !Hurt
-                && !((EnemyEntity)fixtureB.Body.UserData).Dying)
+            if (playerBody.GetType() == CollisionBody.GetType() && fixtureB.CollisionCategories == Category.Cat10 && !Hurt
+                && !((EnemyEntity)otherBody.UserData).Dying)
             {
-                Vector2 collisionNormal = Vector2.Normalize(Position - fixtureB.Body.Position);
+                Vector2 collisionNormal = Vector2.Normalize(Position - otherBody.Position);
                 CollisionBody.LinearDamping = 10f;
                 CollisionBody.ApplyLinearImpulse(collisionNormal * 20f);
                 Hurt = true;
@@ -98,9 +102,9 @@ namespace Dauntlet.Entities
             }
 
             // Detects collection of EXP orb
-            if (fixtureA.Body.GetType() == CollisionBody.GetType() && fixtureB.CollisionCategories == Category.Cat24)
+            if (playerBody.GetType() == CollisionBody.GetType() && fixtureB.CollisionCategories == Category.Cat24)
             {
-                ((ExpOrb)fixtureB.Body.UserData).Die();
+                ((ExpOrb)otherBody.UserData).Die();
                 Exp++;
             }
 
@@ -144,8 +148,7 @@ namespace Dauntlet.Entities
             newBody.InitBody(BodyType.Dynamic, Category.Cat2, Category.All, true, 0f, 0.5f, 35f, 100f);
 
             // Create Gauntlet body
-            Body newGauntletBody = BodyFactory.CreateRectangle(world, ConvertUnits.ToSimUnits(32), ConvertUnits.ToSimUnits(24),
-                this.Density(), newPos + new Vector2(15, 0));
+            Body newGauntletBody = BodyFactory.CreateRectangle(world, 32.Sim(), 24.Sim(), this.Density(), newPos + new Vector2(15, 0));
             newGauntletBody.InitBody(BodyType.Kinematic, Category.Cat1, Category.Cat10, true, 0f, 0.5f, 5f, 100f);
 
             // Kill old bodies and set new ones
@@ -287,13 +290,13 @@ namespace Dauntlet.Entities
             if (GameplayScreen.DebugCollision)
             {
                 spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, Rotation,
-                    CenterOrigin(DebugCircleTexture), 2 * DisplayRadius / 50f, SpriteEffects.None, LayerDepth - 2 / 10000f);
+                    CenterOrigin(DebugCircleTexture), 2 * DisplayRadius / 50f, SpriteEffects.None, 1f);
 
                 Texture2D rect = SpriteFactory.GetRectangleTexture(24, 32,
                     new Color(1, GauntletBody.FixtureList[0].CollisionCategories == Category.Cat3 ? 0.5f : 1,
                         GauntletBody.FixtureList[0].CollisionCategories == Category.Cat3 ? 0.5f : 0, 0.1f));
-                spriteBatch.Draw(rect, ConvertUnits.ToDisplayUnits(GauntletBody.Position), null, Color.White, GauntletBody.Rotation,
-                    CenterOrigin(rect), 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(rect, GauntletBody.Position.Dis(), null, Color.White, GauntletBody.Rotation,
+                    CenterOrigin(rect), 1f, SpriteEffects.None, 1f);
             }
 
             // Draw player
@@ -303,10 +306,9 @@ namespace Dauntlet.Entities
                 SpriteTexture.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, LayerDepth);
 
             // Draw gauntlet
-            spriteBatch.Draw(_gauntletTexture.Sheet, new Vector2(ConvertUnits.ToDisplayUnits(GauntletBody.Position.X),
-                ConvertUnits.ToDisplayUnits(GauntletBody.Position.Y) - OffGroundHeight), _gauntletTexture.CurrentFrame,
-                Color.White, GauntletBody.Rotation, CenterOrigin(_gauntletTexture.Sheet), 1f, SpriteEffects.FlipHorizontally,
-                GetLayerDepth(GauntletBody) - 1 / 10000f);
+            spriteBatch.Draw(_gauntletTexture.Sheet, new Vector2(GauntletBody.Position.X.Dis(), GauntletBody.Position.Y.Dis() - OffGroundHeight),
+                _gauntletTexture.CurrentFrame, Color.White, GauntletBody.Rotation, CenterOrigin(_gauntletTexture.Sheet), 1f,
+                SpriteEffects.FlipHorizontally, GetLayerDepth(GauntletBody) - 1 / 10000f);
         }
 
     }

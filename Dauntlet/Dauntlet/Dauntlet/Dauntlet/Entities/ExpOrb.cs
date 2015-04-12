@@ -35,7 +35,7 @@ namespace Dauntlet.Entities
         {
             OffGroundHeight = ExpFloatHeight;
             Speed = TopSpeed;
-            Radius = ConvertUnits.ToSimUnits(ExpRadius);
+            Radius = ExpRadius.Sim();
             Mass = ExpMass;
             HitPoints = BaseHealth;
 
@@ -67,7 +67,7 @@ namespace Dauntlet.Entities
         /// <param name="origin">origin of the orb explosion, in sim units</param>
         public static void SpawnExp(int count, Vector2 origin)
         {
-            World w = TileEngine.CurrentRoom.World;
+            World w = TileEngine.TileEngine.CurrentRoom.World;
             const float violence = 3f; // Speed at which it explodes from the origin
             for (int i = 0; i < count; i++)
             {
@@ -76,7 +76,7 @@ namespace Dauntlet.Entities
                 explodeDirection.Y += MathHelper.Lerp(-.25f, .25f, (float)Rand.NextDouble());
                 explodeDirection.Normalize();
                 var ex = new ExpOrb(w, origin, explodeDirection * violence);
-                TileEngine.CurrentRoom.AddQueue.Add(ex);
+                TileEngine.TileEngine.CurrentRoom.AddQueue.Add(ex);
             }
         }
 
@@ -103,7 +103,7 @@ namespace Dauntlet.Entities
             // Draw debug
             if (GameplayScreen.DebugCollision)
                 spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,
-                    CenterOrigin(DebugCircleTexture), 2 * DisplayRadius / 50f, SpriteEffects.None, LayerDepth - 1 / 10000f);
+                    CenterOrigin(DebugCircleTexture), 2 * DisplayRadius / 50f, SpriteEffects.None, 1f);
 
             // Draw orb
             spriteBatch.Draw(SpriteTexture.Sheet, new Vector2(DisplayPosition.X, DisplayPosition.Y - OffGroundHeight), SpriteTexture.CurrentFrame,
@@ -114,7 +114,7 @@ namespace Dauntlet.Entities
         {
             Dead = true;
             CollisionBody.Dispose();
-            TileEngine.CurrentRoom.RemoveQueue.Add(this);
+            TileEngine.TileEngine.CurrentRoom.RemoveQueue.Add(this);
         }
 
     }

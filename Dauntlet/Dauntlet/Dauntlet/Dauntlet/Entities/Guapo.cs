@@ -9,6 +9,7 @@ namespace Dauntlet.Entities
         private const float TopSpeed         =  0.02f; // Top speed of Guapo
         private const float WanderSpeed      =  0.01f; // Wandering speed of Guapo
         private const int   MaxHp            =  3;     // Max health of Guapo
+        private const int   ExpValue         =  3;     // How much experience Guapo is worth when killed
         private const float ChaseDistance    =  3f;    // How far Guapo will look to chase a player, in sim units
         private const float CaughtDistance   =  1f;    // How close Guapo will get to the player before stopping, in sim units
         private const float Hysteresis       =  0.5f;  // Variance in Caught and Chase thresholds based on current state, in sim units
@@ -43,6 +44,7 @@ namespace Dauntlet.Entities
         {
             OffGroundHeight = GuapoFloatHeight;
             HitPoints = MaxHp;
+            ExpDrop = ExpValue;
         }
 
         public override void InflictDamage(int damage)
@@ -138,22 +140,5 @@ namespace Dauntlet.Entities
             Dauntlet.SoundBank.PlayCue("GuapoDeath");
         }
 
-        public override void Update(GameTime gameTime)
-        {
-            if (Dying)
-            {
-                DeathTimer += gameTime.ElapsedGameTime.Milliseconds;
-                if (DeathTimer > 500)
-                {
-                    Dying = false;
-                    Dead = true;
-                    Poof.SummonPoof(new Vector2(DisplayPosition.X, DisplayPosition.Y - OffGroundHeight));
-                    ExpOrb.SpawnExp(3, Position);
-                    CollisionBody.Dispose();
-                }
-            }
-
-            base.Update(gameTime);
-        }
     }
 }

@@ -13,6 +13,11 @@ namespace Dauntlet.Entities
         protected PlayerEntity Player { get { return GameplayScreen.Player; } }
 
         /// <summary>
+        /// How much experience this enemy is worth when killed
+        /// </summary>
+        public int ExpDrop { get; set; }
+
+        /// <summary>
         /// Creates a new Enemy entity
         /// </summary>
         /// <param name="world">Farseer world in which to put the Enemy</param>
@@ -23,7 +28,7 @@ namespace Dauntlet.Entities
         protected EnemyEntity(World world, Vector2 position, AnimatedTexture2D spriteTexture, float speed, float radius)
         {
             Speed = speed;
-            Radius = ConvertUnits.ToSimUnits(radius);
+            Radius = radius.Sim();
             SpriteTexture = spriteTexture;
 
             // Create player body
@@ -34,6 +39,18 @@ namespace Dauntlet.Entities
         
         public override void Update(GameTime gameTime)
         {
+            if (Dying) {
+                DeathTimer += gameTime.ElapsedGameTime.Milliseconds;
+                if (DeathTimer > 500)
+                {
+                    Dying = false;
+                    Dead = true;
+                    Poof.SummonPoof(new Vector2(DisplayPosition.X, DisplayPosition.Y - OffGroundHeight));
+                    ExpOrb.SpawnExp(ExpDrop, Position);
+                    CollisionBody.Dispose();
+                }
+            }
+
             if (HitPoints <= 0 && !Dying && !Dead) Die();
 
             if (Hurt) {
@@ -59,7 +76,7 @@ namespace Dauntlet.Entities
             // Draw debug
             if (GameplayScreen.DebugCollision)
                 spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,
-                    CenterOrigin(DebugCircleTexture), 2 * DisplayRadius / 50f, SpriteEffects.None, LayerDepth - 1/10000f);
+                    CenterOrigin(DebugCircleTexture), 2 * DisplayRadius / 50f, SpriteEffects.None, 1f);
 
             // Draw enemy
             spriteBatch.Draw(SpriteTexture.Sheet, SpritePosition(), SpriteTexture.CurrentFrame,

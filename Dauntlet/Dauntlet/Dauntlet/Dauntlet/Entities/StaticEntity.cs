@@ -75,12 +75,12 @@ namespace Dauntlet.Entities
             {
                 if (IsCircle)
                     spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,
-                        CenterOrigin(DebugCircleTexture), 2*DisplayRadius/50f, SpriteEffects.None, LayerDepth + 1/100f);
+                        CenterOrigin(DebugCircleTexture), 2*DisplayRadius/50f, SpriteEffects.None, 1f);
                 else if (IsRectangle)
                 {
                     spriteBatch.Draw(SpriteFactory.GetRectangleTexture((int)DisplayHeight,
                         (int)DisplayWidth, new Color(1, 0, 0, 0.1f)), DisplayPosition, null, Color.White, 0f,
-                        new Vector2(DisplayWidth/2f, DisplayHeight/2f), 1f, SpriteEffects.None, LayerDepth + 1/100f);
+                        new Vector2(DisplayWidth/2f, DisplayHeight/2f), 1f, SpriteEffects.None, 1f);
                 }
             }
 
