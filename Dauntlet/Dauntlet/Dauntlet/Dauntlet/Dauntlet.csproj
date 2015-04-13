@@ -91,6 +91,10 @@
     <Compile Include="Entities\Poof.cs" />
     <Compile Include="Entities\StaticEntity.cs" />
     <Compile Include="Entities\Zombie.cs" />
+    <Compile Include="TileEngine\Room.cs" />
+    <Compile Include="TileEngine\Teleport.cs" />
+    <Compile Include="TileEngine\Tile.cs" />
+    <Compile Include="Units.cs" />
     <Compile Include="GameScreens\GameplayScreen.cs" />
     <Compile Include="GameScreens\GameScreen.cs" />
     <Compile Include="Entities\InputState.cs" />
@@ -106,7 +110,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Dauntlet.cs" />
     <Compile Include="SpriteFactory.cs" />
-    <Compile Include="TileEngine.cs" />
+    <Compile Include="TileEngine\TileEngine.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="CollisionCategories.txt" />
