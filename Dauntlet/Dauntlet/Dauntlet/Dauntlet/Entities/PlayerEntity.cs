@@ -63,7 +63,7 @@ namespace Dauntlet.Entities
             CollisionBody.OnCollision += OnPlayerCollision;
 
             // Create Gauntlet body
-           GauntletBody = BodyFactory.CreateRectangle(world, 32.Sim(), 24.Sim(), this.Density(), position + new Vector2(15, 0));
+           GauntletBody = BodyFactory.CreateRectangle(world, 32f.Sim(), 24f.Sim(), this.Density(), position + new Vector2(15, 0));
             GauntletBody.InitBody(BodyType.Kinematic, Category.Cat1, Category.Cat10, true, 0f, 0.5f, 5f, 100f);
             GauntletBody.OnCollision += OnGauntletCollision;
             GauntletBody.OnSeparation += OnGauntletSeparation;
@@ -148,7 +148,7 @@ namespace Dauntlet.Entities
             newBody.InitBody(BodyType.Dynamic, Category.Cat2, Category.All, true, 0f, 0.5f, 35f, 100f);
 
             // Create Gauntlet body
-            Body newGauntletBody = BodyFactory.CreateRectangle(world, 32.Sim(), 24.Sim(), this.Density(), newPos + new Vector2(15, 0));
+            Body newGauntletBody = BodyFactory.CreateRectangle(world, 32f.Sim(), 24f.Sim(), this.Density(), newPos + new Vector2(15, 0));
             newGauntletBody.InitBody(BodyType.Kinematic, Category.Cat1, Category.Cat10, true, 0f, 0.5f, 5f, 100f);
 
             // Kill old bodies and set new ones

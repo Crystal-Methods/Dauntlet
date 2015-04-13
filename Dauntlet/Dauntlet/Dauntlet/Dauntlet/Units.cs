@@ -9,17 +9,17 @@ namespace Dauntlet
         /// <summary>
         /// Returns the integer converted from display to sim units
         /// </summary>
-        public static int Sim(this int x)
+        public static float Sim(this int x)
         {
-            return (int) Math.Round(ConvertUnits.ToSimUnits(x));
+            return ConvertUnits.ToSimUnits(x);
         }
 
         /// <summary>
         /// Returns the integer converted from sim to display units
         /// </summary>
-        public static int Dis(this int x)
+        public static float Dis(this int x)
         {
-            return (int) Math.Round(ConvertUnits.ToDisplayUnits(x));
+            return ConvertUnits.ToDisplayUnits(x);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Dauntlet
         /// </summary>
         public static Vector2 SimVector(float x, float y)
         {
-            return new Vector2(ConvertUnits.ToSimUnits(x), ConvertUnits.ToDisplayUnits(y));
+            return new Vector2(ConvertUnits.ToSimUnits(x), ConvertUnits.ToSimUnits(y));
         }
 
         /// <summary>
