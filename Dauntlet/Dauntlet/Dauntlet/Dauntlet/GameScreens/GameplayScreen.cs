@@ -76,9 +76,6 @@ namespace Dauntlet.GameScreens
             
             // Update camera
             _view = CameraManager.MoveCamera(Player.DisplayPosition);
-            
-            // Update HUD
-            HUD.Update(gameTime);
 
             // Handle input
             if (MainGame.Input.IsMovement() && !Player.IsPunching)
@@ -135,7 +132,7 @@ namespace Dauntlet.GameScreens
                 _spriteBatch.DrawString(MainGame.Font, String.Format("2Nxt: {0}", Player.ExpToNextLevel),
                     new Vector2(GraphicsDevice.Viewport.Width - 100, 300), Color.White);
             }
-            HUD.Draw(_spriteBatch);
+            HUD.Draw(gameTime, _spriteBatch);
             _spriteBatch.End();
         }
     }
