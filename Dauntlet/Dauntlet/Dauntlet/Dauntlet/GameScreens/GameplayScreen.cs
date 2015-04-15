@@ -96,7 +96,7 @@ namespace Dauntlet.GameScreens
 
         public override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(new Color(0, 141, 158));
+            GraphicsDevice.Clear(new Color(0, 0, 0));
 
             // First pass: Draw room
             _spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, _view);
