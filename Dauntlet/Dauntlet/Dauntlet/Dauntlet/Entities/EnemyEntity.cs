@@ -45,7 +45,7 @@ namespace Dauntlet.Entities
                 {
                     Dying = false;
                     Dead = true;
-                    Poof.SummonPoof(new Vector2(DisplayPosition.X, DisplayPosition.Y - OffGroundHeight));
+                    Poof.SummonPoof(DisplayPosition, OffGroundHeight);
                     ExpOrb.SpawnExp(ExpDrop, Position);
                     CollisionBody.Dispose();
                 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using FarseerPhysics;
+using FarseerPhysics.Collision;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -14,9 +15,11 @@ namespace Dauntlet.Entities
         /// Creates a new Poof entity
         /// </summary>
         /// <param name="origin">origin of the poof, in display units</param>
-        public Poof(Vector2 origin)
+        /// <param name="offGroundHeight">the off-ground height of the explosion</param>
+        public Poof(Vector2 origin, float offGroundHeight)
         {
             _position = origin;
+            OffGroundHeight = offGroundHeight;
             SpriteTexture = new AnimatedTexture2D(SpriteFactory.GetTexture("Splode"));
             SpriteTexture.AddAnimation("Asplode", 0, 0, 32, 32, 6, 1/24f, false, true);
             SpriteTexture.SetAnimation("Asplode");
@@ -25,10 +28,12 @@ namespace Dauntlet.Entities
         /// <summary>
         /// Summons a puff of smoke at the specified position
         /// </summary>
-        /// <param name="displayPosition">the position to summon, in display units</param>
-        public static void SummonPoof(Vector2 displayPosition)
+        /// <param name="bodyPosition">the position of the body that summoned the poof</param>
+        /// <param name="offGroundHeight">the off-ground height of the body</param>
+        public static void SummonPoof(Vector2 bodyPosition, float offGroundHeight)
         {
-            TileEngine.TileEngine.CurrentRoom.AddQueue.Add(new Poof(displayPosition));
+            var pos = new Vector2(bodyPosition.X, bodyPosition.Y - offGroundHeight);
+            TileEngine.TileEngine.CurrentRoom.AddQueue.Add(new Poof(pos, offGroundHeight));
         }
 
         public override void Update(GameTime gameTime)
@@ -39,7 +44,7 @@ namespace Dauntlet.Entities
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            float layerDepth = ConvertUnits.ToSimUnits(_position.Y)/100f;
+            float layerDepth = ConvertUnits.ToSimUnits(_position.Y + OffGroundHeight)/100f;
             spriteBatch.Draw(SpriteTexture.Sheet, _position, SpriteTexture.CurrentFrame, Color.White,
                 0f, new Vector2(16, 16), 2f, SpriteEffects.None, layerDepth);
         }
