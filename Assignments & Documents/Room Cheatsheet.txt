@@ -1,0 +1,47 @@
+TILES
+	First y many lines structured like this:
+	x;y
+		x: The X position of the tile's texture on the spritesheet in full tiles, starting from 0
+		y: The Y position of the tile's texture on the spritesheet in full tiles, starting from 0
+		
+	Repeat pattern in the same line delimited by colons (","), one for each tile the map is wide.
+	Make a new line for every tile the map is tall.
+	Every line is assumed to be the same width.
+	
+	All tiles with a Y-value of "0" are interpreted as basic walls.
+	All tiles with a Y-value of "1" are interpreted as cap-covered walls, where the cap shape is dependant on the X-value.
+	All other tiles are freely walkable.
+
+TELEPORTS
+	Must be on the third to last line.  Structured like so:
+	id;w;h;x;y;room
+		id: The ID of the TP.  It is given as a single char value.  If the value is longer, only the first char will be accepted and the rest of the string will be ignored.
+		w: The width of the TP's collision body in whole pixels
+		h: The height of the TP's collision body in whole pixels
+		x: The X-coordinate of the TP's collision body's upper-left corner, in whole pixels
+		y: The Y-coordinate of the TP's collision body's upper-left corner, in whole pixels
+		room: The filename of the room where the destination TP is located.  Case-sensitive.
+	Repeat pattern in the same line delimited by colons (","), one for each source teleport in the room.
+		
+	The ID of a TP must exactly match the ID of a TP in the destination room.  A TP will teleport to itself if the destination room is the same as the source room.
+	If a room has no teleports, leave this line empty.
+
+OBJECTS
+	Must be on the second to last line.  Structured like so:
+	type;x;y
+		type: The type of the object.  Valid object types are specified in an Enum in the SpriteFactory class.  Case-sensitive.
+		x: The X-coordinate of the center of the object's collision body in whole pixels
+		y: The Y-coordinate of the center of the object's collision body in whole pixels
+	Repeat pattern in the same line delimited by colons (","), one for each object in the room.
+	
+	If a room has no objects, leave this line empty.
+	
+ENEMIES
+	Must be on the last line.  Structured like so:
+	type;x;y
+		type: The type of the enemy.  Valid enemy types are specified in an Enum in the SpriteFactory class.  Case-sensitive.
+		x: The X-coordinate of the center of the enemy's collision body in whole pixels
+		y: The Y-coordinate of the center of the enemy's collision body in whole pixels
+	Repeat pattern in the same line delimited by colons (","), one for each enemy in the room.
+	
+	If a room has no enemies, leave this line empty.
