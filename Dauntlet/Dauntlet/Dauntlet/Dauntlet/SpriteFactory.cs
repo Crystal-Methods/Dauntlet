@@ -123,7 +123,7 @@ namespace Dauntlet
 
                 case EnemyTypes.Zombie:
                     var zombieTexture = new AnimatedTexture2D(_textures["Zombie"]);
-                    zombieTexture.AddAnimation("Walk", 0, 0, 64, 64, 8, 1/4f, false, false);
+                    zombieTexture.AddAnimation("Walk", 0, 0, 64, 64, 4, 1/12f, false, false);
                     zombieTexture.SetAnimation("Walk");
                     return new Zombie(world, position.Sim(), zombieTexture);
 
@@ -152,6 +152,23 @@ namespace Dauntlet
                 case ObjectTypes.Tree:
                     var treeTexture = new AnimatedTexture2D(_textures["Tree"]);
                     return new StaticEntity(world, position.Sim(), Units.SimVector(125, 30), treeTexture);
+
+                    //More Trees
+
+
+                    //Gravestones
+                    
+
+                    //Stones
+
+
+                    //Wishing Well
+
+
+                    //Statue
+
+
+                    //Gravedigger House
 
                 default:
                     throw new ArgumentException("One or more object types do not exist!");
