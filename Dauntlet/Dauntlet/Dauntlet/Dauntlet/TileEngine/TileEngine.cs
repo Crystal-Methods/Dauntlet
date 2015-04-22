@@ -206,19 +206,19 @@ namespace Dauntlet.TileEngine
             _game.World = CurrentRoom.World;
             Teleport tpTo = CurrentRoom.Teleports[tpFrom.Id];
             Vector2 pos = GameplayScreen.Player.Position;
-            float relativeX = pos.X - (float)Math.Truncate(pos.X);
-            float relativeY = pos.Y - (float)Math.Truncate(pos.Y);
+            float relativeX = pos.X - tpFrom.Position.X;
+            float relativeY = pos.Y - tpFrom.Position.Y;
             float radius = GameplayScreen.Player.DisplayRadius;
 
             switch (direction)
             {
                 case Dir.N:
                     pos.X = tpTo.Position.X + relativeX;
-                    pos.Y = tpTo.Position.Y - ConvertUnits.ToSimUnits(tpTo.Height + radius + 1);
+                    pos.Y = tpTo.Position.Y + ConvertUnits.ToSimUnits(tpTo.Height + radius + 1);
                     break;
                 case Dir.S:
                     pos.X = tpTo.Position.X + relativeX;
-                    pos.Y = tpTo.Position.Y + ConvertUnits.ToSimUnits(radius + 1);
+                    pos.Y = tpTo.Position.Y - ConvertUnits.ToSimUnits(radius + 1);
                     break;
                 case Dir.W:
                     pos.X = tpTo.Position.X + ConvertUnits.ToSimUnits(tpTo.Width + radius + 1);
