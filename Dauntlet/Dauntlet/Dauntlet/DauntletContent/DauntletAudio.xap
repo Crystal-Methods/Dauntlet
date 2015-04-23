@@ -233,7 +233,7 @@ Wave Bank
     Wave
     {
         Name = DauntletMainTheme;
-        File = Sounds\Songs\DauntletMainTheme.wav;
+        File = Sounds\Songs\DauntletMainThemeWithIntro.wav;
         Build Settings Last Modified Low = 653156413;
         Build Settings Last Modified High = 30437739;
 
