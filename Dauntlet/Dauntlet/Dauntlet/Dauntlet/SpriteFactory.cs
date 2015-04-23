@@ -18,7 +18,13 @@ namespace Dauntlet
     public enum ObjectTypes
     {
         Fountain,
-        Tree
+        Tree,
+        Tree_2,
+        Tree_3,
+        Mausoleum,
+        MausoleumLocked,
+        DeadTree,
+        Bush
     }
 
     public static class SpriteFactory
@@ -153,22 +159,29 @@ namespace Dauntlet
                     var treeTexture = new AnimatedTexture2D(_textures["Tree"]);
                     return new StaticEntity(world, position.Sim(), Units.SimVector(125, 30), treeTexture);
 
-                    //More Trees
+                case ObjectTypes.Tree_2:
+                    var tree2Texture = new AnimatedTexture2D(_textures["Tree_2"]);
+                    return new StaticEntity(world, position.Sim(), Units.SimVector(125, 30), tree2Texture);
 
+                case ObjectTypes.Tree_3:
+                    var tree3Texture = new AnimatedTexture2D(_textures["Tree_3"]);
+                    return new StaticEntity(world, position.Sim(), Units.SimVector(125, 30), tree3Texture);
 
-                    //Gravestones
-                    
+                case ObjectTypes.Mausoleum:
+                    var mausoleumTexture = new AnimatedTexture2D(_textures["Mausoleum"]);
+                    return new StaticEntity(world, position.Sim(), Units.SimVector(125, 30), mausoleumTexture);
 
-                    //Stones
+                case ObjectTypes.MausoleumLocked:
+                    var mausoleumLTexture = new AnimatedTexture2D(_textures["MausoleumLocked"]);
+                    return new StaticEntity(world, position.Sim(), Units.SimVector(125, 30), mausoleumLTexture);
 
+                case ObjectTypes.DeadTree:
+                    var deadTreeTexture = new AnimatedTexture2D(_textures["DeadTree"]);
+                    return new StaticEntity(world, position.Sim(), Units.SimVector(125, 30), deadTreeTexture);
 
-                    //Wishing Well
-
-
-                    //Statue
-
-
-                    //Gravedigger House
+                case ObjectTypes.Bush:
+                    var bushTexture = new AnimatedTexture2D(_textures["BUSH"]);
+                    return new StaticEntity(world, position.Sim(), Units.SimVector(125, 30), bushTexture);
 
                 default:
                     throw new ArgumentException("One or more object types do not exist!");
