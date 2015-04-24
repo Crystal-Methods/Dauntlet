@@ -161,23 +161,23 @@ namespace Dauntlet
 
                 case ObjectTypes.Tree:
                     var treeTexture = new AnimatedTexture2D(_textures["Tree"]);
-                    return new StaticEntity(world, position.Sim(), Units.SimVector(125, 30), treeTexture);
+                    return new StaticEntity(world, position.Sim(), Units.SimVector(120, 30), treeTexture);
 
                 case ObjectTypes.Tree_2:
                     var tree2Texture = new AnimatedTexture2D(_textures["Tree_2"]);
-                    return new StaticEntity(world, position.Sim(), Units.SimVector(125, 30), tree2Texture);
+                    return new StaticEntity(world, position.Sim(), Units.SimVector(90, 30), tree2Texture);
 
                 case ObjectTypes.Tree_3:
                     var tree3Texture = new AnimatedTexture2D(_textures["Tree_3"]);
-                    return new StaticEntity(world, position.Sim(), Units.SimVector(125, 30), tree3Texture);
+                    return new StaticEntity(world, position.Sim(), Units.SimVector(50, 30), tree3Texture);
 
                 case ObjectTypes.Mausoleum:
                     var mausoleumTexture = new AnimatedTexture2D(_textures["Mausoleum"]);
-                    return new StaticEntity(world, position.Sim(), Units.SimVector(125, 30), mausoleumTexture);
+                    return new StaticEntity(world, position.Sim(), Units.SimVector(50, 30), mausoleumTexture);
 
                 case ObjectTypes.MausoleumLocked:
                     var mausoleumLTexture = new AnimatedTexture2D(_textures["MausoleumLocked"]);
-                    return new StaticEntity(world, position.Sim(), Units.SimVector(125, 30), mausoleumLTexture);
+                    return new StaticEntity(world, position.Sim(), Units.SimVector(50, 30), mausoleumLTexture);
 
                 case ObjectTypes.DeadTree:
                     var deadTreeTexture = new AnimatedTexture2D(_textures["DeadTree"]);
