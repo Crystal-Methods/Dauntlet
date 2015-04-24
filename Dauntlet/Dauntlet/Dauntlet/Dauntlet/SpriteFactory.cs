@@ -181,7 +181,7 @@ namespace Dauntlet
 
                 case ObjectTypes.DeadTree:
                     var deadTreeTexture = new AnimatedTexture2D(_textures["DeadTree"]);
-                    return new StaticEntity(world, position.Sim(), Units.SimVector(125, 30), deadTreeTexture);
+                    return new StaticEntity(world, position.Sim(), Units.SimVector(52, 30), deadTreeTexture);
 
                 case ObjectTypes.Bush:
                     var bushTexture = new AnimatedTexture2D(_textures["BUSH"]);
@@ -191,25 +191,25 @@ namespace Dauntlet
                     var grave1Texture = new AnimatedTexture2D(_textures["Gravestones"]);
                     grave1Texture.AddAnimation("Flow", 0, 0, 64, 59, 1, 1 / 8f, false, true);
                     grave1Texture.SetAnimation("Flow");
-                    return new StaticEntity(world, position.Sim(), Units.SimVector(128, 39), grave1Texture);
+                    return new StaticEntity(world, position.Sim(), Units.SimVector(48, 8), grave1Texture);
 
                 case ObjectTypes.Gravestone_2:
                     var grave2Texture = new AnimatedTexture2D(_textures["Gravestones"]);
                     grave2Texture.AddAnimation("Flow", 64, 0, 64, 59, 1, 1 / 8f, false, true);
                     grave2Texture.SetAnimation("Flow");
-                    return new StaticEntity(world, position.Sim(), Units.SimVector(128, 39), grave2Texture);
+                    return new StaticEntity(world, position.Sim(), Units.SimVector(48, 8), grave2Texture);
 
                 case ObjectTypes.Gravestone_3:
                     var grave3Texture = new AnimatedTexture2D(_textures["Gravestones"]);
                     grave3Texture.AddAnimation("Flow", 128, 0, 64, 59, 1, 1 / 8f, false, true);
                     grave3Texture.SetAnimation("Flow");
-                    return new StaticEntity(world, position.Sim(), Units.SimVector(128, 39), grave3Texture);
+                    return new StaticEntity(world, position.Sim(), Units.SimVector(48, 8), grave3Texture);
 
                 case ObjectTypes.Gravestone_4:
                     var grave4Texture = new AnimatedTexture2D(_textures["Gravestones"]);
                     grave4Texture.AddAnimation("Flow", 192, 0, 64, 59, 1, 1 / 8f, false, true);
                     grave4Texture.SetAnimation("Flow");
-                    return new StaticEntity(world, position.Sim(), Units.SimVector(128, 39), grave4Texture);
+                    return new StaticEntity(world, position.Sim(), Units.SimVector(48, 8), grave4Texture);
 
                 default:
                     throw new ArgumentException("One or more object types do not exist!");
