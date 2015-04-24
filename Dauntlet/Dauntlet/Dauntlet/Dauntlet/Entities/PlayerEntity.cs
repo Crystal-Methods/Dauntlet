@@ -9,6 +9,7 @@ using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Dauntlet.Entities
 {
@@ -36,7 +37,7 @@ namespace Dauntlet.Entities
 
         // How much EXP is needed to reach the next level
         public int ExpToNextLevel { get { return (int) ((4f/5f) * (Level + 1) * (Level + 1)); } }
-
+        
         // --------------------------------
 
         /// <summary>
@@ -275,6 +276,7 @@ namespace Dauntlet.Entities
                 Exp = Exp % ExpToNextLevel;
                 SmoothExp = 0;
                 Level++;
+                Dauntlet.SoundBank.PlayCue("LevelUp");
             }
         }
 
@@ -309,6 +311,7 @@ namespace Dauntlet.Entities
             spriteBatch.Draw(_gauntletTexture.Sheet, new Vector2(GauntletBody.Position.X.Dis(), GauntletBody.Position.Y.Dis() - OffGroundHeight),
                 _gauntletTexture.CurrentFrame, Color.White, GauntletBody.Rotation, CenterOrigin(_gauntletTexture.Sheet), 1f,
                 SpriteEffects.FlipHorizontally, GetLayerDepth(GauntletBody) - 1 / 10000f);
+
         }
 
     }
