@@ -15,7 +15,7 @@ namespace Dauntlet.Entities
 {
     public class PlayerEntity : Entity
     {
-        private const float PlayerSpeed       =  5f; // Max movement speed
+        private const float PlayerSpeed       =  15f; // Max movement speed
         private const float PlayerRadius      = 15f; // Radius of the collision body, in pixels
         private const float PlayerFloatHeight = 14f; // Vertical offset between shadow and sprite (for "floating" effect), in pixels
         private const float PlayerMass        =  1f; // Mass of the body
