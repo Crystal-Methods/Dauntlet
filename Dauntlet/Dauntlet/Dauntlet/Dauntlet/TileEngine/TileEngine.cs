@@ -21,7 +21,7 @@ namespace Dauntlet.TileEngine
     public static class TileEngine
     {
         private const int    SizeOfOneTile = 64;              // Size of 1 tile in pixels
-        private const string FirstRoomName = "Room8"; // Name of the initial room in which the player spawns
+        private const string FirstRoomName = "Room6"; // Name of the initial room in which the player spawns
 
         // -----------------------------
 
