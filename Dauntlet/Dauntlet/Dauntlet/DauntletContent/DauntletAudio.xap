@@ -622,7 +622,7 @@ Wave Bank
     Wave
     {
         Name = LevelUp;
-        File = ..\..\..\..\..\..\..\..\..\..\Google Drive\LevelUp.wav;
+        File = Sounds\SoundFX\LevelUp.wav;
         Build Settings Last Modified Low = 945339212;
         Build Settings Last Modified High = 30441005;
 
