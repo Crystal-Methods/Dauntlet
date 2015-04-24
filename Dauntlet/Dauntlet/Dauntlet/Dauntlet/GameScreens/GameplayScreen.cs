@@ -131,6 +131,12 @@ namespace Dauntlet.GameScreens
                     new Vector2(GraphicsDevice.Viewport.Width - 100, 250), Color.White);
                 _spriteBatch.DrawString(MainGame.Font, String.Format("2Nxt: {0}", Player.ExpToNextLevel),
                     new Vector2(GraphicsDevice.Viewport.Width - 100, 300), Color.White);
+                _spriteBatch.DrawString(MainGame.Font, String.Format("Room: {0}", TileEngine.TileEngine.CurrentRoomName ),
+                    new Vector2(GraphicsDevice.Viewport.Width - 200, 350), Color.White);
+                _spriteBatch.DrawString(MainGame.Font, String.Format("TEX: {0}", (int)(Convert.ToDouble(Player.Position.X) * 64)),
+                    new Vector2(GraphicsDevice.Viewport.Width - 100, 400), Color.White);
+                _spriteBatch.DrawString(MainGame.Font, String.Format("TEY: {0}", (int)(Convert.ToDouble(Player.Position.Y) * 64)),
+                    new Vector2(GraphicsDevice.Viewport.Width - 100, 450), Color.White);
             }
             HUD.Draw(gameTime, _spriteBatch);
             _spriteBatch.End();
