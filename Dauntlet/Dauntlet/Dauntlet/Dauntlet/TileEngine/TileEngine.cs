@@ -30,6 +30,10 @@ namespace Dauntlet.TileEngine
         private static Dictionary<string, Room> _rooms;           // List of all rooms in the game
         private static string                   _currentRoomName; // Name of the currently loaded room
 
+        ///<sumary>
+        ///The current room name
+        /// </sumary>
+        public static String CurrentRoomName { get { return _currentRoomName; } }
         /// <summary>
         /// The current room
         /// </summary>
