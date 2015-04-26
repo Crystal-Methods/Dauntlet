@@ -273,6 +273,7 @@ namespace Dauntlet.Entities
             if (SmoothExp < Exp) SmoothExp += 0.2f;
 
             if (SmoothExp >= ExpToNextLevel) {
+                HUD.LevelledUp();
                 Exp = Exp % ExpToNextLevel;
                 SmoothExp = 0;
                 Level++;

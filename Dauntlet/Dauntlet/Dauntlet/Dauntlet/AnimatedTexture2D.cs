@@ -59,6 +59,11 @@ namespace Dauntlet
             Timer = 0;
         }
 
+        public void Reset()
+        {
+            _currentAnimation.CurrentFrame = 0;
+        }
+
         public bool StepAnimation(GameTime gameTime)
         {
             if (_currentAnimation.IsOneTime && _currentAnimation.FrameCount == _currentAnimation.CurrentFrame + 1)
