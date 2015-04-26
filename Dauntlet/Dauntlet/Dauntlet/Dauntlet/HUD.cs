@@ -32,7 +32,7 @@ namespace Dauntlet
             _healthStock.SetAnimation("healthStock");
 
             _levelUpText = new AnimatedTexture2D(SpriteFactory.GetTexture("LevelUpText"));
-            _levelUpText.AddAnimation("LevelUp", 0, 0, 204, 87, 10, 1/32f, false, true);
+            _levelUpText.AddAnimation("LevelUp", 0, 0, 204, 87, 10, 1/32f, false, false);
             _levelUpText.SetAnimation("LevelUp");
 
             _hsa = new Vector2(-(float) Math.Cos(22.38), (float) Math.Sin(22.38));
@@ -49,7 +49,7 @@ namespace Dauntlet
         {
             _flame.StepAnimation(gameTime);
             _healthStock.StepAnimation(gameTime);
-             //Exists for example purposes
+            _levelUpText.StepAnimation(gameTime); //Exists for example purposes
 
             // Draw the EXP bar
             var expBarLength = (int)Math.Round(_expbar.Width* GameplayScreen.Player.SmoothExp/GameplayScreen.Player.ExpToNextLevel);
@@ -68,20 +68,13 @@ namespace Dauntlet
                 spriteBatch.Draw(_healthStock.Sheet, new Vector2(100, 70) + (_hsa * i), _healthStock.CurrentFrame, Color.White, 0f, new Vector2(10, 10), 1f, SpriteEffects.None, 0f);
             
             //This batch exists for example purposes until I can get it to play once based on the conditional below
+            spriteBatch.Draw(_levelUpText.Sheet, new Vector2(250, 30), _levelUpText.CurrentFrame, Color.White, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
     
             //Draw Level Up
             if (GameplayScreen.Player.Exp == 0 && GameplayScreen.Player.Level > 1)
             {
-                DrawLevelUp(gameTime, spriteBatch);                       
+                    //Display animation once and delete last frame after a couple seconds                       
             }         
-        }
-
-        public static void DrawLevelUp(GameTime gameTime, SpriteBatch spriteBatch)
-        {
-            _levelUpText.StepAnimation(gameTime);
-
-            spriteBatch.Draw(_levelUpText.Sheet, new Vector2(250, 30), _levelUpText.CurrentFrame, Color.White, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
-
         }
 
     }
