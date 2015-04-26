@@ -277,6 +277,7 @@ namespace Dauntlet.Entities
                 SmoothExp = 0;
                 Level++;
                 Dauntlet.SoundBank.PlayCue("LevelUp");
+                HUD.LevelledUp();
             }
         }
 

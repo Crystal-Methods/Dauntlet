@@ -87,6 +87,11 @@ namespace Dauntlet
             _animations.Add(name, newAni);
         }
 
+        public void Reset()
+        {
+            _currentAnimation.CurrentFrame = 0;
+        }
+
         public void SetAnimation(string name)
         {
             if (name.Equals(_currentAnimationName)) return;
