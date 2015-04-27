@@ -89,6 +89,7 @@
     <Compile Include="Entities\EnemyEntity.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\ExpOrb.cs" />
+    <Compile Include="Entities\Skeleton.cs" />
     <Compile Include="Entities\Guapo.cs" />
     <Compile Include="Entities\Poof.cs" />
     <Compile Include="Entities\StaticEntity.cs" />

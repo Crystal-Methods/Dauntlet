@@ -12,7 +12,8 @@ namespace Dauntlet
     public enum EnemyTypes
     {
         Guapo,
-        Zombie
+        Zombie,
+        Skeleton
     }
 
     public enum ObjectTypes
@@ -136,6 +137,12 @@ namespace Dauntlet
                     zombieTexture.AddAnimation("Walk", 0, 0, 64, 64, 4, 1/12f, false, false);
                     zombieTexture.SetAnimation("Walk");
                     return new Zombie(world, position.Sim(), zombieTexture);
+
+                case EnemyTypes.Skeleton:
+                    var skeletonTexture = new AnimatedTexture2D(_textures["Skeleton"]);
+                    skeletonTexture.AddAnimation("Move", 0, 0, 64, 64, 4, 1 / 12f, false, false);
+                    skeletonTexture.SetAnimation("Move");
+                    return new Skeleton(world, position.Sim(), skeletonTexture);
 
                 default:
                     throw new ArgumentException("One or more enemy types do not exist!");
