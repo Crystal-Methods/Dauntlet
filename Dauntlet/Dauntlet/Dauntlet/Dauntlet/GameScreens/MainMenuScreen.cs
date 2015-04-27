@@ -108,7 +108,7 @@ namespace Dauntlet.GameScreens
             }
             if (MainGame.Input.IsMenuUp())
             {
-                if (_menuSelection > -1)
+                if (_menuSelection > 0)
                 {
                     _menuSelection--;
                     //SoundManager.Play("MenuBlip");

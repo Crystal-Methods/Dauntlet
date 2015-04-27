@@ -6,7 +6,7 @@ namespace Dauntlet.Entities
 {
     public class Zombie : EnemyEntity
     {
-        private const float TopSpeed          =  0.05f; // Top speed of Zombie
+        private static float TopSpeed          =  0.05f; // Top speed of Zombie
         private const float WanderSpeed       =  0.01f; // Wandering speed of Zombie
         private const int   MaxHp             =  5;     // Max health of Zombie
         private const int   ExpValue          =  5;     // How much experience Zombie is worth when killed
@@ -42,6 +42,7 @@ namespace Dauntlet.Entities
         public override void InflictDamage(int damage)
         {
             if (!Dying) base.InflictDamage(damage);
+            this.Speed += 0.01f;
             //if (HitPoints > 0) Dauntlet.SoundBank.PlayCue("ZombieHurt");
         }
 

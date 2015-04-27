@@ -6,14 +6,14 @@ namespace Dauntlet.Entities
 {
     public class Skeleton : EnemyEntity
     {
-        private const float TopSpeed         =  0.02f; // Top speed of Guapo
-        private const float WanderSpeed      =  0.01f; // Wandering speed of Guapo
-        private const int   MaxHp            =  3;     // Max health of Guapo
-        private const int   ExpValue         =  3;     // How much experience Guapo is worth when killed
-        private const float ChaseDistance    =  3f;    // How far Guapo will look to chase a player, in sim units
-        private const float CaughtDistance   =  1f;    // How close Guapo will get to the player before stopping, in sim units
+        private const float TopSpeed         =  0.02f; // Top speed of Skeleton
+        private const float WanderSpeed      =  0.01f; // Wandering speed of Skeleton
+        private const int   MaxHp            =  4;     // Max health of Skeleton
+        private const int   ExpValue         =  3;     // How much experience Skeleton is worth when killed
+        private const float ChaseDistance    =  3f;    // How far Skeleton will look to chase a player, in sim units
+        private const float CaughtDistance   =  1f;    // How close Skeleton will get to the player before stopping, in sim units
         private const float Hysteresis       =  0.5f;  // Variance in Caught and Chase thresholds based on current state, in sim units
-        private const float TurnSpeed        =  0.2f;  // How quickly Guapo can turn
+        private const float TurnSpeed        =  0.2f;  // How quickly Skeleton can turn
         private const float SkeletonRadius      = 14f;    // Radius of the collision body, in pixels
         private const float SkeletonFloatHeight = 15f;    // Vertical offset between shadow and sprite (for "floating" effect), in pixels
 
@@ -35,11 +35,11 @@ namespace Dauntlet.Entities
         // ---------------------------------
 
         /// <summary>
-        /// Creates a new Guapo entity
+        /// Creates a new Skeleton entity
         /// </summary>
         /// <param name="world">the Farseer World in which to add this entity</param>
         /// <param name="position">initial position of this entity, in sim units</param>
-        /// <param name="spriteTexture">texture for Guapo</param>
+        /// <param name="spriteTexture">texture for Skeleton</param>
         public Skeleton(World world, Vector2 position, AnimatedTexture2D spriteTexture) : base(world, position, spriteTexture, TopSpeed, SkeletonRadius)
         {
             OffGroundHeight = SkeletonFloatHeight;
