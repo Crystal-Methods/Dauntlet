@@ -7,7 +7,7 @@ namespace Dauntlet
     public static class CameraManager
     {
         private const int BlackBuffer = 1; // min # of tiles buffer between screen edge and map edge
-        private const int ScrollBuffer = 5; // # of tiles from screen edge until screen starts scrolling
+        private const int ScrollBuffer = 6; // # of tiles from screen edge until screen starts scrolling
 
         // ----------------------------
 

@@ -10,7 +10,7 @@ namespace Dauntlet.Entities
         private const float WanderSpeed       =  0.01f; // Wandering speed of Zombie
         private const int   MaxHp             =  5;     // Max health of Zombie
         private const int   ExpValue          =  5;     // How much experience Zombie is worth when killed
-        private const float ChaseDistance     =  3f;    // How far Zombie will look to chase a player, in sim units
+        private const float ChaseDistance     =  5f;    // How far Zombie will look to chase a player, in sim units
         private const float CaughtDistance    =  .75f;    // How close Zombie will get to the player before stopping, in sim units
         private const float Hysteresis        =  0.5f;  // Variance in Caught and Chase thresholds based on current state, in sim units
         private const float TurnSpeed         =  0.2f;  // How quickly Zombie can turn
