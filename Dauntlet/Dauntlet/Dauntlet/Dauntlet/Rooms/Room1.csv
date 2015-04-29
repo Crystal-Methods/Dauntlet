@@ -26,4 +26,4 @@
 1;3,1;0,1;0,1;0,1;0,1;0,1;0,2;0,2;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;4
 L;4;128;0;384;Room2,G;4;128;2240;384;Room6,I;128;4;448;1660;Room4
 
-Guapo;100;100
+Guapo;100;100,Zombie;150;150,Skeleton;1800;700,Guapo;300;350,Zombie;1000;1100,Skeleton;600;850,Guapo;400;500,Zombie;780;900,Skeleton;800;1000,Guapo;2000;1400,Zombie;620;150,Skeleton;1500;300,Guapo;1000;1200,Zombie;1500;1400,Skeleton;900;900,Guapo;1300;1300,Zombie;1200;1200,Skeleton;1350;1350,Guapo;1250;1250,Zombie;1150;1150,Skeleton;200;200,Guapo;250;250,Zombie;950;150,Guapo;1800;1000,Zombie;750;1050,Skeleton;1500;1000,Guapo;2000;1300,Zombie;1900;900,Skeleton;1650;1200,Guapo;1000;1300,Zombie;900;1100,Skeleton;850;200,Guapo;1000;1200,Zombie;1800;650,Skeleton;1500;1000,Guapo;550;550,Zombie;679;850,Skeleton;1050;750,Guapo;1500;400,Zombie;1950;350,Skeleton;1600;300,Guapo;1850;250,Zombie;1650;200,Skeleton;1800;150

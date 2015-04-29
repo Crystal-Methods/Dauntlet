@@ -175,6 +175,9 @@
     <None Include="Rooms\Room2.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Rooms\Room2Crypt.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Rooms\Room7Crypt.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
