@@ -48,6 +48,7 @@ namespace Dauntlet
             isLevelUp = true;
             levelUpTimer = 0f;
             _levelUpText.Reset();
+            GameplayScreen.Player.Speed += 0.25f;
         }
 
         /// <summary>
