@@ -72,7 +72,7 @@ namespace Dauntlet
             spriteBatch.Draw(_lifebar, new Vector2(30, 40), Color.White);
 
             // Draw the flame
-            spriteBatch.Draw(_flame.Sheet, new Vector2(83, 151), _flame.CurrentFrame, Color.White, 0f, new Vector2(132, 194), 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(_flame.Sheet, new Vector2(83, 151), _flame.CurrentFrame, Color.White, 0f, new Vector2(132, 194), 0.20f * GameplayScreen.Player.HitPoints, SpriteEffects.None, 0f);
 
             // Draw the health stocks
             for (int i = 0; i < GameplayScreen.Player.HitPoints; i++)
