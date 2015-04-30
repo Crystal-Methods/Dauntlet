@@ -276,6 +276,11 @@ namespace Dauntlet.Entities
                 Exp = Exp % ExpToNextLevel;
                 SmoothExp = 0;
                 Level++;
+                //not sure if we want this or not but it's here
+                if (HitPoints < BaseHealth)
+                {
+                    InflictDamage(-1);
+                }
                 Dauntlet.SoundBank.PlayCue("LevelUp");
                 HUD.LevelledUp();
             }
