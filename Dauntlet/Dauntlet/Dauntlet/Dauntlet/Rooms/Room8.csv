@@ -13,5 +13,5 @@
 1;0,3;0,3;0,3;0,3;0,3;0,3;0,3;0,3;0,3;0,3;0,3;0,3;0,3;0,3;0,3;0,3;0,1;0
 1;3,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;1,1;2,1;4
 B;128;4;384;0;MausoleumRoom,C;4;128;1148;384;Room9,D;4;128;0;384;Room5
-Fountain;352;224,Tree;896;128,Tree_2;644;149,Tree_3;569;567,DeadTree;345;765,Mausoleum;110;350,MausoleumLocked;123;128,Bush;950;400,Gravestone_4;222;375
-Guapo;100;100
+Fountain;451;604,Tree;883;229,Tree_2;793;651,Tree_3;153;218,DeadTree;149;719,Bush;1003;111,Gravestone_4;112;113,Gravestone_1;725;749,Gravestone_3;690;123,DeadTree;1009;754,Gravestone_2;969;301,Gravestone_4;832;345
+Guapo;100;100,Zombie;593;650,Zombie;307;646,Zombie;470;451,Guapo;572;155,Guapo;355;190
