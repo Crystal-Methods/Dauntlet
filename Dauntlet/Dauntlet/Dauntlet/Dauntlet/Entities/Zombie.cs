@@ -43,7 +43,7 @@ namespace Dauntlet.Entities
         {
             if (!Dying) base.InflictDamage(damage);
             this.Speed += 0.01f;
-            //if (HitPoints > 0) Dauntlet.SoundBank.PlayCue("ZombieHurt");
+            if (HitPoints > 0) Dauntlet.SoundBank.PlayCue("ZombieHurt_1");
         }
 
         protected override void UpdateAi(GameTime gameTime)
@@ -109,7 +109,7 @@ namespace Dauntlet.Entities
         public override void Die()
         {
             Dying = true;
-            //Dauntlet.SoundBank.PlayCue("ZombieDeath");
+            Dauntlet.SoundBank.PlayCue("ZombieDeath_1");
         }
 
     }

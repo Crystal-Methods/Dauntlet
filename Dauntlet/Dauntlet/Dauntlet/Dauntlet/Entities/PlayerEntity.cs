@@ -277,10 +277,13 @@ namespace Dauntlet.Entities
                 SmoothExp = 0;
                 Level++;
                 //not sure if we want this or not but it's here
+                //Can you explain to me what it's supposed to do? It stops the player from moving for a split second, but that's all I see.
+                /*
                 if (HitPoints < BaseHealth)
                 {
                     InflictDamage(-1);
                 }
+                */
                 Dauntlet.SoundBank.PlayCue("LevelUp");
                 HUD.LevelledUp();
             }
