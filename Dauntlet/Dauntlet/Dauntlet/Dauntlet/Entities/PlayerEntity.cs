@@ -284,6 +284,8 @@ namespace Dauntlet.Entities
                 Dauntlet.SoundBank.PlayCue("LevelUp");
                 HUD.LevelledUp();
             }
+            
+            
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

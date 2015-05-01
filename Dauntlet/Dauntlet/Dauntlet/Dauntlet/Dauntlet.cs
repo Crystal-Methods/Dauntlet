@@ -14,6 +14,7 @@ namespace Dauntlet
         PauseScreen,
         TitleScreen,
         LoadingScreen,
+        DeathScreen,
     }
 
     public class Dauntlet : Game
@@ -53,10 +54,12 @@ namespace Dauntlet
             _screens.Add(Screen.TitleScreen, new MainMenuScreen(this));
             _screens.Add(Screen.LoadingScreen, new LoadScreen(this));
             _screens.Add(Screen.PauseScreen, new PauseScreen(this));
+            _screens.Add(Screen.DeathScreen, new DeathScreen(this));
             
             // The Loading screen is always loaded
             _screens[Screen.LoadingScreen].LoadContent();
             _screens[Screen.PauseScreen].LoadContent();
+            _screens[Screen.DeathScreen].LoadContent();
             
             CurrentScreen.LoadContent();
         }

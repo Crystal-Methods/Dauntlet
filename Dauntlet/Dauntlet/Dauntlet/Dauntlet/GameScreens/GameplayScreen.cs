@@ -92,6 +92,12 @@ namespace Dauntlet.GameScreens
                 Dauntlet.SoundBank.PlayCue("Swish_1");
                 //SoundManager.Play("Swish");
             }
+
+            //Handle death
+            if (Player.HitPoints == 0 && DeathScreen.DeathSwitch)
+            {
+                ((MenuScreen)MainGame.GetScreen(Screen.DeathScreen)).OverlayDeathScreen(this);
+            }
         }
 
         public override void Draw(GameTime gameTime)

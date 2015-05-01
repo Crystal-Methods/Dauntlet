@@ -94,6 +94,7 @@
     <Compile Include="Entities\Poof.cs" />
     <Compile Include="Entities\StaticEntity.cs" />
     <Compile Include="Entities\Zombie.cs" />
+    <Compile Include="GameScreens\DeathScreen.cs" />
     <Compile Include="TileEngine\Room.cs" />
     <Compile Include="TileEngine\Teleport.cs" />
     <Compile Include="TileEngine\Tile.cs" />

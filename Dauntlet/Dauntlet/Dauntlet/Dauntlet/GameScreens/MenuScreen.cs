@@ -31,6 +31,12 @@ namespace Dauntlet.GameScreens
             MainGame.OverlayScreen(Screen.PauseScreen);
         }
 
+        public void OverlayDeathScreen(GameScreen lowerScreen)
+        {
+            LowerScreen = lowerScreen;
+            MainGame.OverlayScreen(Screen.DeathScreen);
+        }
+
         public void HandleInput(InputState input)
         {
             if (input.IsMenuUp())
