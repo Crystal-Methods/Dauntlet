@@ -16,6 +16,7 @@ namespace Dauntlet.Entities
         private const float TurnSpeed        =  0.2f;  // How quickly Guapo can turn
         private const float GuapoRadius      = 14f;    // Radius of the collision body, in pixels
         private const float GuapoFloatHeight = 15f;    // Vertical offset between shadow and sprite (for "floating" effect), in pixels
+        private bool attentionToPlayer = false; // Used for method to play sound once when attention is drawn to player
 
         // -----------------------------------------------------
 
@@ -45,6 +46,28 @@ namespace Dauntlet.Entities
             OffGroundHeight = GuapoFloatHeight;
             HitPoints = MaxHp;
             ExpDrop = ExpValue;
+        }
+
+        public void playAttentionSound()
+        {
+            int randomInt = Random.Next(4);
+            if (randomInt == 0)
+            {
+                Dauntlet.SoundBank.PlayCue("Guapo_1");
+            }
+            else if (randomInt == 1)
+            {
+                Dauntlet.SoundBank.PlayCue("Guapo_2");
+            }
+            else if (randomInt == 2)
+            {
+                Dauntlet.SoundBank.PlayCue("Guapo_3");
+            }
+            else
+            {
+                Dauntlet.SoundBank.PlayCue("Guapo_4");
+            }
+            attentionToPlayer = true;
         }
 
         public override void InflictDamage(int damage)
@@ -137,6 +160,10 @@ namespace Dauntlet.Entities
             var heading = new Vector2((float)Math.Cos(Rotation), (float)Math.Sin(Rotation));
             heading.Normalize();
             CollisionBody.ApplyLinearImpulse(heading * Speed);
+            if (attentionToPlayer == false)
+            {
+                playAttentionSound();
+            }
         }
 
         /// <summary>
