@@ -143,6 +143,8 @@ namespace Dauntlet.GameScreens
                     new Vector2(GraphicsDevice.Viewport.Width - 100, 400), Color.White);
                 _spriteBatch.DrawString(MainGame.Font, String.Format("TEY: {0}", (int)(Convert.ToDouble(Player.Position.Y) * 64)),
                     new Vector2(GraphicsDevice.Viewport.Width - 100, 450), Color.White);
+                //makes it easier to run around
+                //Player.Speed = 15f;
             }
             HUD.Draw(gameTime, _spriteBatch);
             _spriteBatch.End();
