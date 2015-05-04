@@ -245,11 +245,6 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\MausoleumLocked.png">
-      <Name>MausoleumLocked</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
     <Compile Include="Textures\Tree_2.png">
       <Name>Tree_2</Name>
       <Importer>TextureImporter</Importer>
