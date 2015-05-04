@@ -6,12 +6,12 @@ namespace Dauntlet.Entities
 {
     public class Skeleton : EnemyEntity
     {
-        private const float TopSpeed         =  0.02f; // Top speed of Skeleton
+        private const float TopSpeed         =  0.035f; // Top speed of Skeleton
         private const float WanderSpeed      =  0.01f; // Wandering speed of Skeleton
         private const int   MaxHp            =  4;     // Max health of Skeleton
         private const int   ExpValue         =  3;     // How much experience Skeleton is worth when killed
-        private const float ChaseDistance    =  3f;    // How far Skeleton will look to chase a player, in sim units
-        private const float CaughtDistance   =  1f;    // How close Skeleton will get to the player before stopping, in sim units
+        private const float ChaseDistance    =  4f;    // How far Skeleton will look to chase a player, in sim units
+        private const float CaughtDistance   =  .5f;    // How close Skeleton will get to the player before stopping, in sim units
         private const float Hysteresis       =  0.5f;  // Variance in Caught and Chase thresholds based on current state, in sim units
         private const float TurnSpeed        =  0.2f;  // How quickly Skeleton can turn
         private const float SkeletonRadius      = 14f;    // Radius of the collision body, in pixels
@@ -45,6 +45,7 @@ namespace Dauntlet.Entities
             OffGroundHeight = SkeletonFloatHeight;
             HitPoints = MaxHp;
             ExpDrop = ExpValue;
+            CollisionBody.LinearDamping = 10f;
         }
 
         public override void InflictDamage(int damage)
@@ -81,10 +82,6 @@ namespace Dauntlet.Entities
                 case SkeletonState.Caught:
                     caughtThreshold += Hysteresis / 2;
                     break;
-                case SkeletonState.Fleeing:
-                    caughtThreshold = 0;
-                    chaseThreshold += Hysteresis / 2;
-                    break;
             }
 
             //Second, decide state
@@ -92,8 +89,6 @@ namespace Dauntlet.Entities
 
             if (distanceFromPlayer > chaseThreshold)
                 _skeletonState = SkeletonState.Wander;
-            else if (distanceFromPlayer > caughtThreshold && HitPoints == 1)
-                _skeletonState = SkeletonState.Fleeing;
             else if (distanceFromPlayer > caughtThreshold && HitPoints > 1)
                 _skeletonState = SkeletonState.Chasing;
             else
@@ -101,7 +96,6 @@ namespace Dauntlet.Entities
 
             //Third, move
             if (_skeletonState == SkeletonState.Chasing) Chase();
-            else if (_skeletonState == SkeletonState.Fleeing) Evade();
             else if (_skeletonState == SkeletonState.Wander) Wander();
         }
 

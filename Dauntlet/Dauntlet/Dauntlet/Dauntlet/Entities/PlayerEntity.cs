@@ -19,7 +19,7 @@ namespace Dauntlet.Entities
         private const float PlayerRadius      = 15f; // Radius of the collision body, in pixels
         private const float PlayerFloatHeight = 14f; // Vertical offset between shadow and sprite (for "floating" effect), in pixels
         private const float PlayerMass        =  1f; // Mass of the body
-        private const int   BaseHealth        =  1;  // Initial health
+        private const int   BaseHealth        =  5;  // Initial health
 
         // ---------------------------------
 
@@ -100,6 +100,7 @@ namespace Dauntlet.Entities
                 HurtTimer = 0;
                 InflictDamage(1);
                 Dauntlet.SoundBank.PlayCue("Hurt");
+
                 if (HitPoints == 0)
                     Dying = true;
             }
