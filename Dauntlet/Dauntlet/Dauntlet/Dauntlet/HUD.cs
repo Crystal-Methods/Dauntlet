@@ -79,15 +79,15 @@ namespace Dauntlet
                 spriteBatch.Draw(_healthStock.Sheet, new Vector2(100, 70) + (_hsa * i), _healthStock.CurrentFrame, Color.White, 0f, new Vector2(10, 10), 1f, SpriteEffects.None, 0f);
 
             //Draw Level Up
-                if (isLevelUp)
-                {
-                    //Display animation once and delete last frame after a couple seconds                       
-                    levelUpTimer += gameTime.ElapsedGameTime.Milliseconds;
-                    if (levelUpTimer > 2000)
-                        isLevelUp = false;
-                    _levelUpText.StepAnimation(gameTime); //Exists for example purposes
-                    spriteBatch.Draw(_levelUpText.Sheet, new Vector2(250, 30), _levelUpText.CurrentFrame, Color.White, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
-                }                
+            if (isLevelUp)
+            {
+                 //Display animation once and delete last frame after a couple seconds                       
+                 levelUpTimer += gameTime.ElapsedGameTime.Milliseconds;
+                 if (levelUpTimer > 2000)
+                     isLevelUp = false;
+                 _levelUpText.StepAnimation(gameTime); //Exists for example purposes
+                 spriteBatch.Draw(_levelUpText.Sheet, new Vector2(250, 30), _levelUpText.CurrentFrame, Color.White, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
+            }
         }
 
     }

@@ -146,6 +146,11 @@ namespace Dauntlet.GameScreens
                 //makes it easier to run around
                 //Player.Speed = 15f;
             }
+            _spriteBatch.DrawString(MainGame.Font, String.Format("XP Level: {0}", Player.Level),
+                    new Vector2(42, 222), Color.Black);
+            _spriteBatch.DrawString(MainGame.Font, String.Format("XP Level: {0}", Player.Level),
+                    new Vector2(40,220), Color.White);
+            
             HUD.Draw(gameTime, _spriteBatch);
             _spriteBatch.End();
         }
