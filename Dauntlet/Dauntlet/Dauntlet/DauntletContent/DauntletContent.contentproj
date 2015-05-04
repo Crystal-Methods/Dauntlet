@@ -393,6 +393,67 @@
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sounds\SoundFX\Guapo_1.wav">
+      <Name>Guapo_1</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\SoundFX\Guapo_2.wav">
+      <Name>Guapo_2</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\SoundFX\Guapo_3.wav">
+      <Name>Guapo_3</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sounds\SoundFX\GuapoDeath_1.wav">
+      <Name>GuapoDeath_1</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\SoundFX\GuapoPunch_1.wav">
+      <Name>GuapoPunch_1</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\SoundFX\GuapoPunch_2.wav">
+      <Name>GuapoPunch_2</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\SoundFX\GuapoPunch_3.wav">
+      <Name>GuapoPunch_3</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\SoundFX\GuapoPunch_4.wav">
+      <Name>GuapoPunch_4</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sounds\SoundFX\SkeletonDeath_1.wav">
+      <Name>SkeletonDeath_1</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\SoundFX\SkeletonPunch_1.wav">
+      <Name>SkeletonPunch_1</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\SoundFX\SkeletonPunch_2.wav">
+      <Name>SkeletonPunch_2</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

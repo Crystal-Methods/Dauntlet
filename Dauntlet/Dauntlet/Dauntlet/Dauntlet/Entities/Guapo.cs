@@ -50,7 +50,26 @@ namespace Dauntlet.Entities
         public override void InflictDamage(int damage)
         {
             if (!Dying) base.InflictDamage(damage);
-            if (HitPoints > 0) Dauntlet.SoundBank.PlayCue("GuapoHurt");
+            if (HitPoints > 0)
+            {
+            int randomInt = Random.Next(4);
+            if (randomInt == 0)
+            {
+                Dauntlet.SoundBank.PlayCue("GuapoPunch_1");
+            }
+            else if(randomInt == 1)
+            {
+                Dauntlet.SoundBank.PlayCue("GuapoPunch_2");
+            }
+            else if (randomInt == 2)
+            {
+                Dauntlet.SoundBank.PlayCue("GuapoPunch_3");
+            }
+            else
+            {
+                Dauntlet.SoundBank.PlayCue("GuapoPunch_4");
+            }
+            }
         }
 
         protected override void UpdateAi(GameTime gameTime)
@@ -137,7 +156,7 @@ namespace Dauntlet.Entities
         public override void Die()
         {
             Dying = true;
-            Dauntlet.SoundBank.PlayCue("GuapoDeath");
+            Dauntlet.SoundBank.PlayCue("GuapoDeath_1");
         }
 
     }
