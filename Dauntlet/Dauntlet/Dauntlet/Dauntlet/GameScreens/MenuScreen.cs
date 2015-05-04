@@ -76,23 +76,48 @@ namespace Dauntlet.GameScreens
         
         protected virtual void UpdateMenuItemLocations()
         {
-            var position = new Vector2(0f, 175f);
-
-            foreach (MenuItem menuItem in _menuEntries)
+            if (this.ScreenType == Screen.DeathScreen)
             {
-                position.X = MainGame.GraphicsDevice.Viewport.Width / 2f;
-                menuItem.Position = position;
-                position.Y += menuItem.GetHeight(this)+10;
+                var position = new Vector2(0f, 350);
+
+                foreach (MenuItem menuItem in _menuEntries)
+                {
+                    position.X = MainGame.GraphicsDevice.Viewport.Width / 2f;
+                    menuItem.Position = position;
+                    position.Y += menuItem.GetHeight(this) + 10;
+                }
+            }
+            else
+            {
+                var position = new Vector2(0f, 120);
+
+                foreach (MenuItem menuItem in _menuEntries)
+                {
+                    position.X = MainGame.GraphicsDevice.Viewport.Width / 2f;
+                    menuItem.Position = position;
+                    position.Y += menuItem.GetHeight(this) + 10;
+                }
             }
         }
 
         public override void LoadContent()
         {
-            IsScreenLoaded = true;
-            _darkness = new Texture2D(MainGame.Graphics, MainGame.Graphics.Viewport.Width, MainGame.Graphics.Viewport.Height);
-            var data = new Color[MainGame.Graphics.Viewport.Width * MainGame.Graphics.Viewport.Height];
-            for (int i = 0; i < data.Length; i++) data[i] = new Color(0, 0, 0, 0.25f);
-            _darkness.SetData(data);
+            if (this.ScreenType == Screen.DeathScreen)
+            {
+                IsScreenLoaded = true;
+                _darkness = new Texture2D(MainGame.Graphics, MainGame.Graphics.Viewport.Width, MainGame.Graphics.Viewport.Height);
+                var data = new Color[MainGame.Graphics.Viewport.Width * MainGame.Graphics.Viewport.Height];
+                for (int i = 0; i < data.Length; i++) data[i] = new Color(.50f, 0, 0, 0);
+                _darkness.SetData(data);
+            }
+            else
+            {
+                IsScreenLoaded = true;
+                _darkness = new Texture2D(MainGame.Graphics, MainGame.Graphics.Viewport.Width, MainGame.Graphics.Viewport.Height);
+                var data = new Color[MainGame.Graphics.Viewport.Width * MainGame.Graphics.Viewport.Height];
+                for (int i = 0; i < data.Length; i++) data[i] = new Color(0, 0, 0, 0.25f);
+                _darkness.SetData(data);
+            }
         }
 
         public override void UnloadContent()
@@ -128,13 +153,27 @@ namespace Dauntlet.GameScreens
                 MenuItem menuItem = _menuEntries[i];
                 menuItem.Draw(this, i == _selectedEntry, gameTime);
             }
-
-            var titlePosition = new Vector2(graphics.Viewport.Width / 2f, 80);
-            Vector2 titleOrigin = font.MeasureString(_menuTitle) / 2;
-            var titleColor = new Color(192, 192, 192);
-            const float titleScale = 1.25f;
-            SpriteBatch.DrawString(font, _menuTitle, titlePosition, titleColor, 0,  titleOrigin, titleScale, SpriteEffects.None, 0);
-
+            //Death Screen font
+            if (this.ScreenType == Screen.DeathScreen)
+            {
+                var titlePosition = new Vector2(graphics.Viewport.Width / 2f, 250);
+                Vector2 titleOrigin = font.MeasureString(_menuTitle) / 2;
+                var titleColor = Color.Black;
+                float titleScale = 1.85f;
+                SpriteBatch.DrawString(font, _menuTitle, titlePosition, titleColor, 0, titleOrigin, titleScale, SpriteEffects.None, 0);
+                titleColor = Color.White;
+                titlePosition = new Vector2((graphics.Viewport.Width / 2f) + 2, 252);
+                SpriteBatch.DrawString(font, _menuTitle, titlePosition, titleColor, 0, titleOrigin, titleScale, SpriteEffects.None, 0);
+            }
+            //Pause screen font
+            else
+            {
+                var titlePosition = new Vector2(graphics.Viewport.Width / 2f, 80);
+                Vector2 titleOrigin = font.MeasureString(_menuTitle) / 2;
+                var titleColor = new Color(192, 192, 192);
+                const float titleScale = 1.25f;
+                SpriteBatch.DrawString(font, _menuTitle, titlePosition, titleColor, 0, titleOrigin, titleScale, SpriteEffects.None, 0);
+            }
             SpriteBatch.End();
         }
 

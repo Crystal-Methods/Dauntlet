@@ -94,10 +94,9 @@ namespace Dauntlet.GameScreens
             }
 
             //Handle death
-            if (Player.HitPoints == 0 && DeathScreen.DeathSwitch)
-            {
+            if (Player.Dead && DeathScreen.DeathSwitch)
                 ((MenuScreen)MainGame.GetScreen(Screen.DeathScreen)).OverlayDeathScreen(this);
-            }
+            
         }
 
         public override void Draw(GameTime gameTime)

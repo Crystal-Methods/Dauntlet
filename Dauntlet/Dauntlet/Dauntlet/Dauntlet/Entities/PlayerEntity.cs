@@ -19,7 +19,7 @@ namespace Dauntlet.Entities
         private const float PlayerRadius      = 15f; // Radius of the collision body, in pixels
         private const float PlayerFloatHeight = 14f; // Vertical offset between shadow and sprite (for "floating" effect), in pixels
         private const float PlayerMass        =  1f; // Mass of the body
-        private const int   BaseHealth        =  5;  // Initial health
+        private const int   BaseHealth        =  1;  // Initial health
 
         // ---------------------------------
 
@@ -100,6 +100,8 @@ namespace Dauntlet.Entities
                 HurtTimer = 0;
                 InflictDamage(1);
                 Dauntlet.SoundBank.PlayCue("Hurt");
+                if (HitPoints == 0)
+                    Dying = true;
             }
 
             // Detects collection of EXP orb
@@ -170,27 +172,30 @@ namespace Dauntlet.Entities
         /// <param name="padState">current gamepad state</param>
         public void Move(KeyboardState keyState, GamePadState padState)
         {
-            if (Hurt && HurtTimer < 500) return;
-            Vector2 force = Vector2.Zero;
-
-            if (keyState.IsKeyDown(Keys.W)) force.Y--;
-            if (keyState.IsKeyDown(Keys.A)) force.X--;
-            if (keyState.IsKeyDown(Keys.S)) force.Y++;
-            if (keyState.IsKeyDown(Keys.D)) force.X++;
-            if (force != Vector2.Zero)
+            if (!Dead && !Dying)
             {
-                force.Normalize();
+                if (Hurt && HurtTimer < 500) return;
+                Vector2 force = Vector2.Zero;
+
+                if (keyState.IsKeyDown(Keys.W)) force.Y--;
+                if (keyState.IsKeyDown(Keys.A)) force.X--;
+                if (keyState.IsKeyDown(Keys.S)) force.Y++;
+                if (keyState.IsKeyDown(Keys.D)) force.X++;
+                if (force != Vector2.Zero)
+                {
+                    force.Normalize();
+                    CollisionBody.ApplyLinearImpulse(force * Speed);
+                    CollisionBody.Rotation = (float)Math.Atan2(force.Y, force.X);
+                }
+
+                if (!padState.IsConnected) return;
+                force = padState.ThumbSticks.Left;
+                force.Y *= -1;
                 CollisionBody.ApplyLinearImpulse(force * Speed);
-                CollisionBody.Rotation = (float)Math.Atan2(force.Y, force.X);
+
+                if (padState.ThumbSticks.Left.Length() > 0.2)
+                    CollisionBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Left.Y, padState.ThumbSticks.Left.X);
             }
-
-            if (!padState.IsConnected) return;
-            force = padState.ThumbSticks.Left;
-            force.Y *= -1;
-            CollisionBody.ApplyLinearImpulse(force * Speed);
-
-            if (padState.ThumbSticks.Left.Length() > 0.2)
-                CollisionBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Left.Y, padState.ThumbSticks.Left.X);
         }
 
         /// <summary>
@@ -243,6 +248,23 @@ namespace Dauntlet.Entities
             ResolveAnimation();
             _isTeleporting = false;
 
+            if (Dying)
+            {
+                DeathTimer += gameTime.ElapsedGameTime.Milliseconds;
+                if (DeathTimer > 500)
+                {
+                    Poof.SummonPoof(DisplayPosition, OffGroundHeight);
+                    CollisionBody.Dispose();
+                }
+                if (DeathTimer > 1000)
+                {
+                    Dead = true;
+                    Dying = false;
+                }   
+            }
+                
+            
+
             if (IsPunching) {
                 _punchTime += gameTime.ElapsedGameTime.Milliseconds;
                 float x = _punchTime/64;
@@ -258,10 +280,12 @@ namespace Dauntlet.Entities
                         new Vector2(-(float)Math.Sin(Rotation) * Radius, (float)Math.Cos(Rotation) * Radius);
                     GauntletBody.Rotation = Rotation;
                 }
-            } else {
+            } else if(!Dead) {
                 GauntletBody.Position = Position +
                     new Vector2(-(float)Math.Sin(Rotation) * Radius, (float)Math.Cos(Rotation) * Radius);
                 GauntletBody.Rotation = Rotation;
+                if(Dead)
+                    GauntletBody.Dispose();
             }
             
             if (Hurt) {

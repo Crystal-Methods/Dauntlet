@@ -8,7 +8,7 @@ namespace Dauntlet.GameScreens
         //change this to false if you don't wish to die
         private static bool deathSwitch = true;
 
-        private const string MenuTitle = "YOU DIED";
+        private const string MenuTitle = "YOU DIED....AGAIN!";
         public override Screen ScreenType { get { return Screen.DeathScreen; } } 
 
         // =======================================
