@@ -43,7 +43,17 @@ namespace Dauntlet.Entities
         {
             if (!Dying) base.InflictDamage(damage);
             this.Speed += 0.01f;
-            if (HitPoints > 0) Dauntlet.SoundBank.PlayCue("ZombieHurt_1");
+            if (HitPoints > 0)
+            {
+                int randomInt = Random.Next(2);
+                if(randomInt == 1)
+                {
+                    Dauntlet.SoundBank.PlayCue("ZombieHurt_1");
+                } else
+                {
+                    Dauntlet.SoundBank.PlayCue("ZombieHurt_2");
+                }
+            }
         }
 
         protected override void UpdateAi(GameTime gameTime)
