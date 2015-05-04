@@ -152,6 +152,15 @@ namespace Dauntlet.Entities
             HurtTimer = 0f;
             HitPoints -= damage;
         }
+
+        /// <sumary>
+        /// Heales an entity by adding to the HitPoints without starting HurtTimer
+        /// </sumary>
+        /// <param name="health">The amount to heal the entity by
+        public virtual void Heal(int health)
+        {
+            HitPoints += health;
+        }
     }
 
     // Helper methods

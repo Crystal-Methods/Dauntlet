@@ -277,13 +277,20 @@ namespace Dauntlet.Entities
                 SmoothExp = 0;
                 Level++;
                 //not sure if we want this or not but it's here
+                
                 //Can you explain to me what it's supposed to do? It stops the player from moving for a split second, but that's all I see.
-                /*
+                
+                //This was supposed to just heal the player upon level up if health was not already full.
+                //I forgot about the hurtTimer and damage animation, so i was lazy and tried to deal negative damage.
+                //I fixed it now.
+                //still not sure if we want it or not
+
+                //Heal player on level up
                 if (HitPoints < BaseHealth)
                 {
-                    InflictDamage(-1);
+                    Heal(1);
                 }
-                */
+                
                 Dauntlet.SoundBank.PlayCue("LevelUp");
                 HUD.LevelledUp();
             }
