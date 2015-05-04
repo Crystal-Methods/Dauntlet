@@ -50,7 +50,7 @@ namespace Dauntlet.Entities
 
         public void playAttentionSound()
         {
-            int randomInt = Random.Next(4);
+            int randomInt = Random.Next(3);
             if (randomInt == 0)
             {
                 Dauntlet.SoundBank.PlayCue("Guapo_1");
@@ -59,13 +59,9 @@ namespace Dauntlet.Entities
             {
                 Dauntlet.SoundBank.PlayCue("Guapo_2");
             }
-            else if (randomInt == 2)
-            {
-                Dauntlet.SoundBank.PlayCue("Guapo_3");
-            }
             else
             {
-                Dauntlet.SoundBank.PlayCue("Guapo_4");
+                Dauntlet.SoundBank.PlayCue("Guapo_3");
             }
             attentionToPlayer = true;
         }
