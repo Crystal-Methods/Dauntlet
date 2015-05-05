@@ -6,10 +6,10 @@ namespace Dauntlet.Entities
 {
     public class Guapo : EnemyEntity
     {
-        private const float TopSpeed         =  0.035f; // Top speed of Guapo
+        private const float TopSpeed         =  0.03f; // Top speed of Guapo
         private const float WanderSpeed      =  0.01f; // Wandering speed of Guapo
-        private const int   MaxHp            =  3;     // Max health of Guapo
-        private const int   ExpValue         =  3;     // How much experience Guapo is worth when killed
+        private const int   MaxHp            =  2;     // Max health of Guapo
+        private const int   ExpValue         =  2;     // How much experience Guapo is worth when killed
         private const float ChaseDistance    =  5f;    // How far Guapo will look to chase a player, in sim units
         private const float CaughtDistance   =  1f;    // How close Guapo will get to the player before stopping, in sim units
         private const float Hysteresis       =  0.5f;  // Variance in Caught and Chase thresholds based on current state, in sim units
