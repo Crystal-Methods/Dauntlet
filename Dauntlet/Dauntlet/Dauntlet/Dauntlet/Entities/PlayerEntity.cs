@@ -20,9 +20,12 @@ namespace Dauntlet.Entities
         private const float PlayerFloatHeight = 14f; // Vertical offset between shadow and sprite (for "floating" effect), in pixels
         private const float PlayerMass        =  1f; // Mass of the body
         private const int   BaseHealth        =  5;  // Initial health
+        
+
 
         // ---------------------------------
-
+        public float             _levelUpTime;
+        public bool              _bonus;
         private bool              _isTeleporting;   // True if the player must teleport next update
         private float             _punchTime;       // Elapsed time of current punch
         private Vector2           _punchVector;     // Direction in which a punch is being thrown
@@ -64,7 +67,7 @@ namespace Dauntlet.Entities
             CollisionBody.OnCollision += OnPlayerCollision;
 
             // Create Gauntlet body
-           GauntletBody = BodyFactory.CreateRectangle(world, 32f.Sim(), 24f.Sim(), this.Density(), position + new Vector2(15, 0));
+            GauntletBody = BodyFactory.CreateRectangle(world, 32f.Sim(), 24f.Sim(), this.Density(), position + new Vector2(15, 0));
             GauntletBody.InitBody(BodyType.Kinematic, Category.Cat1, Category.Cat10, true, 0f, 0.5f, 5f, 100f);
             GauntletBody.OnCollision += OnGauntletCollision;
             GauntletBody.OnSeparation += OnGauntletSeparation;
@@ -298,9 +301,12 @@ namespace Dauntlet.Entities
             if (SmoothExp < Exp) SmoothExp += 0.2f;
 
             if (SmoothExp >= ExpToNextLevel) {
+
                 Exp = Exp % ExpToNextLevel;
                 SmoothExp = 0;
                 Level++;
+
+                _bonus = true;
 
                 //Heal player on level up
                 if (HitPoints < BaseHealth)
@@ -311,7 +317,22 @@ namespace Dauntlet.Entities
                 Dauntlet.SoundBank.PlayCue("LevelUp");
                 HUD.LevelledUp();
             }
-            
+
+            if (_bonus)
+            {
+
+                _levelUpTime += gameTime.ElapsedGameTime.Milliseconds;
+
+                if (_levelUpTime < 5000)
+                    Speed = 10;
+                else
+                {
+                    _bonus = false;
+                    _levelUpTime = 0;
+                    Speed = 5;
+                }
+                    
+            }
             
         }
 

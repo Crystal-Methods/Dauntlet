@@ -142,14 +142,18 @@ namespace Dauntlet.GameScreens
                     new Vector2(GraphicsDevice.Viewport.Width - 100, 400), Color.White);
                 _spriteBatch.DrawString(MainGame.Font, String.Format("TEY: {0}", (int)(Convert.ToDouble(Player.Position.Y) * 64)),
                     new Vector2(GraphicsDevice.Viewport.Width - 100, 450), Color.White);
-                //makes it easier to run around
-                //Player.Speed = 15f;
             }
             _spriteBatch.DrawString(MainGame.Font, String.Format("XP Level: {0}", Player.Level),
                     new Vector2(42, 222), Color.Black);
             _spriteBatch.DrawString(MainGame.Font, String.Format("XP Level: {0}", Player.Level),
                     new Vector2(40,220), Color.White);
-            
+
+            if (Player._bonus)
+            {
+                _spriteBatch.DrawString(MainGame.Font, String.Format("Bonus: {0}", (5 - (Player._levelUpTime / 1000)).ToString("0.00")),
+                    new Vector2(683, 600), Color.White);
+            }
+
             HUD.Draw(gameTime, _spriteBatch);
             _spriteBatch.End();
         }
