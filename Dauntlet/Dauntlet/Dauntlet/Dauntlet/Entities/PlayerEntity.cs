@@ -102,7 +102,7 @@ namespace Dauntlet.Entities
                 Dauntlet.SoundBank.PlayCue("Hurt");
 
                 if (HitPoints == 0)
-                    Dying = true;
+                    Dying = false;
             }
 
             // Detects collection of EXP orb
