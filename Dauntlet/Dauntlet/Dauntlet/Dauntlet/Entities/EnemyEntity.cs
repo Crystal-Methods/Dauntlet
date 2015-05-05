@@ -48,7 +48,14 @@ namespace Dauntlet.Entities
                     Poof.SummonPoof(DisplayPosition, OffGroundHeight);
                     ExpOrb.SpawnExp(ExpDrop, Position);
                     CollisionBody.Dispose();
+
+                    if (Player.Level == 2 && !HUD.hasKey)
+                    {
+                        Key.SpawnKey(1,Position);
+                        HUD.GotKey();
+                    }
                 }
+
             }
 
             if (HitPoints <= 0 && !Dying && !Dead) Die();

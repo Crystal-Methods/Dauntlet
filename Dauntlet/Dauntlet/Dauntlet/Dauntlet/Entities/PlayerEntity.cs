@@ -111,8 +111,17 @@ namespace Dauntlet.Entities
             // Detects collection of EXP orb
             if (playerBody.GetType() == CollisionBody.GetType() && fixtureB.CollisionCategories == Category.Cat24)
             {
-                ((ExpOrb)otherBody.UserData).Die();
-                Exp++;
+                try
+                {
+                    ((ExpOrb)otherBody.UserData).Die();
+                    Exp++;
+                }
+                catch (InvalidCastException  ice)
+                {
+                    ((Key)otherBody.UserData).Die();
+                    
+                }
+                
             }
 
             return true;

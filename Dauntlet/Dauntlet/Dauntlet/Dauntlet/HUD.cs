@@ -14,7 +14,9 @@ namespace Dauntlet
         private static AnimatedTexture2D _flame;
         private static AnimatedTexture2D _healthStock;
         private static AnimatedTexture2D _levelUpText;
+        private static AnimatedTexture2D _key;
         private static bool isLevelUp;
+        public static bool hasKey;
         private static float levelUpTimer;
         private static Vector2 _hsa; // Displacement between health stocks on the healthbar
         /// <summary>
@@ -38,6 +40,10 @@ namespace Dauntlet
             _levelUpText.AddAnimation("LevelUp", 0, 0, 204, 87, 10, 1/16f, false, true);
             _levelUpText.SetAnimation("LevelUp");
 
+            _key = new AnimatedTexture2D(SpriteFactory.GetTexture("Key"));
+            _key.AddAnimation("Key", 0, 0, 64, 64, 1, 1 / 12f, false, true);
+            _key.SetAnimation("Key");
+
             _hsa = new Vector2(-(float) Math.Cos(22.38), (float) Math.Sin(22.38));
             _hsa.Normalize();
             _hsa *= 40;
@@ -51,6 +57,14 @@ namespace Dauntlet
             GameplayScreen.Player.Speed += 0.25f;
         }
 
+
+        public static void GotKey()
+        {
+            if(!hasKey)
+                hasKey = true;
+        }
+
+
         /// <summary>
         /// Draws the HUD
         /// </summary>
@@ -61,6 +75,7 @@ namespace Dauntlet
             _flame.StepAnimation(gameTime);
             _healthStock.StepAnimation(gameTime);
             _levelUpText.StepAnimation(gameTime); //Exists for example purposes
+            _key.StepAnimation(gameTime);
 
             // Draw the EXP bar
             var expBarLength = (int)Math.Round(_expbar.Width* GameplayScreen.Player.SmoothExp/GameplayScreen.Player.ExpToNextLevel);
@@ -87,6 +102,10 @@ namespace Dauntlet
                      isLevelUp = false;
                  _levelUpText.StepAnimation(gameTime); //Exists for example purposes
                  spriteBatch.Draw(_levelUpText.Sheet, new Vector2(250, 30), _levelUpText.CurrentFrame, Color.White, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
+            }
+            if (hasKey)
+            {
+                spriteBatch.Draw(_key.Sheet, new Vector2(40, 260), _key.CurrentFrame, Color.White, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
             }
         }
 
