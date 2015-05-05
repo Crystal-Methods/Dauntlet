@@ -47,6 +47,8 @@ namespace Dauntlet
             _hsa = new Vector2(-(float) Math.Cos(22.38), (float) Math.Sin(22.38));
             _hsa.Normalize();
             _hsa *= 40;
+
+            hasKey = false;
         }
 
         public static void LevelledUp()

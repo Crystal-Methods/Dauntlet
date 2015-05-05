@@ -50,10 +50,8 @@ namespace Dauntlet.Entities
                     CollisionBody.Dispose();
 
                     if (Player.Level == 2 && !HUD.hasKey)
-                    {
                         Key.SpawnKey(1,Position);
-                        HUD.GotKey();
-                    }
+                        
                 }
 
             }

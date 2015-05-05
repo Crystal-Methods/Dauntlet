@@ -119,7 +119,7 @@ namespace Dauntlet.Entities
                 catch (InvalidCastException  ice)
                 {
                     ((Key)otherBody.UserData).Die();
-                    
+                    HUD.GotKey();
                 }
                 
             }
