@@ -18,12 +18,15 @@ namespace Dauntlet.GameScreens
         private Texture2D _bgTex_options;
         private Texture2D _fistTex;
         private Texture2D _black;
+        private Texture2D _controls;
 
         private int _menuSelection;
         private Vector2 cloudPos1;
         private Vector2 cloudPos2;
 
         private Cue _menuTheme;
+
+        private bool drawControls;
 
         // ==============================================
 
@@ -44,6 +47,7 @@ namespace Dauntlet.GameScreens
             _bgTex_house = _content.Load<Texture2D>("Textures/Menu/Menu_House");
             _bgTex_title = _content.Load<Texture2D>("Textures/Menu/Menu_Title");
             _bgTex_options = _content.Load<Texture2D>("Textures/Menu/Menu_Options");
+            _controls = _content.Load<Texture2D>("Textures/Menu/Menu_Controls");
 
             _fistTex = _content.Load<Texture2D>("Textures/Fist");
 
@@ -59,6 +63,7 @@ namespace Dauntlet.GameScreens
             cloudPos1 = new Vector2(0, 0);
             cloudPos2 = new Vector2(1366, 0);
 
+            drawControls = false;
 
             //SoundManager.PlaySong("MainTheme");
             //SoundManager.VolumeChange(0.0f);
@@ -77,43 +82,51 @@ namespace Dauntlet.GameScreens
 
         public override void Update(GameTime gameTime)
         {
-            if (MainGame.Input.IsMenuSelect())
+            if (!drawControls)
             {
-                if(_menuSelection == 0)
+                if (MainGame.Input.IsMenuSelect())
                 {
-                    MainGame.ChangeScreen(Screen.GameplayScreen);
-                    _menuTheme.Stop(AudioStopOptions.Immediate);
-                    //SoundManager.PlaySong("NoCombat");
+                    if (_menuSelection == 0)
+                    {
+                        MainGame.ChangeScreen(Screen.GameplayScreen);
+                        _menuTheme.Stop(AudioStopOptions.Immediate);
+                        //SoundManager.PlaySong("NoCombat");
+                    }
+                    else if (_menuSelection == 1)
+                    {
+                        drawControls = true;
+                    }
+                    else if (_menuSelection == 2)
+                    {
+                        MainGame.Exit();
+                    }
+                    //Additional options to be added here.
                 }
-                else if(_menuSelection == 1)
-                {
-
-                }
-                else if(_menuSelection == 2)
-                {
+                if (MainGame.Input.IsQuitGame())
                     MainGame.Exit();
-                }
-                //Additional options to be added here.
-            }
-            if (MainGame.Input.IsQuitGame())
-                MainGame.Exit();
-            if(MainGame.Input.IsMenuDown())
-            {
-                if(_menuSelection < 2)
+                if (MainGame.Input.IsMenuDown())
                 {
-                    _menuSelection++;
-                    //SoundManager.Play("MenuBlip");
-                    Dauntlet.SoundBank.PlayCue("MenuBlip");
+                    if (_menuSelection < 2)
+                    {
+                        _menuSelection++;
+                        //SoundManager.Play("MenuBlip");
+                        Dauntlet.SoundBank.PlayCue("MenuBlip");
+                    }
+                }
+                if (MainGame.Input.IsMenuUp())
+                {
+                    if (_menuSelection > 0)
+                    {
+                        _menuSelection--;
+                        //SoundManager.Play("MenuBlip");
+                        Dauntlet.SoundBank.PlayCue("MenuBlip");
+                    }
                 }
             }
-            if (MainGame.Input.IsMenuUp())
+
+            if (MainGame.Input.IsMenuCancel())
             {
-                if (_menuSelection > 0)
-                {
-                    _menuSelection--;
-                    //SoundManager.Play("MenuBlip");
-                    Dauntlet.SoundBank.PlayCue("MenuBlip");
-                }
+                drawControls = false;
             }
 
             cloudPos1.X -= 0.20f;
@@ -141,7 +154,7 @@ namespace Dauntlet.GameScreens
             _spriteBatch.Draw(_bgTex_house, translate, null, Color.White, 0f, Vector2.Zero, drawScale, SpriteEffects.None, 1f);
             _spriteBatch.Draw(_bgTex_title, translate, null, Color.White, 0f, Vector2.Zero, drawScale, SpriteEffects.None, 1f);
             _spriteBatch.Draw(_bgTex_options, translate, null, Color.White, 0f, Vector2.Zero, drawScale, SpriteEffects.None, 1f);
-
+            
 
             // Pulsate the size of the selected menu entry.
             double time = gametime.TotalGameTime.TotalSeconds;
@@ -167,6 +180,10 @@ namespace Dauntlet.GameScreens
             }
 
             _spriteBatch.Draw(_fistTex, position + translate, null, Color.White, 0f, origin, scale, SpriteEffects.None, 1f);
+            if(drawControls == true)
+            {
+                _spriteBatch.Draw(_controls, translate, null, Color.White, 0f, Vector2.Zero, drawScale, SpriteEffects.None, 1f);
+            }
             _spriteBatch.End();
         }
     }
