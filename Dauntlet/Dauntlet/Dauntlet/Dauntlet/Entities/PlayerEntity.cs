@@ -220,7 +220,7 @@ namespace Dauntlet.Entities
         /// <param name="padState">current gamepad state</param>
         public void Rotate(GamePadState padState)
         {
-            if (padState.ThumbSticks.Right.Length() > 0.2)
+            if (padState.ThumbSticks.Right.Length() > 0.2 && !Dying && !Dead)
                 CollisionBody.Rotation = -(float)Math.Atan2(padState.ThumbSticks.Right.Y, padState.ThumbSticks.Right.X);
         }
 
