@@ -158,6 +158,9 @@
     <None Include="Rooms\MausoleumRoom.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Rooms\Room4Passage.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Rooms\Room6.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
