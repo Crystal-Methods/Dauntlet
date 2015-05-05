@@ -89,7 +89,7 @@ namespace Dauntlet.Entities
 
             if (distanceFromPlayer > chaseThreshold)
                 _skeletonState = SkeletonState.Wander;
-            else if (distanceFromPlayer > caughtThreshold && HitPoints > 1)
+            else if (distanceFromPlayer > caughtThreshold)
                 _skeletonState = SkeletonState.Chasing;
             else
                 _skeletonState = SkeletonState.Caught;
