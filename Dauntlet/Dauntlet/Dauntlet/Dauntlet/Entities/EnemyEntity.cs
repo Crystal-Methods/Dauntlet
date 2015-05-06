@@ -49,7 +49,7 @@ namespace Dauntlet.Entities
                     ExpOrb.SpawnExp(ExpDrop, Position);
                     CollisionBody.Dispose();
 
-                    if (Player.Level == 2 && !HUD.hasKey)
+                    if (Player.Level == 6 && !HUD.hasKey)//Here is where you change the leve the key is dropped at
                         Key.SpawnKey(1,Position);
                         
                 }
