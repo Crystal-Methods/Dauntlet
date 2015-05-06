@@ -13,5 +13,5 @@
 1;0,3;0,3;0,3;0,3;0,3;0,3;0,3;0,3;0,3;0,3;0,3;0,3;0,3;0,3;0,1;0
 1;3,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;0,1;4
 G;4;128;0;384;Room1,F;4;128;1020;384;Room7
-Gravestone_1;224;142,Gravestone_2;128;226,Gravestone_3;232;246,Gravestone_3;128;128,Gravestone_4;336;172,DeadTree;345;128,Tree_2;875;187,Gravestone_1;512;125,Gravestone_4;800;246,Gravestone_2;900;333,Gravestone_3;775;100,Gravestone_2;700;194,Tree;512;385
-Guapo;100;100,Skeleton;300;300
+Gravestone_1;224;142,Gravestone_2;128;226,Gravestone_3;232;246,Gravestone_3;128;128,Gravestone_4;336;172,DeadTree;345;128,Tree_2;875;187,Gravestone_1;512;125,Gravestone_4;800;246,Gravestone_2;900;333,Gravestone_3;775;100,Gravestone_2;700;194,Tree;512;385,Bush;800;680,Gravestone_1;135;666,Gravestone_3;220;740
+Guapo;100;100,Skeleton;300;300,Guapo;350;680
