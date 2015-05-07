@@ -6,8 +6,8 @@ namespace Dauntlet.Entities
 {
     public class Zombie : EnemyEntity
     {
-        private static float TopSpeed          =  0.05f; // Top speed of Zombie
-        private const float WanderSpeed       =  0.01f; // Wandering speed of Zombie
+        private static float TopSpeed          =  0.025f; // Top speed of Zombie
+        private const float WanderSpeed       =  0.005f; // Wandering speed of Zombie
         private const int   MaxHp             =  5;     // Max health of Zombie
         private const int   ExpValue          =  5;     // How much experience Zombie is worth when killed
         private const float ChaseDistance     =  5f;    // How far Zombie will look to chase a player, in sim units

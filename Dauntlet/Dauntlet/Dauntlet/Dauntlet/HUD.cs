@@ -56,7 +56,7 @@ namespace Dauntlet
             isLevelUp = true;
             levelUpTimer = 0f;
             _levelUpText.Reset();
-            GameplayScreen.Player.Speed += 0.25f;
+            GameplayScreen.Player.Speed += 0.125f;
         }
 
 
@@ -99,7 +99,7 @@ namespace Dauntlet
             if (isLevelUp)
             {
                  //Display animation once and delete last frame after a couple seconds                       
-                 levelUpTimer += gameTime.ElapsedGameTime.Milliseconds;
+                 levelUpTimer += gameTime.ElapsedGameTime.Milliseconds / 2f;
                  if (levelUpTimer > 2000)
                      isLevelUp = false;
                  _levelUpText.StepAnimation(gameTime); //Exists for example purposes

@@ -40,7 +40,7 @@ namespace Dauntlet.Entities
         public override void Update(GameTime gameTime)
         {
             if (Dying) {
-                DeathTimer += gameTime.ElapsedGameTime.Milliseconds;
+                DeathTimer += gameTime.ElapsedGameTime.Milliseconds /2f;
                 if (DeathTimer > 500)
                 {
                     Dying = false;
@@ -59,7 +59,7 @@ namespace Dauntlet.Entities
             if (HitPoints <= 0 && !Dying && !Dead) Die();
 
             if (Hurt) {
-                HurtTimer += gameTime.ElapsedGameTime.Milliseconds;
+                HurtTimer += gameTime.ElapsedGameTime.Milliseconds /2f;
 
                 if (HurtTimer > 300) {
                     Hurt = false;

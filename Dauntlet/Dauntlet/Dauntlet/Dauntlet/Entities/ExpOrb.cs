@@ -11,7 +11,7 @@ namespace Dauntlet.Entities
     public class ExpOrb : Entity
     {
 
-        private const float TopSpeed       =  4f; // Max movement speed
+        private const float TopSpeed       =  2f; // Max movement speed
         private const float ExpRadius      =  8f; // Radius of the collision body, in pixels
         private const float ExpFloatHeight = 15f; // Vertical offset between shadow and sprite (for "floating" effect), in pixels
         private const float ExpMass        =  1f; // Mass of the body
@@ -86,7 +86,7 @@ namespace Dauntlet.Entities
         private void DrawToPlayer()
         {
             float distanceFromPlayer = Vector2.Distance(Player.Position, Position);
-            float speed = distanceFromPlayer < 3 ? -(float) Math.Log10(distanceFromPlayer/3)/20f : 0;
+            float speed = distanceFromPlayer < 3 ? -(float) Math.Log10(distanceFromPlayer/3)/40f : 0;
             speed = Math.Min(speed, Speed);
             Vector2 direction = Vector2.Normalize(Player.Position - Position);
             CollisionBody.ApplyLinearImpulse(direction * speed);
@@ -94,12 +94,13 @@ namespace Dauntlet.Entities
 
         public override void Update(GameTime gameTime)
         {
-            SpriteTexture.StepAnimation(gameTime);
             DrawToPlayer();
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            SpriteTexture.StepAnimation(gameTime);
+
             // Draw debug
             if (GameplayScreen.DebugCollision)
                 spriteBatch.Draw(DebugCircleTexture, DisplayPosition, null, Color.White, CollisionBody.Rotation,

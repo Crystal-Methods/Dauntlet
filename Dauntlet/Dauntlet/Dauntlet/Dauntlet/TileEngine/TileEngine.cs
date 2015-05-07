@@ -125,21 +125,65 @@ namespace Dauntlet.TileEngine
         /// </summary>
         /// <param name="spriteBatch">the game's SpriteBatch object</param>
         /// <param name="gameTime">the game's GameTime object</param>
-        public static void DrawRoom(SpriteBatch spriteBatch, GameTime gameTime)
+        public static void DrawRoom(GraphicsDevice graphics, SpriteBatch spriteBatch, GameTime gameTime)
         {
-            for (int i = 0; i < CurrentRoom.Map.Length; i++)
-                for (int j = 0; j < CurrentRoom.Map[i].Length; j++)
+            if (CurrentRoom.Render.Count == 0)
+            {
+                var renderWidths = (int) Math.Ceiling(CurrentRoom.DisplayWidth/2048.0);
+                var renderHeights = (int) Math.Ceiling(CurrentRoom.DisplayHeight/2048.0);
+                for (int w = 0; w < renderWidths; w++)
                 {
-                    Tile t = CurrentRoom.Map[i][j];
-                    var position = new Vector2(j * TileSize, i * TileSize);
-                    var sourcerect = new Rectangle(t.SpriteId[0] * TileSize,
-                        t.SpriteId[1] * TileSize, TileSize, TileSize);
-                    if (t.IsWall || t.IsCappableWall)
-                        spriteBatch.Draw(_tileSet, position, sourcerect, Color.White, 0f, Vector2.Zero, 1f,
-                            SpriteEffects.None, ConvertUnits.ToSimUnits(position.Y + TileSize) / 100f);
-                    else
-                        spriteBatch.Draw(_tileSet, position, sourcerect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                    for (int h = 0; h < renderHeights; h++)
+                    {
+                        var target = new RenderTarget2D(graphics, Math.Min(2048, CurrentRoom.DisplayWidth - w*2048),
+                            Math.Min(2048, CurrentRoom.DisplayHeight - h*2048));
+                        graphics.SetRenderTarget(target);
+                        graphics.Clear(Color.Transparent);
+                        using (var b = new SpriteBatch(graphics))
+                        {
+                            b.Begin();
+
+                            for (int i = 32*h; i < Math.Min(32*h + 32, CurrentRoom.Map.Length); i++)
+                                for (int j = 32*w; j < Math.Min(32*w + 32, CurrentRoom.Map[i].Length); j++)
+                                {
+                                    Tile t = CurrentRoom.Map[i][j];
+                                    var position = new Vector2((j - 32*w)*TileSize, (i - 32*h)*TileSize);
+                                    var sourcerect = new Rectangle(t.SpriteId[0]*TileSize,
+                                        t.SpriteId[1]*TileSize, TileSize, TileSize);
+                                    if (t.IsWall || t.IsCappableWall)
+                                        b.Draw(_tileSet, position, sourcerect, Color.White, 0f, Vector2.Zero, 1f,
+                                            SpriteEffects.None, ConvertUnits.ToSimUnits(position.Y + TileSize)/100f);
+                                    else
+                                        b.Draw(_tileSet, position, sourcerect, Color.White, 0f, Vector2.Zero, 1f,
+                                            SpriteEffects.None, 0f);
+                                }
+
+                            b.End();
+                        }
+
+                        graphics.SetRenderTarget(null);
+                        CurrentRoom.Render.Add(target);
+                        CurrentRoom.RenderLocations.Add(new Vector2(w*32*TileSize, h*32*TileSize));
+                    }
                 }
+            }
+
+            for (int q = 0; q < CurrentRoom.Render.Count; q++)
+                spriteBatch.Draw(CurrentRoom.Render[q], CurrentRoom.RenderLocations[q], Color.White);
+
+            //for (int i = 0; i < CurrentRoom.Map.Length; i++)
+            //    for (int j = 0; j < CurrentRoom.Map[i].Length; j++)
+            //    {
+            //        Tile t = CurrentRoom.Map[i][j];
+            //        var position = new Vector2(j * TileSize, i * TileSize);
+            //        var sourcerect = new Rectangle(t.SpriteId[0] * TileSize,
+            //            t.SpriteId[1] * TileSize, TileSize, TileSize);
+            //        if (t.IsWall || t.IsCappableWall)
+            //            spriteBatch.Draw(_tileSet, position, sourcerect, Color.White, 0f, Vector2.Zero, 1f,
+            //                SpriteEffects.None, ConvertUnits.ToSimUnits(position.Y + TileSize) / 100f);
+            //        else
+            //            spriteBatch.Draw(_tileSet, position, sourcerect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            //    }
         }
 
         /// <summary>

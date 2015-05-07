@@ -6,14 +6,14 @@ namespace Dauntlet.Entities
 {
     public class Skeleton : EnemyEntity
     {
-        private const float TopSpeed         =  0.045f; // Top speed of Skeleton
-        private const float WanderSpeed      =  0.01f; // Wandering speed of Skeleton
+        private const float TopSpeed         =  0.0225f; // Top speed of Skeleton
+        private const float WanderSpeed      =  0.005f; // Wandering speed of Skeleton
         private const int   MaxHp            =  4;     // Max health of Skeleton
         private const int   ExpValue         =  3;     // How much experience Skeleton is worth when killed
         private const float ChaseDistance    =  6f;    // How far Skeleton will look to chase a player, in sim units
         private const float CaughtDistance   =  .5f;    // How close Skeleton will get to the player before stopping, in sim units
         private const float Hysteresis       =  0.5f;  // Variance in Caught and Chase thresholds based on current state, in sim units
-        private const float TurnSpeed        =  0.2f;  // How quickly Skeleton can turn
+        private const float TurnSpeed        =  0.1f;  // How quickly Skeleton can turn
         private const float SkeletonRadius      = 14f;    // Radius of the collision body, in pixels
         private const float SkeletonFloatHeight = 15f;    // Vertical offset between shadow and sprite (for "floating" effect), in pixels
 

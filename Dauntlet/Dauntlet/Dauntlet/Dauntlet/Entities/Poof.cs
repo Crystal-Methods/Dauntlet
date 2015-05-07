@@ -38,12 +38,13 @@ namespace Dauntlet.Entities
 
         public override void Update(GameTime gameTime)
         {
-            if (SpriteTexture.StepAnimation(gameTime))
-                TileEngine.TileEngine.CurrentRoom.RemoveQueue.Add(this);
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            if (SpriteTexture.StepAnimation(gameTime))
+                TileEngine.TileEngine.CurrentRoom.RemoveQueue.Add(this);
+
             float layerDepth = ConvertUnits.ToSimUnits(_position.Y + OffGroundHeight)/100f;
             spriteBatch.Draw(SpriteTexture.Sheet, _position, SpriteTexture.CurrentFrame, Color.White,
                 0f, new Vector2(16, 16), 2f, SpriteEffects.None, layerDepth);

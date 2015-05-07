@@ -4,18 +4,21 @@ using FarseerPhysics;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Dauntlet.TileEngine
 {
     /// <summary>
     /// Represents a room in the world.  The room is responsible for all of the tiles and entities it contains.
     /// </summary>
-    public struct Room
+    public class Room
     {
         public World World;
         public List<Entity> Entities;
         public List<Entity> AddQueue;
-        public List<Entity> RemoveQueue; 
+        public List<Entity> RemoveQueue;
+        public List<Texture2D> Render;
+        public List<Vector2> RenderLocations; 
         public readonly int Height;
         public readonly int Width;
         private readonly Tile[][] _map;
@@ -61,6 +64,8 @@ namespace Dauntlet.TileEngine
             AddQueue = new List<Entity>();
             RemoveQueue = new List<Entity>();
             Teleports = new Dictionary<char, Teleport>();
+            Render = new List<Texture2D>();
+            RenderLocations = new List<Vector2>();
 
             _map = map;
             Height = height;

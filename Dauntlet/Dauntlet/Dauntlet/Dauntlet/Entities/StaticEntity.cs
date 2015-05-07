@@ -65,11 +65,13 @@ namespace Dauntlet.Entities
 
         public override void Update(GameTime gameTime)
         {
-            SpriteTexture.StepAnimation(gameTime);
+            
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            SpriteTexture.StepAnimation(gameTime);
+
             // Draw debug
             if (GameplayScreen.DebugCollision)
             {

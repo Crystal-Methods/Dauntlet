@@ -15,7 +15,7 @@ namespace Dauntlet.Entities
 {
     public class PlayerEntity : Entity
     {
-        private const float PlayerSpeed       =  5f; // Max movement speed
+        private const float PlayerSpeed       =  2.5f; // Max movement speed
         private const float PlayerRadius      = 15f; // Radius of the collision body, in pixels
         private const float PlayerFloatHeight = 14f; // Vertical offset between shadow and sprite (for "floating" effect), in pixels
         private const float PlayerMass        =  1f; // Mass of the body
@@ -24,8 +24,9 @@ namespace Dauntlet.Entities
 
 
         // ---------------------------------
-        public float             _levelUpTime;
-        public bool              _bonus;
+        public Vector2            CurrentSpeed;
+        public float              _levelUpTime;
+        public bool               _bonus;
         private bool              _isTeleporting;   // True if the player must teleport next update
         private float             _punchTime;       // Elapsed time of current punch
         private Vector2           _punchVector;     // Direction in which a punch is being thrown
@@ -197,7 +198,7 @@ namespace Dauntlet.Entities
                 if (force != Vector2.Zero)
                 {
                     force.Normalize();
-                    CollisionBody.ApplyLinearImpulse(force * Speed);
+                    CurrentSpeed = force * Speed;
                     CollisionBody.Rotation = (float)Math.Atan2(force.Y, force.X);
                 }
 
@@ -258,6 +259,7 @@ namespace Dauntlet.Entities
 
         public override void Update(GameTime gameTime)
         {
+            CollisionBody.ApplyLinearImpulse(CurrentSpeed);
             ResolveAnimation();
             _isTeleporting = false;
 
@@ -276,10 +278,8 @@ namespace Dauntlet.Entities
                 }   
             }
                 
-            
-
             if (IsPunching) {
-                _punchTime += gameTime.ElapsedGameTime.Milliseconds;
+                _punchTime += gameTime.ElapsedGameTime.Milliseconds / 2f;
                 float x = _punchTime/64;
                 var v = (float) (30f * Math.Exp(-Math.Pow(x, 2)) * (1f - 2f * Math.Pow(x, 2)));
                 GauntletBody.LinearVelocity = _punchVector * v;
@@ -302,12 +302,12 @@ namespace Dauntlet.Entities
             }
             
             if (Hurt) {
-                HurtTimer += gameTime.ElapsedGameTime.Milliseconds;
+                HurtTimer += gameTime.ElapsedGameTime.Milliseconds /2f;
                 if (HurtTimer >= 500) CollisionBody.LinearDamping = 35;
                 if (HurtTimer > 2000) Hurt = false;
             }
 
-            if (SmoothExp < Exp) SmoothExp += 0.2f;
+            if (SmoothExp < Exp) SmoothExp += 0.1f;
 
             if (SmoothExp >= ExpToNextLevel) {
 
@@ -333,12 +333,12 @@ namespace Dauntlet.Entities
                 _levelUpTime += gameTime.ElapsedGameTime.Milliseconds;
 
                 if (_levelUpTime < 5000)
-                    Speed = 10;
+                    Speed = 5;
                 else
                 {
                     _bonus = false;
                     _levelUpTime = 0;
-                    Speed = 5;
+                    Speed = 2.5f;
                 }
                     
             }

@@ -65,7 +65,17 @@ namespace Dauntlet.GameScreens
         {
             _stepTime = gameTime.ElapsedGameTime.Milliseconds;
             // Update the world
-            World.Step(_stepTime/1000f);
+            World.Step(_stepTime / 2000f);
+            Player.Update(gameTime);
+            foreach (var entity in TileEngine.TileEngine.CurrentRoom.Entities.Where(entity => !entity.Dead))
+                entity.Update(gameTime);
+            TileEngine.TileEngine.CurrentRoom.Entities.AddRange(TileEngine.TileEngine.CurrentRoom.AddQueue);
+            TileEngine.TileEngine.CurrentRoom.AddQueue.Clear();
+            foreach (Entity e in TileEngine.TileEngine.CurrentRoom.RemoveQueue) TileEngine.TileEngine.CurrentRoom.Entities.Remove(e);
+            TileEngine.TileEngine.CurrentRoom.RemoveQueue.Clear();
+
+            //Update the world again
+            World.Step(_stepTime / 2000f);
             Player.Update(gameTime);
             foreach (var entity in TileEngine.TileEngine.CurrentRoom.Entities.Where(entity => !entity.Dead))
                 entity.Update(gameTime);
@@ -80,6 +90,8 @@ namespace Dauntlet.GameScreens
             // Handle input
             if (MainGame.Input.IsMovement() && !Player.IsPunching)
                 Player.Move(MainGame.Input.CurrentKeyboardState, MainGame.Input.CurrentGamePadState);
+            else
+                Player.CurrentSpeed = Vector2.Zero;
             if (MainGame.Input.IsRotate() && !Player.IsPunching)
                 Player.Rotate(MainGame.Input.CurrentGamePadState);
             if (MainGame.Input.IsPauseGame())
@@ -106,7 +118,7 @@ namespace Dauntlet.GameScreens
             // First pass: Draw room
             _spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, _view);
 
-            TileEngine.TileEngine.DrawRoom(_spriteBatch, gameTime);
+            TileEngine.TileEngine.DrawRoom(GraphicsDevice, _spriteBatch, gameTime);
 
             if (DebugCollision)
                 TileEngine.TileEngine.DrawDebug(_spriteBatch, GraphicsDevice);
